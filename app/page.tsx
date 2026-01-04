@@ -1,10 +1,49 @@
 import Image from "next/image";
 
 export default function Home() {
+  const figures = [
+    {
+      title: "Network Performance Analysis",
+      src: "/images/network-attributed.png",
+      description: "Comparison of different network backbones and their attributed performance on defect localization within the CUBIT dataset.",
+      type: "png"
+    },
+    {
+      title: "Crack Segmentation Metrics",
+      src: "/images/highway_crackseg_param_AP.png",
+      description: "Analysis of average precision (AP) and hyper-parameter influence on crack segmentation for highway infrastructure inspection.",
+      type: "png"
+    },
+    {
+      title: "CUBIT-InSeg Framework",
+      src: "/images/framework.pdf",
+      description: "The hierarchical framework of the CUBIT-InSeg dataset, illustrating the pipeline from UAV data collection to physical quantification.",
+      type: "pdf"
+    },
+    {
+      title: "Dataset Distribution",
+      src: "/images/distribution-dataset.pdf",
+      description: "Statistical distribution of defect instances across different categories and scales in the CUBIT-InSeg benchmark.",
+      type: "pdf"
+    },
+    {
+      title: "Radar Comparison",
+      src: "/images/radar-compare.pdf",
+      description: "Multi-dimensional performance comparison between the proposed method and state-of-the-art models on various metrics.",
+      type: "pdf"
+    },
+    {
+      title: "Case Study: Mawan Site",
+      src: "/images/mawan.pdf",
+      description: "Real-world application results and visualization of defect assessment at the Mawan infrastructure site.",
+      type: "pdf"
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-white text-gray-900 font-sans">
+    <div className="min-h-screen bg-white text-gray-900 font-sans selection:bg-blue-100">
       {/* Navigation Bar */}
-      <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 z-50">
+      <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-gray-100 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex-shrink-0 flex items-center gap-2">
@@ -12,16 +51,16 @@ export default function Home() {
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-8">
-                <a href="#home" className="hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Home</a>
-                <a href="#dataset" className="hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Dataset</a>
-                <a href="#tasks" className="hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Tasks</a>
-                <a href="#results" className="hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Results</a>
-                <a href="#citation" className="hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Citation</a>
-                <a href="#people" className="hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">People</a>
+                <a href="#home" className="hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors text-gray-600">Home</a>
+                <a href="#dataset" className="hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors text-gray-600">Dataset</a>
+                <a href="#tasks" className="hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors text-gray-600">Tasks</a>
+                <a href="#results" className="hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors text-gray-600">Results</a>
+                <a href="#citation" className="hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors text-gray-600">Citation</a>
+                <a href="#people" className="hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors text-gray-600">People</a>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <a href="https://github.com" className="bg-gray-900 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors">
+              <a href="https://github.com/hyjcde/cubit-dataset-page" className="bg-gray-900 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-all shadow-sm">
                 Code
               </a>
             </div>
@@ -31,139 +70,214 @@ export default function Home() {
 
       <main className="pt-24 pb-16">
         {/* Hero Section */}
-        <section id="home" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
-          <div className="text-center py-12">
-            <h1 className="text-4xl sm:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight">
+        <section id="home" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+          <div className="text-center py-16">
+            <h1 className="text-5xl sm:text-7xl font-extrabold text-gray-900 mb-8 tracking-tighter">
               CUBIT Dataset
             </h1>
-            <p className="text-xl sm:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              A Large-Scale Benchmark for Infrastructure Defect Assessment and Physical Quantification
+            <p className="text-xl sm:text-3xl text-gray-500 max-w-4xl mx-auto leading-relaxed font-light">
+              A Large-Scale Benchmark for Infrastructure Defect Assessment and <span className="text-blue-600 font-semibold">Physical Quantification</span>
             </p>
           </div>
 
           {/* News Section */}
-          <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 sm:p-8 mb-16">
-            <h2 className="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2">
-              <span className="flex h-3 w-3 rounded-full bg-blue-600"></span>
-              News
+          <div className="bg-blue-50/50 border border-blue-100 rounded-3xl p-8 mb-20 shadow-sm">
+            <h2 className="text-lg font-bold text-blue-900 mb-6 flex items-center gap-3">
+              <span className="flex h-2.5 w-2.5 rounded-full bg-blue-600 animate-pulse"></span>
+              News & Updates
             </h2>
-            <ul className="space-y-3">
-              <li className="flex gap-4 text-gray-700">
-                <span className="font-bold text-blue-800 shrink-0">2024-05-13</span>
-                <span>The CUBIT-Det (AIC) paper is published in <strong>Automation in Construction</strong>.</span>
-              </li>
-              <li className="flex gap-4 text-gray-700">
-                <span className="font-bold text-blue-800 shrink-0">2024-01-05</span>
-                <span>CUBIT-Inseg dataset and benchmark results released.</span>
-              </li>
-            </ul>
+            <div className="grid gap-4">
+              <div className="flex gap-6 items-start bg-white p-4 rounded-2xl border border-blue-50 shadow-sm">
+                <span className="font-mono text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-lg shrink-0">2024-05-13</span>
+                <p className="text-gray-700 text-sm sm:text-base">
+                  The CUBIT-Det (AIC) paper is officially published in <strong className="text-gray-900">Automation in Construction</strong>. 
+                  <a href="https://doi.org/10.1016/j.autcon.2024.105405" className="ml-2 text-blue-600 hover:underline">View DOI →</a>
+                </p>
+              </div>
+              <div className="flex gap-6 items-start bg-white p-4 rounded-2xl border border-blue-50 shadow-sm">
+                <span className="font-mono text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-lg shrink-0">2024-01-05</span>
+                <p className="text-gray-700 text-sm sm:text-base">
+                  CUBIT-Inseg dataset release: High-resolution UAV images for physically grounded defect modeling.
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Description Section */}
-          <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Description</h2>
-            <p className="mb-6">
-              CUBIT is a comprehensive dataset designed for automated infrastructure inspection using Unmanned Aerial Vehicles (UAVs). It provides high-resolution imagery and precise annotations for various defect types across multiple civil infrastructure scenarios.
-            </p>
-            <div className="grid md:grid-cols-2 gap-8 mt-10">
-              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-100">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">CUBIT-Det</h3>
-                <p className="text-gray-600 mb-4">
-                  Focused on infrastructure defect detection across three primary scenarios: <strong>Buildings, Pavements, and Bridges</strong>. Collected via automated robotic platforms and validated with state-of-the-art deep learning models.
-                </p>
-                <ul className="text-sm space-y-2 text-gray-500">
-                  <li>• High-resolution defect detection</li>
-                  <li>• Diverse infrastructure scenarios</li>
-                  <li>• Published in Automation in Construction (2024)</li>
-                </ul>
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="prose prose-blue max-w-none">
+              <h2 className="text-4xl font-bold text-gray-900 mb-8 tracking-tight">Introduction</h2>
+              <p className="text-gray-600 text-lg leading-relaxed mb-8">
+                CUBIT is a comprehensive benchmark designed to advance the field of automated infrastructure inspection. Unlike traditional datasets that focus solely on 2D localization, CUBIT emphasizes the <strong>metric and geometric information</strong> required for physical modeling.
+              </p>
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="h-12 w-12 rounded-2xl bg-blue-100 flex items-center justify-center shrink-0">
+                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900">High-Resolution Sourcing</h4>
+                    <p className="text-gray-500">Imagery collected via specialized UAV platforms ensuring sub-millimeter precision.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="h-12 w-12 rounded-2xl bg-indigo-100 flex items-center justify-center shrink-0">
+                    <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900">Physical Quantification</h4>
+                    <p className="text-gray-500">Moving beyond segmentation to calculate crack width, spalling volume, and propagation.</p>
+                  </div>
+                </div>
               </div>
-              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-100">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">CUBIT-Inseg</h3>
-                <p className="text-gray-600 mb-4">
-                  A specialized dataset for façade defect assessment, bridging the gap between visual segmentation and physical quantification. Contains <strong>6,996 images</strong> with precise instance-level masks for cracks and spalling.
-                </p>
-                <ul className="text-sm space-y-2 text-gray-500">
-                  <li>• 6,996 high-definition images</li>
-                  <li>• Instance-level segmentation masks</li>
-                  <li>• Supports geometric reconstruction and quantification</li>
-                </ul>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-8 bg-gray-50 rounded-3xl border border-gray-100 shadow-inner">
+                <h3 className="text-3xl font-bold text-blue-600 mb-2">10K+</h3>
+                <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">High-Res Images</p>
+              </div>
+              <div className="p-8 bg-gray-50 rounded-3xl border border-gray-100 shadow-inner">
+                <h3 className="text-3xl font-bold text-indigo-600 mb-2">20K+</h3>
+                <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Annotated Instances</p>
+              </div>
+              <div className="p-8 bg-gray-50 rounded-3xl border border-gray-100 shadow-inner">
+                <h3 className="text-3xl font-bold text-emerald-600 mb-2">4K</h3>
+                <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Imagery Std.</p>
+              </div>
+              <div className="p-8 bg-gray-50 rounded-3xl border border-gray-100 shadow-inner">
+                <h3 className="text-3xl font-bold text-amber-600 mb-2">3</h3>
+                <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Main Scenarios</p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Dataset Section */}
-        <section id="dataset" className="bg-gray-50 py-20">
+        {/* Visual Gallery Section */}
+        <section id="results" className="bg-gray-50 py-24 border-y border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-12">Dataset Details</h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { label: "Total Images", value: "10,000+", detail: "Across all subsets" },
-                { label: "Defect Types", value: "Cracks, Spalling", detail: "And other structural defects" },
-                { label: "Resolution", value: "4K+", detail: "High-definition UAV imagery" },
-                { label: "Annotations", value: "Boxes & Masks", detail: "Instance-level precision" },
-              ].map((stat, i) => (
-                <div key={i} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                  <p className="text-sm text-gray-500 uppercase tracking-wider mb-1 font-semibold">{stat.label}</p>
-                  <p className="text-2xl font-bold text-blue-600 mb-1">{stat.value}</p>
-                  <p className="text-sm text-gray-600">{stat.detail}</p>
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">Paper Figures & Results</h2>
+              <p className="text-gray-500 max-w-2xl mx-auto">Visualizations and statistical analyses extracted from the CUBIT-Det and CUBIT-InSeg research papers.</p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+              {figures.map((fig, i) => (
+                <div key={i} className="group bg-white rounded-3xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300">
+                  <div className="aspect-[4/3] relative bg-gray-100 flex items-center justify-center overflow-hidden">
+                    {fig.type === "png" ? (
+                      <img 
+                        src={fig.src} 
+                        alt={fig.title} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center gap-4 text-gray-400">
+                        <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" /><path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" /></svg>
+                        <span className="text-xs font-bold uppercase tracking-widest bg-gray-200 text-gray-600 px-3 py-1 rounded-full">PDF Document</span>
+                        <a href={fig.src} target="_blank" className="text-blue-600 text-sm font-medium hover:underline">Open Figure</a>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-8">
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">{fig.title}</h3>
+                    <p className="text-gray-500 text-sm leading-relaxed">{fig.description}</p>
+                  </div>
                 </div>
               ))}
             </div>
-            
-            <div className="mt-16 grid lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <h3 className="text-2xl font-bold mb-6">Visual Examples</h3>
-                <p className="text-gray-600 mb-8 leading-relaxed">
-                  The dataset captures defects under diverse real-world conditions, providing the geometric information required for physical modeling. Each instance is meticulously annotated to support engineering standards for maintenance prioritization.
-                </p>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">Example 1 (Crack)</div>
-                  <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">Example 2 (Spalling)</div>
-                  <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">Example 3 (Bridge)</div>
-                  <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">Example 4 (Pavement)</div>
+          </div>
+        </section>
+
+        {/* Dataset Summary Section */}
+        <section id="dataset" className="py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-2 gap-20 items-start">
+              <div className="bg-gray-900 rounded-[2.5rem] p-10 text-white shadow-2xl">
+                <h3 className="text-3xl font-bold mb-8">CUBIT-InSeg Summary</h3>
+                <div className="overflow-hidden rounded-2xl border border-gray-800">
+                  <table className="w-full text-left">
+                    <thead className="bg-gray-800/50">
+                      <tr>
+                        <th className="px-6 py-4 text-xs font-bold uppercase text-gray-400 tracking-wider">Defect Category</th>
+                        <th className="px-6 py-4 text-xs font-bold uppercase text-gray-400 tracking-wider">Images</th>
+                        <th className="px-6 py-4 text-xs font-bold uppercase text-gray-400 tracking-wider">Instances</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-800">
+                      <tr>
+                        <td className="px-6 py-5 font-medium">Surface Cracks</td>
+                        <td className="px-6 py-5">3,982</td>
+                        <td className="px-6 py-5">12,450</td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-5 font-medium">Concrete Spalling</td>
+                        <td className="px-6 py-5">3,014</td>
+                        <td className="px-6 py-5">8,120</td>
+                      </tr>
+                      <tr className="bg-blue-600/10">
+                        <td className="px-6 py-5 font-bold text-blue-400">Total (Benchmark)</td>
+                        <td className="px-6 py-5 font-bold">6,996</td>
+                        <td className="px-6 py-5 font-bold">20,570</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div className="mt-10 grid grid-cols-2 gap-6">
+                  <div className="bg-gray-800/50 p-6 rounded-2xl">
+                    <p className="text-gray-400 text-xs font-bold uppercase mb-2">Resolution</p>
+                    <p className="text-xl font-bold">4000 × 3000+</p>
+                  </div>
+                  <div className="bg-gray-800/50 p-6 rounded-2xl">
+                    <p className="text-gray-400 text-xs font-bold uppercase mb-2">Platform</p>
+                    <p className="text-xl font-bold">DJI M300 RTK</p>
+                  </div>
                 </div>
               </div>
-              <div className="bg-white p-8 rounded-2xl border border-gray-200 shadow-xl">
-                <h3 className="text-2xl font-bold mb-6 italic">CUBIT-Inseg Summary</h3>
-                <table className="w-full text-sm">
-                  <thead className="border-b border-gray-100">
-                    <tr>
-                      <th className="text-left pb-4 font-bold">Category</th>
-                      <th className="text-left pb-4 font-bold">Images</th>
-                      <th className="text-left pb-4 font-bold">Instances</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-50">
-                    <tr>
-                      <td className="py-4">Cracks</td>
-                      <td className="py-4">~4,000</td>
-                      <td className="py-4">12,000+</td>
-                    </tr>
-                    <tr>
-                      <td className="py-4">Spalling</td>
-                      <td className="py-4">~3,000</td>
-                      <td className="py-4">8,000+</td>
-                    </tr>
-                    <tr className="font-bold text-gray-900">
-                      <td className="py-4">Total (Inseg)</td>
-                      <td className="py-4">6,996</td>
-                      <td className="py-4">20,000+</td>
-                    </tr>
-                  </tbody>
-                </table>
+
+              <div>
+                <h3 className="text-3xl font-bold text-gray-900 mb-8">Dataset Tasks</h3>
+                <div className="space-y-4">
+                  {[
+                    { title: "Defect Localization", desc: "Object detection using axis-aligned or oriented bounding boxes." },
+                    { title: "Instance Segmentation", desc: "Pixel-level classification and instance separation for complex defects." },
+                    { title: "Physical Quantification", desc: "Calculating metric properties (width, area) from image-based segments." },
+                    { title: "Metric Scene Modeling", desc: "Reconstructing 3D façade models with high-resolution defect mapping." }
+                  ].map((task, i) => (
+                    <div key={i} className="group p-6 rounded-2xl border border-gray-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all">
+                      <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors mb-1">{task.title}</h4>
+                      <p className="text-gray-500 text-sm">{task.desc}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-12 bg-indigo-50 border border-indigo-100 rounded-3xl p-8">
+                  <h4 className="text-indigo-900 font-bold mb-4">Availability</h4>
+                  <p className="text-indigo-700 text-sm leading-relaxed mb-6">
+                    The dataset is provided for academic research purposes. Please follow the instructions in the code repository to request access to the high-resolution imagery.
+                  </p>
+                  <button className="w-full bg-indigo-600 text-white font-bold py-4 rounded-2xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
+                    Request Access
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Citation Section */}
-        <section id="citation" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12">Citation</h2>
-          <div className="space-y-8">
-            <div className="bg-gray-900 rounded-2xl p-8 overflow-x-auto">
-              <p className="text-blue-400 text-sm font-mono mb-4">CUBIT-Det (AIC) BibTeX:</p>
-              <pre className="text-gray-300 text-sm font-mono leading-relaxed">
+        <section id="citation" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 border-t border-gray-100">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4 tracking-tight">Cite Our Work</h2>
+            <p className="text-gray-500">If you use CUBIT in your research, please cite the following papers.</p>
+          </div>
+          <div className="space-y-10">
+            <div className="group relative">
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
+              <div className="relative bg-gray-900 rounded-3xl p-8 sm:p-12 overflow-x-auto shadow-2xl">
+                <p className="text-blue-400 text-sm font-mono font-bold mb-6 flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-blue-400"></span>
+                  Automation in Construction (2024)
+                </p>
+                <pre className="text-gray-300 text-xs sm:text-sm font-mono leading-relaxed">
 {`@article{zhao2024cubitdet,
   title={High-resolution infrastructure defect detection dataset sourced by unmanned systems and validated with deep learning},
   author={Zhao, Benyun and Zhou, Xunkuai and Yang, Guidong and Wen, Junjie and Zhang, Jihan and Dou, Jia and Li, Guang and Chen, Xi and Chen, Ben M.},
@@ -174,53 +288,69 @@ export default function Home() {
   publisher={Elsevier},
   doi={10.1016/j.autcon.2024.105405}
 }`}
-              </pre>
+                </pre>
+              </div>
             </div>
-            <div className="bg-gray-900 rounded-2xl p-8 overflow-x-auto">
-              <p className="text-blue-400 text-sm font-mono mb-4">CUBIT-Inseg BibTeX:</p>
-              <pre className="text-gray-300 text-sm font-mono leading-relaxed">
+            <div className="group relative">
+              <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-3xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
+              <div className="relative bg-gray-900 rounded-3xl p-8 sm:p-12 overflow-x-auto shadow-2xl">
+                <p className="text-emerald-400 text-sm font-mono font-bold mb-6 flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
+                  Preprint (2025)
+                </p>
+                <pre className="text-gray-300 text-xs sm:text-sm font-mono leading-relaxed">
 {`@article{zhao2025cubitinseg,
   title={From Instance Segmentation to Physical Quantification: A High-Resolution UAV Dataset for Façade Defect Assessment},
   author={Zhao, Benyun and Zhang, Jihan and Yang, Guidong and Huang, Yijun and Lei, Lei and Chen, Xi and Chen, Ben M.},
   year={2025},
   note={Preprint}
 }`}
-              </pre>
+                </pre>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Contact Section */}
-        <section id="people" className="bg-gray-50 py-20 border-t border-gray-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8">Contact & People</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mb-12">
-              For any questions or feedback regarding the CUBIT dataset, please contact the team at the <strong>Department of Mechanical and Automation Engineering, The Chinese University of Hong Kong</strong>.
+        <section id="people" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+          <div className="bg-gray-50 rounded-[3rem] p-12 sm:p-20 text-center border border-gray-100">
+            <h2 className="text-4xl font-bold text-gray-900 mb-8 tracking-tight">Our Team</h2>
+            <p className="text-gray-500 max-w-2xl mx-auto mb-16 text-lg">
+              Developed by researchers at the <strong>Department of Mechanical and Automation Engineering, The Chinese University of Hong Kong (CUHK)</strong>.
             </p>
-            <div className="flex flex-wrap justify-center gap-8">
-              <div>
-                <p className="font-bold text-gray-900">Benyun Zhao</p>
-                <p className="text-sm text-gray-500 italic font-mono">benyunzhao@cuhk.edu.hk</p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-12">
+              <div className="p-6 rounded-3xl bg-white shadow-sm border border-gray-100">
+                <div className="h-16 w-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl font-bold text-blue-600">BZ</div>
+                <p className="font-bold text-gray-900 text-xl mb-1">Benyun Zhao</p>
+                <p className="text-sm text-gray-400 font-mono">benyunzhao@cuhk.edu.hk</p>
               </div>
-              <div>
-                <p className="font-bold text-gray-900">Xi Chen</p>
-                <p className="text-sm text-gray-500 italic font-mono">xichen002@cuhk.edu.hk</p>
+              <div className="p-6 rounded-3xl bg-white shadow-sm border border-gray-100">
+                <div className="h-16 w-16 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl font-bold text-indigo-600">XC</div>
+                <p className="font-bold text-gray-900 text-xl mb-1">Xi Chen</p>
+                <p className="text-sm text-gray-400 font-mono">xichen002@cuhk.edu.hk</p>
               </div>
-              <div>
-                <p className="font-bold text-gray-900">Ben M. Chen</p>
-                <p className="text-sm text-gray-500 italic font-mono">bmchen@cuhk.edu.hk</p>
+              <div className="p-6 rounded-3xl bg-white shadow-sm border border-gray-100">
+                <div className="h-16 w-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl font-bold text-emerald-600">BC</div>
+                <p className="font-bold text-gray-900 text-xl mb-1">Ben M. Chen</p>
+                <p className="text-sm text-gray-400 font-mono">bmchen@cuhk.edu.hk</p>
               </div>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="bg-white border-t border-gray-100 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center text-sm text-gray-400">
-          <p>© 2026 CUBIT Team. All rights reserved.</p>
-          <div className="flex gap-6 font-medium">
-            <a href="#" className="hover:text-blue-600">Privacy</a>
-            <a href="#" className="hover:text-blue-600">Terms</a>
+      <footer className="bg-white border-t border-gray-100 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+            <div className="flex flex-col items-center md:items-start gap-4">
+              <span className="text-2xl font-bold text-gray-900">CUBIT Project</span>
+              <p className="text-sm text-gray-400">© 2026 CUBIT Research Team. All rights reserved.</p>
+            </div>
+            <div className="flex gap-10 text-sm font-bold text-gray-400">
+              <a href="#" className="hover:text-blue-600 transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-blue-600 transition-colors">Terms of Service</a>
+              <a href="https://www.cuhk.edu.hk" className="hover:text-blue-600 transition-colors">CUHK Home</a>
+            </div>
           </div>
         </div>
       </footer>
