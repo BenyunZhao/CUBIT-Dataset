@@ -12,22 +12,41 @@ export default function Home() {
   const [pageViews, setPageViews] = useState(0);
   const [activeTask, setActiveTask] = useState('det');
 
+  // 页面加载时检查登录状态和获取访问量
   useEffect(() => {
-    fetch('/api/auth/me').then(res => res.json()).then(data => { if (data.user) setUser(data.user); });
-    fetch('/api/stats').then(res => res.json()).then(data => setPageViews(data.views));
+    fetch('/api/auth/me')
+      .then(res => res.json())
+      .then(data => {
+        if (data.user) setUser(data.user);
+      });
+
+    fetch('/api/stats')
+      .then(res => res.json())
+      .then(data => setPageViews(data.views));
   }, []);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    const res = await fetch(isRegister ? '/api/auth/register' : '/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    });
-    const data = await res.json();
-    if (res.ok) { setUser(data.user); setIsLoginOpen(false); setFormData({ email: '', password: '', name: '' }); }
-    else { setError(data.error || 'Auth failed'); }
+    const endpoint = isRegister ? '/api/auth/register' : '/api/auth/login';
+    
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUser(data.user);
+        setIsLoginOpen(false);
+        setFormData({ email: '', password: '', name: '' });
+      } else {
+        setError(data.error || '认证失败');
+      }
+    } catch (err) {
+      setError('服务器错误');
+    }
   };
 
   const handleLogout = async () => {
@@ -48,6 +67,46 @@ export default function Home() {
       { model: "YOLOv11-Seg", mask_map: "44.1", box_map: "47.5", params: "35M" },
     ]
   };
+
+  const figures = [
+// ... (rest of the figures)
+    {
+      title: "Hierarchical Framework",
+      src: "/images/framework.png",
+      link: "/images/framework.pdf",
+      description: "A multi-layered pipeline detailing the flow from raw high-resolution UAV sourcing to final physical quantification metrics.",
+    },
+    {
+      title: "Network Performance",
+      src: "/images/network-attributed.png",
+      link: "/images/network-attributed.png",
+      description: "In-depth attribution analysis of various deep learning backbones, evaluating accuracy versus latency on infrastructure defects.",
+    },
+    {
+      title: "Dataset Distribution",
+      src: "/images/distribution-dataset.png",
+      link: "/images/distribution-dataset.pdf",
+      description: "Class-wise and scale-wise distribution mapping, showcasing the diversity across building, pavement, and bridge scenarios.",
+    },
+    {
+      title: "Segmentation Metrics",
+      src: "/images/highway_crackseg_param_AP.png",
+      link: "/images/highway_crackseg_param_AP.png",
+      description: "Quantitative metrics (AP) showing the robustness of our segmentation model across varied hyper-parameter settings.",
+    },
+    {
+      title: "Comparative Benchmark",
+      src: "/images/radar-compare.png",
+      link: "/images/radar-compare.pdf",
+      description: "Radar analysis comparing our proposed CUBIT benchmark results against current state-of-the-art infrastructure inspection models.",
+    },
+    {
+      title: "Mawan Site Application",
+      src: "/images/mawan.png",
+      link: "/images/mawan.pdf",
+      description: "Real-world visualization from the Mawan site assessment, demonstrating the practical scalability of our physically grounded models.",
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans selection:bg-blue-600 selection:text-white">
@@ -282,6 +341,89 @@ export default function Home() {
               <button className="w-full py-4 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest">Continue</button>
             </form>
             <p className="mt-6 text-center text-[9px] font-black text-slate-400 uppercase tracking-widest">{isRegister ? 'Joined before?' : 'New here?'} <span className="text-blue-600 cursor-pointer" onClick={() => setIsRegister(!isRegister)}>{isRegister ? 'Sign In' : 'Register'}</span></p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+      <footer className="bg-slate-50 py-24 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-8 sm:px-12 flex flex-col md:flex-row justify-between items-center gap-12 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 bg-slate-900 rounded flex items-center justify-center text-white text-[10px]">C</div>
+            <span>© 2026 CUBIT Challenge Group | CUHK</span>
+          </div>
+          <div className="flex gap-16">
+            <a href="https://github.com/hyjcde" target="_blank" className="hover:text-blue-600 transition-colors">GitHub</a>
+            <a href="https://www.cuhk.edu.hk" target="_blank" className="hover:text-blue-600 transition-colors font-black">CUHK.EDU.HK</a>
+          </div>
+        </div>
+      </footer>
+
+      {/* Auth Modal Overlay */}
+      {isLoginOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div 
+            className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
+            onClick={() => { setIsLoginOpen(false); setError(''); }}
+          ></div>
+          <div className="relative bg-white rounded-[3rem] w-full max-w-md p-12 shadow-3xl animate-in fade-in zoom-in duration-300">
+            <div className="text-center mb-10">
+              <h4 className="text-3xl font-black text-slate-900 tracking-tighter mb-2">
+                {isRegister ? 'Create Account' : 'Welcome Back'}
+              </h4>
+              <p className="text-slate-400 text-sm font-medium">
+                {isRegister ? 'Join the CUBIT Benchmark Community' : 'Sign in to CUBIT Challenge Server'}
+              </p>
+            </div>
+            
+            <form onSubmit={handleAuth} className="space-y-6">
+              {isRegister && (
+                <input 
+                  type="text" 
+                  placeholder="Full Name" 
+                  required
+                  className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                />
+              )}
+              <input 
+                type="email" 
+                placeholder="Email" 
+                required
+                className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+              />
+              <input 
+                type="password" 
+                placeholder="Password" 
+                required
+                className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                value={formData.password}
+                onChange={(e) => setFormData({...formData, password: e.target.value})}
+              />
+              
+              {error && <p className="text-red-500 text-xs font-bold text-center">{error}</p>}
+              
+              <button className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl hover:bg-blue-700 transition-all">
+                {isRegister ? 'Register' : 'Sign In'}
+              </button>
+            </form>
+
+            <div className="mt-8 text-center">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                {isRegister ? 'Already have an account?' : "Don't have an account?"} 
+                <span 
+                  className="text-blue-600 cursor-pointer ml-2"
+                  onClick={() => { setIsRegister(!isRegister); setError(''); }}
+                >
+                  {isRegister ? 'Sign In' : 'Register'}
+                </span>
+              </p>
+            </div>
           </div>
         </div>
       )}
