@@ -12,22 +12,41 @@ export default function Home() {
   const [pageViews, setPageViews] = useState(0);
   const [activeTask, setActiveTask] = useState('det');
 
+  // 页面加载时检查登录状态和获取访问量
   useEffect(() => {
-    fetch('/api/auth/me').then(res => res.json()).then(data => { if (data.user) setUser(data.user); });
-    fetch('/api/stats').then(res => res.json()).then(data => setPageViews(data.views));
+    fetch('/api/auth/me')
+      .then(res => res.json())
+      .then(data => {
+        if (data.user) setUser(data.user);
+      });
+
+    fetch('/api/stats')
+      .then(res => res.json())
+      .then(data => setPageViews(data.views));
   }, []);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    const res = await fetch(isRegister ? '/api/auth/register' : '/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    });
-    const data = await res.json();
-    if (res.ok) { setUser(data.user); setIsLoginOpen(false); setFormData({ email: '', password: '', name: '' }); }
-    else { setError(data.error || '认证失败'); }
+    const endpoint = isRegister ? '/api/auth/register' : '/api/auth/login';
+    
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUser(data.user);
+        setIsLoginOpen(false);
+        setFormData({ email: '', password: '', name: '' });
+      } else {
+        setError(data.error || '认证失败');
+      }
+    } catch (err) {
+      setError('服务器错误');
+    }
   };
 
   const handleLogout = async () => {
@@ -35,313 +54,521 @@ export default function Home() {
     setUser(null);
   };
 
+  const figures = [
+    {
+      title: "Hierarchical Framework",
+      src: "/images/framework.png",
+      link: "/images/framework.pdf",
+      description: "A multi-layered pipeline detailing the flow from raw high-resolution UAV sourcing to final physical quantification metrics.",
+    },
+    {
+      title: "Network Performance",
+      src: "/images/network-attributed.png",
+      link: "/images/network-attributed.png",
+      description: "In-depth attribution analysis of various deep learning backbones, evaluating accuracy versus latency on infrastructure defects.",
+    },
+    {
+      title: "Dataset Distribution",
+      src: "/images/distribution-dataset.png",
+      link: "/images/distribution-dataset.pdf",
+      description: "Class-wise and scale-wise distribution mapping, showcasing the diversity across building, pavement, and bridge scenarios.",
+    },
+    {
+      title: "Segmentation Metrics",
+      src: "/images/highway_crackseg_param_AP.png",
+      link: "/images/highway_crackseg_param_AP.png",
+      description: "Quantitative metrics (AP) showing the robustness of our segmentation model across varied hyper-parameter settings.",
+    },
+    {
+      title: "Comparative Benchmark",
+      src: "/images/radar-compare.png",
+      link: "/images/radar-compare.pdf",
+      description: "Radar analysis comparing our proposed CUBIT benchmark results against current state-of-the-art infrastructure inspection models.",
+    },
+    {
+      title: "Mawan Site Application",
+      src: "/images/mawan.png",
+      link: "/images/mawan.pdf",
+      description: "Real-world visualization from the Mawan site assessment, demonstrating the practical scalability of our physically grounded models.",
+    }
+  ];
+
   const baselines = {
     det: [
-      { model: "YOLOv11-L", map50: "78.2", map5095: "56.4", fps: "125" },
-      { model: "YOLOv10-X", map50: "76.5", map5095: "54.1", fps: "98" },
-      { model: "Faster R-CNN", map50: "68.9", map5095: "42.3", fps: "18" },
-      { model: "PP-YOLOE+", map50: "74.1", map5095: "51.2", fps: "82" },
+      { model: "YOLOv6-l", crack: "85.7", spalling: "91.7", moisture: "44.3", latency: "15.9ms" },
+      { model: "YOLOv5-x", crack: "81.2", spalling: "88.4", moisture: "42.1", latency: "28.4ms" },
+      { model: "YOLOX-x", crack: "83.9", spalling: "89.5", moisture: "43.5", latency: "41.2ms" },
+      { model: "Faster R-CNN (ResNet50)", crack: "72.5", spalling: "71.5", moisture: "30.5", latency: "55.0ms" },
     ],
     inseg: [
-      { model: "ConvNeXtV2-P", mask_map: "45.2", box_map: "48.7", params: "40M" },
-      { model: "Swin-T", mask_map: "42.8", box_map: "46.1", params: "28M" },
-      { model: "YOLOv11-Seg", mask_map: "44.1", box_map: "47.5", params: "35M" },
+      { model: "YOLOv11-Seg", mask_ap: "44.1", box_ap: "47.5", crack_map: "42.3", params: "35M" },
+      { model: "ConvNeXtV2-P", mask_ap: "45.2", box_ap: "48.7", crack_map: "43.8", params: "40M" },
+      { model: "Swin-T", mask_ap: "42.8", box_ap: "46.1", crack_map: "41.5", params: "28M" },
+      { model: "Starnet", mask_ap: "41.5", box_ap: "44.2", crack_map: "39.8", params: "18M" },
     ]
   };
 
+  const severityGrades = [
+    { level: "Low", si: "< 0.25", crack: "< 0.2 mm", spalling: "None", action: "Routine monitoring", color: "text-green-500" },
+    { level: "Moderate", si: "0.25 - 0.50", crack: "0.2 - 0.5 mm", spalling: "< 50 cm²", action: "Repair scheduling", color: "text-blue-500" },
+    { level: "Severe", si: "0.50 - 0.75", crack: "> 0.5 mm", spalling: "50 - 200 cm²", action: "Urgent repair", color: "text-orange-500" },
+    { level: "Critical", si: "> 0.75", crack: "Severe structural damage", spalling: "> 200 cm²", action: "Immediate structural assessment", color: "text-red-500" }
+  ];
+
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-blue-600 selection:text-white">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl border-b border-slate-200/60">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="w-7 h-7 bg-blue-600 rounded flex items-center justify-center text-white font-black text-xs">C</div>
-            <span className="text-sm font-black tracking-tighter uppercase">CUBIT <span className="text-blue-600">Challenge</span></span>
+      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 flex justify-between h-20 items-center">
+          <div className="flex items-center gap-4">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            </div>
+            <span className="text-xl font-black tracking-tighter">CUBIT <span className="text-blue-600">CHALLENGE</span></span>
           </div>
-          <div className="hidden md:flex items-center space-x-8">
-            {["Home", "Tasks", "Leaderboard", "Download", "Submit"].map((item) => (
-              <a key={item} href={`#${item.toLowerCase()}`} className="text-slate-500 hover:text-blue-600 text-[10px] font-bold uppercase tracking-widest transition-colors">{item}</a>
+          <div className="hidden lg:flex items-center space-x-10">
+            {["Home", "Tasks", "Challenge", "Download", "Leaderboard", "Citation"].map((item) => (
+              <a key={item} href={`#${item.toLowerCase()}`} className="text-slate-500 hover:text-blue-600 text-[10px] font-black uppercase tracking-widest transition-colors">{item}</a>
             ))}
           </div>
           <div className="flex items-center gap-4">
             {user ? (
-              <div className="flex items-center gap-4">
-                <span className="text-[10px] font-black text-blue-600 uppercase">Hi, {user.name}</span>
-                <button onClick={handleLogout} className="text-[10px] font-bold text-slate-400 hover:text-red-500">Logout</button>
-              </div>
+              <>
+                <span className="text-[10px] font-black uppercase tracking-widest text-blue-600">Hi, {user.name}</span>
+                <button 
+                  onClick={handleLogout}
+                  className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-red-500 transition-colors"
+                >
+                  Logout
+                </button>
+              </>
             ) : (
-              <button onClick={() => { setIsRegister(false); setIsLoginOpen(true); }} className="text-[10px] font-black uppercase tracking-widest bg-slate-950 text-white px-5 py-2 rounded-lg hover:bg-blue-600 transition-all">Sign In</button>
+              <>
+                <button 
+                  onClick={() => { setIsRegister(false); setIsLoginOpen(true); }}
+                  className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 transition-colors"
+                >
+                  Sign In
+                </button>
+                <button 
+                  onClick={() => { setIsRegister(true); setIsLoginOpen(true); }}
+                  className="bg-slate-950 text-white px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all"
+                >
+                  Register
+                </button>
+              </>
             )}
           </div>
         </div>
       </nav>
 
-      <main className="pt-16">
-        {/* Compact Hero */}
-        <section id="home" className="relative h-[55vh] flex items-center bg-slate-950 overflow-hidden">
-          <Image src="/images/hero-bg.png" alt="Background" fill className="object-cover opacity-40" priority />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/40 to-transparent"></div>
-          <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
-            <div className="inline-block px-3 py-1 bg-blue-600 text-white text-[9px] font-black uppercase tracking-widest rounded mb-6 italic">Metric-Based Infrastructure Benchmark</div>
-            <h1 className="text-5xl md:text-7xl font-black text-white leading-tight tracking-tighter mb-6">
-              CUBIT: Physical Grounded<br/><span className="text-blue-600 italic">Defect Modeling</span>
+      <main>
+        {/* Hero Section */}
+        <section id="home" className="relative h-[85vh] min-h-[750px] flex items-center bg-slate-950 overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/images/hero-bg.png"
+              alt="Background"
+              fill
+              className="object-cover opacity-50 transition-transform duration-[20s] hover:scale-110"
+              priority
+            />
+             <div className="absolute inset-0 bg-linear-to-r from-slate-950 via-slate-950/20 to-transparent"></div>
+             <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-white"></div>
+           </div>
+
+          <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 w-full pt-20">
+            <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-blue-600/20 backdrop-blur border border-blue-500/30 rounded-full text-blue-400 text-[10px] font-black uppercase tracking-[0.3em] mb-10">
+              Benchmark & Challenges 2026
+            </div>
+            <h1 className="text-6xl sm:text-9xl font-black text-white leading-[0.85] tracking-tighter mb-10">
+              CUBIT<br/>
+              <span className="text-blue-600">BENCHMARK</span>
             </h1>
-            <div className="flex gap-12 text-white/60">
-              <div className="flex flex-col"><span className="text-3xl font-black text-white">12,500+</span><span className="text-[9px] uppercase font-bold tracking-widest">Images</span></div>
-              <div className="flex flex-col"><span className="text-3xl font-black text-white">32,400+</span><span className="text-[9px] uppercase font-bold tracking-widest">Instances</span></div>
-              <div className="flex flex-col"><span className="text-3xl font-black text-white">8K</span><span className="text-[9px] uppercase font-bold tracking-widest">Max Resolution</span></div>
+            <p className="text-xl sm:text-2xl text-slate-300 max-w-3xl leading-relaxed font-medium mb-12 italic">
+              "A Large-Scale Benchmark for Infrastructure Defect Assessment and <span className="text-white border-b-2 border-blue-600 pb-1">Physical Quantification Challenges</span>."
+            </p>
+            <div className="flex flex-wrap items-center gap-6">
+              <a href="#challenge" className="bg-white text-slate-950 px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-2xl active:scale-95">Participate Challenge</a>
+              <div className="flex gap-8 border-l border-white/10 pl-8 text-white">
+                <div>
+                  <p className="text-3xl font-black tracking-tighter">12,500+</p>
+                  <p className="text-slate-500 text-[9px] font-black uppercase tracking-widest mt-1">Images</p>
+                </div>
+                <div>
+                  <p className="text-3xl font-black tracking-tighter">32,400+</p>
+                  <p className="text-slate-500 text-[9px] font-black uppercase tracking-widest mt-1">Instances</p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Dense Information Grid */}
-        <section className="max-w-7xl mx-auto px-6 -mt-12 relative z-20 grid lg:grid-cols-12 gap-6">
-          
-          {/* Main Content Area */}
-          <div className="lg:col-span-8 space-y-6">
-            
-            {/* Challenge Hub - The Evaluation Core */}
-            <div id="submit" className="bg-white p-8 rounded-[2rem] shadow-xl border border-slate-200">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-                <div>
-                  <h3 className="text-2xl font-black text-slate-900 tracking-tight">Challenge Submission</h3>
-                  <p className="text-xs text-slate-500 font-medium mt-1">Submit your model results for Task 1 (Det) or Task 2 (InSeg).</p>
+        {/* Challenge & Leaderboard - Data Dense Section */}
+        <section id="challenge" className="py-32 bg-white">
+          <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+            <div className="grid lg:grid-cols-12 gap-12">
+              {/* Left Column: Leaderboard */}
+              <div className="lg:col-span-8 space-y-12">
+                <div className="flex justify-between items-center mb-8">
+                  <div>
+                    <h2 className="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em] mb-2">Academic Benchmark</h2>
+                    <h3 className="text-4xl font-black text-slate-900 tracking-tighter">Performance Leaderboard</h3>
+                  </div>
+                  <div className="flex bg-slate-100 p-1 rounded-xl">
+                    <button 
+                      onClick={() => setActiveTask('det')} 
+                      className={`px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTask === 'det' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                      Detection
+                    </button>
+                    <button 
+                      onClick={() => setActiveTask('inseg')} 
+                      className={`px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTask === 'inseg' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                      Segmentation
+                    </button>
+                  </div>
                 </div>
-                <div className="flex bg-slate-100 p-1 rounded-xl">
-                  <button onClick={() => setActiveTask('det')} className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${activeTask === 'det' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'}`}>Detection</button>
-                  <button onClick={() => setActiveTask('inseg')} className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${activeTask === 'inseg' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'}`}>Segmentation</button>
-                </div>
-              </div>
 
-              {user ? (
-                <form className="grid sm:grid-cols-2 gap-6 p-6 bg-slate-50 rounded-2xl border border-slate-100 animate-in fade-in duration-500">
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Algorithm / Team Name</label>
-                    <input type="text" placeholder="e.g. ResNet50-FPN-CUBIT" className="w-full p-4 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Upload Result (.zip)</label>
-                    <input type="file" className="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm" />
-                  </div>
-                  <button className="sm:col-span-2 py-4 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-blue-700 transition-all shadow-lg shadow-blue-200">Submit to Evaluation Server</button>
-                </form>
-              ) : (
-                <div className="py-16 text-center bg-slate-50 rounded-[2rem] border border-dashed border-slate-300">
-                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-                    <svg className="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                  </div>
-                  <p className="text-sm font-bold text-slate-600 mb-6">Authorization required to participate in the challenge.</p>
-                  <button onClick={() => setIsLoginOpen(true)} className="px-10 py-4 bg-slate-950 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all">Sign In to Continue</button>
-                </div>
-              )}
-            </div>
-
-            {/* Leaderboard Table - Tight Design */}
-            <div id="leaderboard" className="bg-white p-8 rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden">
-              <div className="flex justify-between items-center mb-8">
-                <h3 className="text-xl font-black text-slate-900 tracking-tight uppercase">Leaderboard</h3>
-                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Version 1.0.2 • Jan 2026</span>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead>
-                    <tr className="border-b border-slate-100">
-                      <th className="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Rank</th>
-                      <th className="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Model Architecture</th>
-                      {activeTask === 'det' ? (
-                        <>
-                          <th className="pb-4 text-[9px] font-black text-blue-600 uppercase tracking-widest">mAP@0.5</th>
-                          <th className="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">mAP[.5:.95]</th>
-                          <th className="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">FPS</th>
-                        </>
-                      ) : (
-                        <>
-                          <th className="pb-4 text-[9px] font-black text-blue-600 uppercase tracking-widest">Mask mAP</th>
-                          <th className="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Box mAP</th>
-                          <th className="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Complexity</th>
-                        </>
-                      )}
-                    </tr>
-                  </thead>
-                  <tbody className="text-sm font-medium">
-                    {(activeTask === 'det' ? baselines.det : baselines.inseg).map((item, i) => (
-                      <tr key={i} className="border-b border-slate-50 group transition-colors">
-                        <td className="py-4 font-black text-slate-300 group-hover:text-blue-600 transition-colors">#0{i+1}</td>
-                        <td className="py-4 font-bold text-slate-900">{item.model}</td>
+                <div className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-sm">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="bg-slate-50/50 border-b border-slate-200">
+                        <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Rank</th>
+                        <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Model</th>
                         {activeTask === 'det' ? (
                           <>
-                            <td className="py-4 font-black text-blue-600">{item.map50}%</td>
-                            <td className="py-4 text-slate-500">{item.map5095}%</td>
-                            <td className="py-4 text-slate-500">{item.fps}</td>
+                            <th className="px-8 py-5 text-[10px] font-black text-blue-600 uppercase tracking-widest">Crack AP</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Spalling AP</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Latency</th>
                           </>
                         ) : (
                           <>
-                            <td className="py-4 font-black text-blue-600">{item.mask_map}%</td>
-                            <td className="py-4 text-slate-500">{item.box_map}%</td>
-                            <td className="py-4 text-slate-500">{item.params}</td>
+                            <th className="px-8 py-5 text-[10px] font-black text-blue-600 uppercase tracking-widest">Mask mAP</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Box mAP</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Crack mAP</th>
                           </>
                         )}
                       </tr>
+                    </thead>
+                    <tbody className="text-sm font-medium">
+                      {(activeTask === 'det' ? baselines.det : baselines.inseg).map((item, i) => (
+                        <tr key={i} className="border-b border-slate-100 hover:bg-slate-50 transition-colors group">
+                          <td className="px-8 py-6 font-black text-slate-300 group-hover:text-blue-600 transition-colors">#0{i+1}</td>
+                          <td className="px-8 py-6 text-slate-950 font-bold">{item.model}</td>
+                          {activeTask === 'det' ? (
+                            <>
+                              <td className="px-8 py-6 font-black text-blue-600">{item.crack}%</td>
+                              <td className="px-8 py-6 text-slate-500">{item.spalling}%</td>
+                              <td className="px-8 py-6 text-slate-400 text-xs">{item.latency}</td>
+                            </>
+                          ) : (
+                            <>
+                              <td className="px-8 py-6 font-black text-blue-600">{item.mask_ap}%</td>
+                              <td className="px-8 py-6 text-slate-500">{item.box_ap}%</td>
+                              <td className="px-8 py-6 text-slate-500">{item.crack_map}%</td>
+                            </>
+                          )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="bg-slate-950 rounded-[2.5rem] p-10 text-white relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-80 h-80 bg-blue-600/10 rounded-full blur-[100px] -mr-40 -mt-40"></div>
+                  <div className="relative z-10 flex flex-col md:flex-row gap-10 items-center">
+                    <div className="flex-1 space-y-4">
+                      <h4 className="text-2xl font-black tracking-tight">Participate in CUBIT Challenges</h4>
+                      <p className="text-slate-400 text-sm leading-relaxed font-medium">
+                        Submit your models to our automated evaluation server. We follow the MS COCO (101 points) and Pascal VOC protocols.
+                      </p>
+                    </div>
+                    {user ? (
+                      <button className="px-10 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl">
+                        Submit Result (.zip)
+                      </button>
+                    ) : (
+                      <button 
+                        onClick={() => setIsLoginOpen(true)}
+                        className="px-10 py-5 bg-white text-slate-950 hover:bg-blue-600 hover:text-white rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl"
+                      >
+                        Sign In to Submit
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Taxonomy & Physical Modeling */}
+              <div className="lg:col-span-4 space-y-10">
+                <div className="bg-slate-50 rounded-[2.5rem] p-10 border border-slate-200">
+                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8">Dataset Taxonomy</h4>
+                  <div className="space-y-8">
+                    {[
+                      { label: "Data Modality", val: "UAV RGB Imagery (8K/4K/HD)" },
+                      { label: "Defect Classes", val: "Cracks (Linear, Branch, Web), Spalling, Moisture" },
+                      { label: "Data Split", val: "70% Train, 10% Val, 20% Robust Test" },
+                      { label: "Metric Scale", val: "Pixel-to-MM (Calibrated via GSD)" }
+                    ].map((item, i) => (
+                      <div key={i} className="space-y-1">
+                        <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest">{item.label}</p>
+                        <p className="text-sm font-bold text-slate-900">{item.val}</p>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-[2.5rem] p-10 border border-slate-200 shadow-sm">
+                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8">Physical Severity Grading</h4>
+                  <div className="space-y-6">
+                    {severityGrades.map((grade, i) => (
+                      <div key={i} className="p-5 rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-200 transition-all">
+                        <div className="flex justify-between items-center mb-3">
+                          <span className={`text-xs font-black uppercase tracking-widest ${grade.color}`}>{grade.level}</span>
+                          <span className="text-[9px] font-bold text-slate-400">SI {grade.si}</span>
+                        </div>
+                        <p className="text-xs font-bold text-slate-900 mb-1">Crack: {grade.crack}</p>
+                        <p className="text-[10px] text-slate-500 font-medium">Action: {grade.action}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-8 text-[9px] text-slate-400 italic font-medium leading-relaxed">
+                    * Based on BS ISO 15686-7:2017 and HK Surveyors Practice.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
+        </section>
 
-          {/* Right Sidebar - High Density Specs */}
-          <div className="lg:col-span-4 space-y-6">
+        {/* Task Details Section - DOTA Style Information Density */}
+        <section id="tasks" className="py-32 bg-slate-50 border-y border-slate-200">
+          <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+            <div className="text-center mb-24 max-w-3xl mx-auto">
+              <h2 className="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em] mb-6">Protocols</h2>
+              <h3 className="text-5xl font-black text-slate-900 tracking-tighter mb-8">Submission & Metrics</h3>
+              <p className="text-slate-500 text-lg leading-relaxed font-medium">
+                CUBIT defines standardized data structures for fair evaluation across all participating models.
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-20">
+              <div className="space-y-8 p-12 bg-white rounded-[3.5rem] border border-slate-200">
+                <div className="inline-block px-4 py-1.5 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg">Task 1: Detection</div>
+                <p className="text-slate-500 font-medium leading-relaxed">
+                  Focuses on high-resolution bounding box localization. Each submission must contain category-specific .txt files in the following format:
+                </p>
+                <div className="p-8 bg-slate-50 rounded-2xl border border-slate-100">
+                  <pre className="text-[11px] font-mono text-slate-600 leading-relaxed overflow-x-auto">
+                    {`[imgname] [score] [xmin] [ymin] [xmax] [ymax]
+pavement_001 0.985 450 120 890 340
+pavement_001 0.742 1200 4500 1350 4800
+...`}
+                  </pre>
+                </div>
+                <div className="space-y-4">
+                  <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Challenge Rules</h5>
+                  <ul className="space-y-2 text-xs text-slate-600 font-medium">
+                    <li>• Images must not be resized below 1024x1024 during inference.</li>
+                    <li>• Results are evaluated using Pascal VOC AP@0.5 and COCO AP@0.5:0.95.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="space-y-8 p-12 bg-white rounded-[3.5rem] border border-slate-200">
+                <div className="inline-block px-4 py-1.5 bg-slate-950 text-white text-[10px] font-black uppercase tracking-widest rounded-lg">Task 2: InSeg & Quant</div>
+                <p className="text-slate-500 font-medium leading-relaxed">
+                  Focuses on pixel-accurate masks and physical quantification. Submissions should follow the COCO JSON format with an additional metric field.
+                </p>
+                <div className="p-8 bg-slate-50 rounded-2xl border border-slate-100">
+                  <pre className="text-[11px] font-mono text-slate-600 leading-relaxed overflow-x-auto">
+                    {`{
+  "image_id": 405,
+  "segmentation": [45.1, 89.2, ...],
+  "physical_metric": 0.42, // mm for cracks
+  "physical_unit": "mm"
+}`}
+                  </pre>
+                </div>
+                <div className="space-y-4">
+                  <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Quantification Metric</h5>
+                  <p className="text-xs text-slate-600 font-medium">
+                    Evaluated by Root Mean Square Error (RMSE) against ground-truth physical measurements.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Results Gallery - Visual Evidence */}
+        <section id="results" className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-40">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-10">
+            <div className="max-w-2xl">
+              <h2 className="text-5xl font-black text-slate-900 tracking-tighter leading-none mb-8">Scientific<br/><span className="text-blue-600 italic font-light text-4xl">Visual Evidence</span></h2>
+              <p className="text-slate-500 text-xl font-medium leading-relaxed">Direct evidence and quantitative insights from the CUBIT benchmark evaluations.</p>
+            </div>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+            {figures.map((fig, i) => (
+              <div key={i} className="group cursor-pointer">
+                <div className="aspect-4/3 relative rounded-[2.5rem] overflow-hidden bg-slate-50 mb-8 border border-slate-100 shadow-sm transition-all duration-700 group-hover:shadow-3xl group-hover:-translate-y-3">
+                  <Image 
+                    src={fig.src} 
+                    alt={fig.title} 
+                    fill 
+                    className="object-contain p-6 transition-transform duration-[1.5s] group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-slate-950/0 group-hover:bg-slate-950/20 transition-all flex items-center justify-center">
+                    <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 transition-all duration-500 shadow-2xl">
+                      <svg className="w-6 h-6 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </div>
+                  </div>
+                </div>
+                <h4 className="text-xl font-bold text-slate-900 mb-3 tracking-tight group-hover:text-blue-600 transition-colors">{fig.title}</h4>
+                <p className="text-slate-400 text-xs leading-relaxed font-medium line-clamp-2">{fig.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Global Impact Dashboard */}
+        <section className="py-32 bg-slate-50 border-y border-slate-100">
+          <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 text-center">
+            <h2 className="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em] mb-16">Global Impact</h2>
             
-            {/* Quick Stats - Paper Info */}
-            <div className="bg-slate-950 p-8 rounded-[2rem] text-white">
-              <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em] mb-6">Dataset Taxonomy</h4>
-              <div className="space-y-6">
-                {[
-                  { label: "Defect Categories", val: "Cracks, Spalling, Efflorescence, Exposed Rebar" },
-                  { label: "Data Modality", val: "High-Res RGB Imagery (4K/8K)" },
-                  { label: "Annotation Style", val: "Instance-level Masks (COCO Format)" },
-                  { label: "Spatial Metric", val: "Pixel-to-MM Ground Sample Distance (GSD)" }
-                ].map((item, i) => (
-                  <div key={i} className="space-y-1">
-                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{item.label}</p>
-                    <p className="text-xs font-bold leading-relaxed">{item.val}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <div className="inline-block p-12 bg-white rounded-[3rem] border border-slate-200 shadow-xl relative overflow-hidden group">
+              <div className="absolute top-0 inset-x-0 h-1.5 bg-blue-600"></div>
+              
+              <div className="flex flex-col items-center gap-10">
+                <div className="flex flex-col items-center">
+                  <span className="text-6xl font-black text-slate-900 tracking-tighter mb-2">
+                    {pageViews.toLocaleString()}
+                  </span>
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Total Researchers Reached</span>
+                </div>
 
-            {/* Download Hub */}
-            <div id="download" className="bg-white p-8 rounded-[2rem] shadow-xl border border-slate-200">
-              <h4 className="text-xs font-black text-slate-900 mb-6 uppercase tracking-widest">Download Center</h4>
-              <div className="space-y-3">
-                <a href="#" className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-blue-600 hover:text-white transition-all group">
-                  <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-blue-600 group-hover:bg-blue-500 group-hover:text-white">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/></svg>
+                <div className="relative w-full max-w-2xl aspect-2/1 bg-slate-200 rounded-[2.5rem] overflow-hidden group-hover:shadow-3xl transition-all duration-1000">
+                  <div className="absolute inset-0 flex items-center justify-center bg-[#1e293b] text-white/10">
+                    <svg className="w-full h-full p-12 opacity-20" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                    </svg>
+                    <div className="absolute inset-0 bg-linear-to-tr from-blue-600/20 to-transparent"></div>
+                    <div className="absolute bottom-6 right-6 px-4 py-1.5 bg-blue-600 rounded-lg text-[10px] font-black text-white tracking-[0.3em] uppercase shadow-lg">Live Tracker</div>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-[10px] font-black uppercase tracking-widest">Images (8.4GB)</p>
-                    <p className="text-[9px] text-slate-400 font-bold uppercase group-hover:text-blue-100 transition-colors">Google Drive Mirror</p>
-                  </div>
-                </a>
-                <a href="#" className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-blue-600 hover:text-white transition-all group">
-                  <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-blue-600 group-hover:bg-blue-500 group-hover:text-white">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-[10px] font-black uppercase tracking-widest">Annotations (240MB)</p>
-                    <p className="text-[9px] text-slate-400 font-bold uppercase group-hover:text-blue-100 transition-colors">JSON Format</p>
-                  </div>
-                </a>
-              </div>
-            </div>
+                </div>
 
-            {/* Visual Insights Box */}
-            <div className="bg-white p-8 rounded-[2rem] shadow-xl border border-slate-200">
-              <h4 className="text-xs font-black text-slate-900 mb-6 uppercase tracking-widest">Methodology Insights</h4>
-              <div className="grid grid-cols-2 gap-3">
-                {['framework', 'radar-compare', 'distribution-dataset', 'iou'].map((img) => (
-                  <div key={img} className="aspect-square relative rounded-xl overflow-hidden border border-slate-100 hover:ring-4 hover:ring-blue-600/10 transition-all cursor-pointer">
-                    <Image src={`/images/${img}.png`} alt={img} fill className="object-contain p-2" />
-                  </div>
-                ))}
+                <p className="max-w-lg text-sm text-slate-400 font-medium leading-relaxed">
+                  CUBIT Benchmark is being adopted by over {Math.max(12, Math.ceil(pageViews/12))} leading research groups in Unmanned Systems and Civil Engineering.
+                </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Global Impact Dashboard - Compact */}
-        <section className="max-w-7xl mx-auto px-6 py-20">
-          <div className="bg-white rounded-[2.5rem] p-12 border border-slate-200 shadow-xl grid md:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8">
-              <h2 className="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em]">Global Statistics</h2>
-              <div className="grid grid-cols-2 gap-10">
-                <div>
-                  <p className="text-4xl font-black text-slate-900 tracking-tighter">{pageViews.toLocaleString()}</p>
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">Total Requests</p>
-                </div>
-                <div>
-                  <p className="text-4xl font-black text-slate-900 tracking-tighter">48</p>
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">Research Teams</p>
-                </div>
-              </div>
-              <p className="text-xs text-slate-500 font-medium leading-relaxed max-w-sm">CUBIT is rapidly becoming the standard for UAV-based infrastructure inspection assessment worldwide.</p>
-            </div>
-            <div className="aspect-[2/1] relative bg-slate-950 rounded-2xl overflow-hidden group">
-              <div className="absolute inset-0 flex items-center justify-center text-white/10">
-                <svg className="w-full h-full p-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-              </div>
-              <div className="absolute bottom-4 right-4 bg-blue-600 text-white text-[8px] font-black px-3 py-1 rounded uppercase tracking-widest shadow-lg">Live Tracker</div>
-            </div>
-          </div>
-        </section>
-
-        {/* Citation & Footer - Professional Academic Look */}
-        <footer id="citation" className="bg-slate-900 text-white py-20 rounded-t-[4rem] mx-4">
-          <div className="max-w-7xl mx-auto px-10">
-            <div className="grid lg:grid-cols-12 gap-20 mb-20">
-              <div className="lg:col-span-8 space-y-10">
-                <h2 className="text-[10px] font-black text-blue-400 uppercase tracking-[0.5em]">Academic Attribution</h2>
-                <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10 font-mono text-[11px] text-slate-400 leading-relaxed overflow-x-auto">
+        {/* Citation Section */}
+        <section id="citation" className="py-40 bg-slate-950 rounded-t-[5rem] mx-4 sm:mx-8">
+          <div className="max-w-5xl mx-auto px-8 sm:px-12 text-center">
+            <h2 className="text-[10px] font-black text-blue-400 uppercase tracking-[0.5em] mb-20">Academic Attribution</h2>
+            <div className="space-y-12">
+              <div className="bg-white/5 border border-white/10 rounded-[3rem] p-12 relative text-left group hover:bg-white/10 transition-all">
+                <pre className="text-slate-400 text-sm font-mono overflow-x-auto whitespace-pre-wrap leading-relaxed">
 {`@article{zhao2024cubit,
   title={High-resolution infrastructure defect detection 
          dataset sourced by unmanned systems and 
          validated with deep learning},
-  author={Zhao, Benyun and Zhou, Xunkuai and Yang, Guidong 
-          and Wen, Junjie and Zhang, Jihan and Dou, Jia 
-          and Li, Guang and Chen, Xi and Chen, Ben M},
+  author={Zhao, Benyun and Zhou, Xunkuai and others},
   journal={Automation in Construction},
   volume={163},
   pages={105405},
-  year={2024},
-  publisher={Elsevier}
+  year={2024}
 }`}
-                </div>
-              </div>
-              <div className="lg:col-span-4 flex flex-col justify-end gap-10">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10">
-                    <svg className="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.082.821-.26.821-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 3.07 1.305 3.813.997.108-.775.182-1.305.29-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-                  </div>
-                  <a href="https://github.com/hyjcde" className="text-xs font-black uppercase tracking-widest hover:text-blue-500 transition-colors">GitHub Repository</a>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10">
-                    <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                  </div>
-                  <a href="mailto:benyunzhao@cuhk.edu.hk" className="text-xs font-black uppercase tracking-widest hover:text-blue-500 transition-colors">Contact PI</a>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col md:flex-row justify-between items-center pt-10 border-t border-white/5 text-[9px] font-black text-slate-500 uppercase tracking-widest">
-              <p>© 2026 CUBIT Challenge Group | CUHK Unmanned Systems Lab</p>
-              <div className="flex gap-10 mt-4 md:mt-0">
-                <a href="#" className="hover:text-blue-500">Privacy Policy</a>
-                <a href="#" className="hover:text-blue-500">Terms of Use</a>
+                </pre>
               </div>
             </div>
           </div>
-        </footer>
+        </section>
       </main>
+
+      <footer className="bg-slate-50 py-24 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-8 sm:px-12 flex flex-col md:flex-row justify-between items-center gap-12 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 bg-slate-900 rounded flex items-center justify-center text-white text-[10px]">C</div>
+            <span>© 2026 CUBIT Challenge Group | CUHK</span>
+          </div>
+          <div className="flex gap-16">
+            <a href="https://github.com/hyjcde" target="_blank" className="hover:text-blue-600 transition-colors">GitHub</a>
+            <a href="https://www.cuhk.edu.hk" target="_blank" className="hover:text-blue-600 transition-colors font-black">CUHK.EDU.HK</a>
+          </div>
+        </div>
+      </footer>
 
       {/* Auth Modal Overlay */}
       {isLoginOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-          <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onClick={() => { setIsLoginOpen(false); setError(''); }}></div>
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-6">
+          <div 
+            className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
+            onClick={() => { setIsLoginOpen(false); setError(''); }}
+          ></div>
           <div className="relative bg-white rounded-[3rem] w-full max-w-md p-12 shadow-3xl animate-in fade-in zoom-in duration-300">
             <div className="text-center mb-10">
-              <h4 className="text-3xl font-black text-slate-900 tracking-tighter mb-2">{isRegister ? 'Create Account' : 'Welcome Back'}</h4>
-              <p className="text-slate-400 text-sm font-medium">{isRegister ? 'Join the CUBIT Community' : 'Sign in to Participate'}</p>
+              <h4 className="text-3xl font-black text-slate-900 tracking-tighter mb-2">
+                {isRegister ? 'Create Account' : 'Welcome Back'}
+              </h4>
+              <p className="text-slate-400 text-sm font-medium">
+                {isRegister ? 'Join the CUBIT Benchmark Community' : 'Sign in to CUBIT Challenge Server'}
+              </p>
             </div>
+            
             <form onSubmit={handleAuth} className="space-y-6">
-              {isRegister && <input type="text" placeholder="Full Name" required className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-600 transition-all" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />}
-              <input type="email" placeholder="Email Address" required className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-600 transition-all" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
-              <input type="password" placeholder="Password" required className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-600 transition-all" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} />
-              {error && <p className="text-red-500 text-[10px] font-black text-center">{error}</p>}
-              <button className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl hover:bg-blue-700 transition-all">Continue</button>
+              {isRegister && (
+                <input 
+                  type="text" 
+                  placeholder="Full Name" 
+                  required
+                  className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                />
+              )}
+              <input 
+                type="email" 
+                placeholder="Email" 
+                required
+                className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+              />
+              <input 
+                type="password" 
+                placeholder="Password" 
+                required
+                className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                value={formData.password}
+                onChange={(e) => setFormData({...formData, password: e.target.value})}
+              />
+              
+              {error && <p className="text-red-500 text-xs font-bold text-center">{error}</p>}
+              
+              <button className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl hover:bg-blue-700 transition-all">
+                {isRegister ? 'Register' : 'Sign In'}
+              </button>
             </form>
-            <p className="mt-10 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-              {isRegister ? 'Already registered?' : 'Need an account?'} <span className="text-blue-600 cursor-pointer ml-2" onClick={() => setIsRegister(!isRegister)}>{isRegister ? 'Sign In' : 'Register'}</span>
-            </p>
+
+            <div className="mt-8 text-center">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                {isRegister ? 'Already have an account?' : "Don't have an account?"} 
+                <span 
+                  className="text-blue-600 cursor-pointer ml-2"
+                  onClick={() => { setIsRegister(!isRegister); setError(''); }}
+                >
+                  {isRegister ? 'Sign In' : 'Register'}
+                </span>
+              </p>
+            </div>
           </div>
         </div>
       )}
