@@ -12,6 +12,18 @@ export default function Home() {
   const [pageViews, setPageViews] = useState(0);
   const [activeTask, setActiveTask] = useState('det');
 
+  // 动态加载 RevolverMaps 脚本
+  useEffect(() => {
+    const container = document.getElementById('revolver-map-container');
+    if (container && container.childNodes.length === 0) {
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = "//rf.revolvermaps.com/0/0/6.js?i=5vy0v6v6v6v&m=7&c=e63100&cr1=ffffff&f=arial&l=0&bv=90&lx=-420&ly=420&hi=20&he=7&hc=a8ddff&rs=80";
+      script.async = true;
+      container.appendChild(script);
+    }
+  }, []);
+
   // 页面加载时检查登录状态和获取访问量
   useEffect(() => {
     fetch('/api/auth/me')
@@ -36,16 +48,20 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
+      
       const data = await res.json();
+      
       if (res.ok) {
         setUser(data.user);
         setIsLoginOpen(false);
         setFormData({ email: '', password: '', name: '' });
       } else {
         setError(data.error || '认证失败');
+        console.error('Auth Error Details:', data.details);
       }
     } catch (err) {
-      setError('服务器错误');
+      setError('网络或服务器异常，请检查控制台');
+      console.error('Fetch Error:', err);
     }
   };
 
@@ -499,7 +515,7 @@ pavement_001 0.742 1200 4500 1350 4800
                 </pre>
               </div>
             </div>
-          </div>
+        </div>
         </section>
       </main>
 

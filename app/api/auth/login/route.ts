@@ -19,10 +19,17 @@ export async function POST(request: Request) {
 
         // 设置 Cookie
         const cookieStore = await cookies();
-        cookieStore.set('session', session, { expires, httpOnly: true });
+        cookieStore.set('session', session, { 
+            expires, 
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/' 
+        });
 
         return NextResponse.json({ user: { email: user.email, name: user.name } });
-    } catch (error) {
-        return NextResponse.json({ error: '登录失败' }, { status: 500 });
+    } catch (error: any) {
+        console.error('Login error:', error);
+        return NextResponse.json({ error: '登录失败', details: error.message }, { status: 500 });
     }
 }
