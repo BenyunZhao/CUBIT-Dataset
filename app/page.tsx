@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -451,14 +451,24 @@ pavement_001 0.742 1200 4500 1350 4800
                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Total Researchers Reached</span>
                 </div>
 
-                <div className="relative w-full max-w-2xl aspect-2/1 bg-slate-200 rounded-[2.5rem] overflow-hidden group-hover:shadow-3xl transition-all duration-1000">
-                  <div className="absolute inset-0 flex items-center justify-center bg-[#1e293b] text-white/10">
-                    <svg className="w-full h-full p-12 opacity-20" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                    </svg>
-                    <div className="absolute inset-0 bg-linear-to-tr from-blue-600/20 to-transparent"></div>
-                    <div className="absolute bottom-6 right-6 px-4 py-1.5 bg-blue-600 rounded-lg text-[10px] font-black text-white tracking-[0.3em] uppercase shadow-lg">Live Tracker</div>
+                <div className="relative w-full max-w-2xl aspect-2/1 bg-slate-900 rounded-[2.5rem] overflow-hidden group-hover:shadow-3xl transition-all duration-1000 border border-slate-800 shadow-2xl">
+                  {/* 嵌入真实的 3D 旋转地球挂件 (RevolverMaps) */}
+                  <div className="absolute inset-0 flex items-center justify-center p-4">
+                    <div 
+                      className="w-full h-full flex items-center justify-center"
+                      dangerouslySetInnerHTML={{ __html: `
+                        <script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5vy0v6v6v6v&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+                      ` }}
+                    />
                   </div>
+                  
+                  {/* 装饰性元素 */}
+                  <div className="absolute inset-0 bg-linear-to-t from-slate-950/40 to-transparent pointer-events-none"></div>
+                  <div className="absolute top-6 left-6 flex items-center gap-2">
+                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                    <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">Live Global Feed</span>
+                  </div>
+                  <div className="absolute bottom-6 right-6 px-4 py-1.5 bg-blue-600 rounded-lg text-[10px] font-black text-white tracking-[0.3em] uppercase shadow-lg">Network Activity</div>
                 </div>
 
                 <p className="max-w-lg text-sm text-slate-400 font-medium leading-relaxed">
