@@ -1,0 +1,2356 @@
+--- Page 1 (CUBIT-Inseg.pdf) ---
+From Instance Segmentation to Physical Quantification: A
+High-Resolution UAV Dataset for Façade Defect Assessment
+Benyun Zhaoa, Jihan Zhanga, Guidong Yanga, Yijun Huanga, Lei Leia, Xi Chena,∗and
+Ben M. Chena
+aDepartment of Mechanical and Automation Engineering, The Chinese University of Hong Kong, Shatin District, N.T., Hong Kong
+A R T I C L E I N F O
+Keywords:
+Infrastructure Inspection
+Building Inspection
+Defect Detection
+Unmanned Aerial Vehicle
+Dataset
+A B S T R A C T
+Visual inspection of civil infrastructure, particularly building façades, has long been an essential yet
+labor-intensive and high-risk task. Recent advances in unmanned aerial vehicle (UAV) systems and
+deep learning–based defect segmentation have substantially improved the efficiency and safety of
+visual inspection. However, despite significant progress in pixel-level defect localization, most existing
+approaches remain limited to visual detection, providing only 2D appearance cues without the metric
+or geometric information required for physical defect modeling. As a result, current segmentation
+outputs cannot reliably quantify severity indicators—such as crack width, crack propagation, or
+spalling volume—which fundamentally restricts their value for engineering assessment, maintenance
+prioritization, and automated decision-making. This limitation is amplified by the scarcity of high-
+quality datasets that not only offer pixel-level annotations but also support modeling defects in
+a physically meaningful, scalable manner. To address these gaps, this study introduces CUBIT-
+InSeg, a high-resolution UAV-based façade defect dataset designed to advance the field from pixel-
+level segmentation toward physically grounded defect modeling. The dataset contains 6,996 high-
+definition images captured from diverse real-world building scenarios using a customised high-
+resolution UAV platform. CUBIT-InSeg focuses on two structurally critical defect types—cracks
+and spalling—chosen for their prevalence and strong relevance to severity assessment under engi-
+neering standards. Each image is annotated with precise instance-level masks to support geometric
+reconstruction and quantitative measurement. We conduct extensive benchmark evaluations on more
+than 18 state-of-the-art segmentation models, providing a comprehensive performance analysis and
+establishing a strong baseline for subsequent modeling tasks. Furthermore, zero-shot deployments on
+real-world building façades demonstrate the practical robustness and applicability of models trained
+on CUBIT-InSeg. By bridging the gap between visual segmentation and physical defect modeling,
+this work provides a foundational dataset and benchmark that pave the way for scalable, autonomous,
+and quantitatively informed façade defect assessment.
+1. Introduction
+1
+Civil infrastructure is vulnerable to damage caused by
+2
+a multitude of factors such as weather impacts, external
+3
+loads, structural deterioration, and poor design. Periodic
+4
+infrastructure inspections are crucial for remaining safe and
+5
+functional infrastructures. Currently, non-destructive testing
+6
+(NDT) devices like optical cameras [] [1], laser scanners
+7
+[2], impact echo [3], and ground-penetrating radar [4] are
+8
+used for manual defect detections in civil infrastructure.
+9
+Although human visual inspection is the most flexible and
+10
+feasible method for preliminary diagnosis, it is subjective,
+11
+time-consuming, laborious, and error-prone. It can also pose
+12
+significant health and safety risks to human inspectors, espe-
+13
+cially when inspecting high-rise buildings and large spaces.
+14
+To overcome these challenges, robotic platforms like un-
+15
+manned aerial vehicles (UAVs) and unmanned ground ve-
+16
+hicles (UGVs) [5,6] have been developed to achieve more
+17
+accurate and efficient infrastructure inspections, from data
+18
+collection and defect analysis. These unmanned platforms
+19
+integrating computer vision techniques help achieve better
+20
+inspection results.
+21
+xichen002@cuhk.edu.hk ( Xi Chen)
+1CUBIT stand for CUHK Building Information Technology.
+In recent years, automatic image processing technologies
+22
+driven by deep learning methods [7–10] have achieved re-
+23
+markable breakthroughs, demonstrating substantial advan-
+24
+tages in both efficiency and effectiveness compared with tra-
+25
+ditional image processing techniques [11,12]. Among these,
+26
+instance segmentation—a task requiring pixel-level under-
+27
+standing—plays a pivotal role not only in achieving pre-
+28
+cise defect localization but also in enabling quantitative
+29
+defect analysis, thereby showcasing the superior capability
+30
+of deep learning in tackling complex visual challenges.
+31
+Consequently, an increasing number of researchers in the
+32
+architecture, engineering, and construction (AEC) domain
+33
+[13,14] have shifted toward deep learning–based segmen-
+34
+tation approaches for the inspection and management of
+35
+infrastructure defects.
+36
+However, deep learning algorithms are notoriously data-
+37
+hungry, demanding large, high-quality, and domain-specific
+38
+datasets tailored to the characteristics of building defect
+39
+segmentation tasks. Most existing segmentation models are
+40
+trained on general-purpose open-source datasets such as MS
+41
+COCO [17], which feature abundant images, diverse object
+42
+categories, and complex scene compositions. In contrast,
+43
+the collection and pixel-level annotation of defect-related
+44
+images in civil infrastructure pose unique challenges due
+45
+1
+
+--- Page 2 (CUBIT-Inseg.pdf) ---
+Figure 1: The overall pipeline of the our pixel-to-physical
+modeling for infrastructure defects.
+to the complexity and dynamic nature of construction en-
+46
+vironments. As a result, there remains a significant scarcity
+47
+of well-curated, instance-level segmentation datasets specif-
+48
+ically designed for the building and infrastructure sector.
+49
+Despite the rapid progress of AI-driven visual inspection
+50
+for civil infrastructure, existing UAV- or camera-based ap-
+51
+proaches largely focus on detecting or segmenting surface-
+52
+level defects without providing the geometric or physical
+53
+attributes required for engineering-grade assessment. As
+54
+highlighted by recent studies, the community has reached
+55
+a turning point where defect modeling—rather than mere
+56
+defect detection—is becoming essential for structural health
+57
+monitoring [1]. Purely image-based recognition, even at
+58
+pixel-level precision, cannot convey crucial physical infor-
+59
+mation such as defect dimensions, depth, or volumetric loss,
+60
+which are fundamental for quantifying severity, prioritising
+61
+maintenance, and complying with engineering standards.
+62
+Consequently, systems relying solely on 2D visual cues
+63
+struggle to support downstream decision-making and can-
+64
+not provide inspectors with actionable parameters linked to
+65
+structural integrity or deterioration mechanisms.
+66
+To address this gap, a growing body of research has
+67
+begun exploring more sophisticated forms of defect mod-
+68
+eling. For instance, pixel-level reconstruction combined
+69
+with photogrammetric texture mapping has been used to
+70
+derive 3D crack representations [2]. Volumetric assess-
+71
+ment using depth-enhanced imaging further illustrates the
+72
+potential of geometric cues for evaluating damage extent
+73
+[3]. More recently, methods leveraging 3D point clouds
+74
+and dynamic graph convolutional networks have achieved
+75
+promising results in constructing as-inspected defect models
+76
+that capture both geometric structure and semantic attributes
+77
+[4]. Alongside these developments, advanced segmenta-
+78
+tion approaches—including SAM-based models [5] and
+79
+weakly supervised or scribble-annotation-based pipelines
+80
+[6]—demonstrate notable progress toward generalisable
+81
+and annotation-efficient defect understanding. Furthermore,
+82
+deep learning frameworks integrating appearance, texture,
+83
+and material characteristics show potential for more accurate
+84
+defect quality assessment [7].
+85
+However, a persistent limitation remains: most publicly
+86
+available datasets are exclusively image-based and lack the
+87
+physical metrics necessary for accurate defect modeling.
+88
+Whether designed for detection, segmentation, or instance-
+89
+level labeling, existing datasets typically provide only RGB
+90
+visual information without corresponding 3D geometry, cal-
+91
+ibrated physical scales, or standardized severity labels. This
+92
+absence of physically grounded information hampers real-
+93
+world deployment in several ways: (i) defect severity cannot
+94
+be quantified due to the absence of metric scale; (ii) algorith-
+95
+mic generalization is limited, particularly when transferring
+96
+from curated datasets to large-scale façade environments;
+97
+and (iii) autonomous UAV operation becomes difficult, as
+98
+the lack of metric cues impedes planning, standoff control,
+99
+and automated follow-up inspection.
+100
+These limitations underscore the urgent need for high-
+101
+resolution, physically meaningful, UAV-derived defect datasets 102
+that support not only visual recognition but also the model-
+103
+ing, measurement, and interpretation of defects within the
+104
+context of engineering standards. This motivation directly
+105
+leads to the key contributions of our work: (i) a UAV-
+106
+acquired, high-resolution façade defect dataset that includes
+107
+both common and severe defects—not limited to cracks
+108
+but also covering spalling, which is emphasized in ISO-
+109
+based severity indicators; (ii) extensive benchmarks includ-
+110
+ing two cross-domain datasets to evaluate robustness and
+111
+transferability; and (iii) a quantitative zero-shot evaluation
+112
+on real-world scenes demonstrating the deployability of the
+113
+proposed system in autonomous inspection scenarios.
+114
+2. Related Work
+115
+With the rapid advance of UAV-based inspection plat-
+116
+forms and deep learning techniques, research in civil infras-
+117
+tructure monitoring has moved beyond basic defect detec-
+118
+tion toward a more ambitious goal: modeling defects in a
+119
+physically meaningful manner. While earlier systems mainly
+120
+focused on identifying cracks or spalling regions from im-
+121
+ages [8, 9], an increasing body of work now emphasises the
+122
+need to extract geometric, metric, and structural attributes of
+123
+defects rather than treating them solely as 2D visual patterns.
+124
+This shift is reflected in several recent research direc-
+125
+tions. One prominent line of work integrates multi-view
+126
+photogrammetry or depth-enhanced imaging to reconstruct
+127
+cracks or damaged areas in three-dimensional space, en-
+128
+abling volumetric or shape-based assessment [2, 3]. Sim-
+129
+ilarly, studies leveraging 3D point clouds and graph-based
+130
+semantic segmentation have demonstrated the feasibility of
+131
+building as-inspected defect models that encode both geom-
+132
+etry and material characteristics of concrete surfaces [4]. Be-
+133
+yond purely image-driven approaches, researchers have also
+134
+explored aligning UAV imagery with Building Information
+135
+Models (BIM) to achieve defect-level reconstruction within
+136
+semantically rich building geometry [10]. Recent develop-
+137
+ments further illustrate the integration of UAV sensing, AI,
+138
+and GeoBIM into high-precision digital twin frameworks
+139
+that directly embed defect information into geometric and
+140
+2
+
+--- Page 3 (CUBIT-Inseg.pdf) ---
+Noisy Background 
+for Targets
+Low-texture
+Background for Target
+High Local Contrast 
+under Light and Shadow
+Figure 2: Sample of our proposed CUBIT-InSeg dataset.
+lifecycle management systems [11]. Collectively, these stud-
+141
+ies highlight a clear trajectory: the field is transitioning from
+142
+what a defect looks like to what it physically means for
+143
+structural safety and maintenance planning.
+144
+However, despite rapidly growing interest in defect mod-
+145
+eling, the majority of existing datasets remain limited to
+146
+image-only crack or spalling annotations—typically at the
+147
+bounding GT-Box or pixel level—without providing the
+148
+geometric, metric, or severity-related information necessary
+149
+for physically grounded modeling. As recent reviews point
+150
+out [1], the absence of datasets capable of supporting defect
+151
+geometry reconstruction or physical-scale estimation has
+152
+become a key barrier for the development and evaluation of
+153
+modeling-oriented algorithms. Moreover, the lack of high-
+154
+resolution UAV datasets capturing diverse façade defects
+155
+under real operational conditions further restricts the robust-
+156
+ness and generalization of such methods.
+157
+2.1. Comparison with Existing Infrastructure
+158
+Defect Segmentation Datasets
+159
+To highlight the characteristics of the proposed CUBIT-
+160
+InSeg dataset, we compare it with existing infrastructure
+161
+defect segmentation datasets in Table 1. Most publicly avail-
+162
+able datasets primarily target road and pavement scenar-
+163
+ios, resulting in limited diversity in defect types, imaging
+164
+perspectives, and environmental conditions. Road-focused
+165
+datasets such as GAPs384 [12], EdmCrack600 [13], and
+166
+GAPs-10m [14] provide pixel-level annotations but are re-
+167
+stricted to ground-level imaging. Highway-Crack [15] is the
+168
+3
+
+--- Page 4 (CUBIT-Inseg.pdf) ---
+Table 1
+The Comparison between Other Unmanned System-captured Defects Segmentation Dataset with our CUBIT-InSeg
+Dataset
+Image Volume
+Resolution
+Data Collection Platform
+Defect Type
+Infrastructure
+Task Type
+GAPs384 [12]
+384
+1920 × 1080
+Ground Vehicle
+Crack
+Pavement
+Pixel Level
+GAPs-10m [14]
+20
+5030 × 11505
+Ground Vehicle
+Crack
+Pavement
+Pixel Level
+EdmCrack600 [13]
+600
+1920 × 1080
+Ground Vehicle
+Crack
+Pavement
+Pixel Level
+Highway-Crack [15]
+4,118
+512 × 512
+Unmanned Aerial Vehicle
+Crack
+Highway
+Pixel Level
+Crack-Seg [16]
+4,029
+416 × 416
+Ground Vehicle
+Crack
+Building
+Pixel Level
+Pavement
+UAV75 [17]
+75
+512 × 512
+Unmanned Aerial Vehicle
+Crack
+Building
+Pixel Level
+CUBIT-InSeg (Ours)
+6,996
+𝟒𝟖𝟎𝟎× 𝟑𝟐𝟎𝟎
+Unmanned Aerial Vehicle
+Crack
+Building
+Instance Level
+62,178 instances
+Spalling
+only UAV-based dataset in this group, containing 4,118 post-
+169
+earthquake highway images; however, it remains constrained
+170
+to roadway surfaces.
+171
+For building facade defects, publicly available datasets
+172
+are extremely limited. Crack-Seg [16] includes 4,029 images
+173
+covering pavements and partial building scenes, yet lacks
+174
+true aerial viewpoints and the high resolution required for
+175
+UAV inspection scenarios. UAV75 [17] provides UAV im-
+176
+agery but contains only 75 low-resolution samples, making
+177
+it unsuitable for training modern deep segmentation models.
+178
+Moreover, existing datasets overwhelmingly focus solely
+179
+on cracks and do not include more severe facade defects
+180
+such as spalling, which are critical for structural safety.
+181
+According to established building pathology standards1 and
+182
+professional inspection guidelines issued by the Hong Kong
+183
+Buildings Department2 and the Hong Kong Institute of Sur-
+184
+veyors, spalling of the concrete cover is classified as a high-
+185
+risk defect: it is commonly induced by prolonged moisture
+186
+exposure, oxidation of reinforcement, and the progressive
+187
+widening of pre-existing cracks, and may lead to detachment
+188
+of concrete or even localized collapse if left unattended.
+189
+Guided by these standards and by our prior defect taxonomy
+190
+studies, CUBIT-InSeg explicitly includes spalling—along
+191
+with cracks—to better reflect the defect types of greatest
+192
+concern in real-world facade safety assessment.
+193
+Another limitation observed across these datasets is their
+194
+generally low image resolution and low defect density: most
+195
+images contain only a single defect instance, which does not
+196
+reflect real-world UAV inspection conditions where multi-
+197
+ple, spatially distributed defects commonly appear within the
+198
+same facade view. Our CUBIT-InSeg addresses the afore-
+199
+mentioned limitations by providing high-resolution UAV
+200
+imagery, diverse defect types (crack and spalling), complex
+201
+multi-instance scenarios, and realistic aerial inspection per-
+202
+spectives, thereby offering a comprehensive and practically
+203
+relevant benchmark for building defect segmentation.
+204
+2.2. Path Planning for Data Collection
+205
+In this study, we develop an equal-distance UAV imaging
+206
+framework that enables high-quality data acquisition for
+207
+1British Standards Institution standards publication about "building
+and constructed assets – service life planning" BS ISO 15686-7:2017
+2Volume 1: Pre-1980 Residential&Composite Buildings in Hong Kong
+digital-twin-based façade defect modeling. The key objec-
+208
+tive is to ensure that each image is captured from a pre-
+209
+scribed, nearly constant standoff distance to the building
+210
+surface, so that pixel-level defect segmentation can be con-
+211
+sistently linked to physical dimensions (e.g., crack width,
+212
+spalling area and depth) in the reconstructed 3D model. Our
+213
+framework extends recent explore–then–exploit multi-UAV
+214
+coverage schemes for infrastructure inspection and recon-
+215
+struction [18, 19], and integrates them with depth-aware
+216
+surface modeling, equal-distance viewpoint generation, and
+217
+DT updating for defect-aware asset management.
+218
+We adopt an explore–then–exploit paradigm similar to
+219
+recent hierarchical multi-UAV frameworks for building in-
+220
+spection. During the exploration stage, each UAV performs
+221
+depth-visual SLAM to estimate its six-degree-of-freedom
+222
+pose and incrementally reconstruct a dense point cloud of
+223
+the façade and nearby obstacles. The environment is discre-
+224
+tised into a 3D occupancy grid, where each voxel stores (i)
+225
+occupancy probability, (ii) distance to the nearest obstacle,
+226
+and (iii) a reconstructability score.
+227
+The reconstructability is computed by combining stereo-
+228
+geometry and light-field principles: voxels that can be ob-
+229
+served from multiple viewpoints with favourable parallax
+230
+angles and sufficient field-of-view coverage receive higher
+231
+scores, while voxels that are too close to obstacles or outside
+232
+the effective sensing range are penalised. This results in a
+233
+density map 𝑅(𝐩) that reflects both the reconstructability of
+234
+the façade and safety margins around obstacles.
+235
+Let 𝑊
+⊂ℝ3 denote the workspace, 𝐵the building
+236
+volume, and {𝐬𝑘} the set of surface points of the façade
+237
+estimated from the depth-based SLAM. The density map is
+238
+initialised using a coarse bounding box of 𝐵and is iteratively
+239
+updated as more points are observed.
+240
+To coordinate multiple UAVs, we employ a Voronoi-
+241
+based spatial deployment strategy inspired by distributed
+242
+coverage control. Let 𝑃(𝑡) = [𝐩1(𝑡), … , 𝐩𝑛(𝑡)] be the UAV
+243
+positions at time 𝑡. The workspace 𝑊is partitioned into
+244
+non-overlapping Voronoi cells 𝑉𝑖(𝑡) such that each UAV 𝑖
+245
+is responsible for coverage within its own cell. The density-
+246
+weighted coverage cost
+247
+𝐻(𝑃) =
+𝑛
+∑
+𝑖=1 ∫𝑉𝑖
+‖𝐩−𝐩𝑖‖2𝑅(𝐩) d𝐩
+(1)
+4
+
+--- Page 5 (CUBIT-Inseg.pdf) ---
+is minimised by a gradient-descent control law that drives
+248
+the UAVs towards a centroidal Voronoi tessellation. This
+249
+yields a load-balanced spatial deployment where each UAV
+250
+converges to the “best” region of the façade in terms of
+251
+reconstructability and safety.
+252
+To guarantee collision avoidance, we follow the hyperplane-
+253
+based construction of safe convex corridors between UAVs
+254
+and obstacles. The Voronoi cells are intersected with these
+255
+corridors to ensure that the motion of each UAV remains
+256
+within a collision-free region while the global coverage cost
+257
+is reduced.
+258
+Once the exploration stage converges and a sufficiently
+259
+accurate façade surface model is obtained, we switch to the
+260
+exploitation stage to generate equal-distance viewpoints for
+261
+high-quality imaging and defect modeling. For each surface
+262
+point 𝐬𝑘with outward normal 𝐧𝑘, we define a desired camera
+263
+position
+264
+𝐯𝑘= 𝐬𝑘+ 𝑑target 𝐧𝑘,
+(2)
+where 𝑑target is the prescribed standoff distance, chosen
+265
+based on camera field-of-view, required ground-sample dis-
+266
+tance (GSD) for defect segmentation, and safety require-
+267
+ments.
+268
+To avoid redundancy, the façade is first discretised into
+269
+small patches (e.g., in the (𝑢, 𝑣) parameter space of the
+270
+surface), and one or several viewpoints are generated per
+271
+patch such that: (i) the angle between the viewing direction
+272
+and the surface normal is within a specified bound, (ii) the
+273
+overlap between neighbouring images exceeds a minimum
+274
+threshold, and (iii) the viewpoints lie within the collision-
+275
+free corridors and do not violate minimum distance-to-
+276
+obstacle constraints. This procedure yields a set of candidate
+277
+equal-distance viewpoints = {𝐯1, … , 𝐯𝑁𝑣} for each UAV.
+278
+After viewpoint generation, the viewpoints assigned to
+279
+each UAV are further partitioned into capacity-constrained
+280
+subregions by applying a capacity-constrained Voronoi tes-
+281
+sellation inside its working cell. The capacity of each sub-
+282
+region is defined in terms of (i) the number of viewpoints
+283
+and (ii) the estimated travel cost, which reflects the limited
+284
+endurance of each UAV.
+285
+For each subregion, we formulate a trajectory-based
+286
+travelling salesman problem (TSP): the edges between view-
+287
+points are weighted by collision-free path lengths obtained
+288
+with an A* or kinodynamic planner in the occupancy map.
+289
+Solving the TSP for each subregion yields a set of short,
+290
+feasible routes that visit all viewpoints while minimising
+291
+inspection time.
+292
+The resulting routes are then converted into an automatic
+293
+flight plan by exporting time-parameterised waypoints (po-
+294
+sition, yaw, and desired camera trigger events) in the format
+295
+required by the UAV autopilot (e.g., MAVLink mission file).
+296
+In this way, the proposed methodology extends existing
+297
+coverage-control algorithms from “high-level exploration”
+298
+to a fully integrated, DT-ready automatic route planner for
+299
+equal-distance façade imaging.
+300
+(b) Scatter Plot of Object Position Distribution
+(a) Proportion of Defect Categories 
+Figure 3: (a) Distribution of annotated bounding box sizes for
+defects, (b) Distribution of sizes for sampled non-overlapping
+background bounding boxes.
+2.3. Statistics and Target Position Distribution
+301
+Figure 3 presents the statistical summary and spatial
+302
+distribution of defect instances in the CUBIT-InSeg dataset.
+303
+Among the 6,996 images, a total of 62,187 annotated targets
+304
+are included, of which crack accounts for 51,865 instances
+305
+(83%) and spalling for 10,322 instances (17%), as shown
+306
+in Fig. 3(b). This imbalance highlights the natural rarity
+307
+of spalling in real infrastructure scenes. Although less fre-
+308
+quently observed, spalling represents a more severe façade
+309
+defect with higher safety risks, underscoring the need for
+310
+increased attention and dedicated data collection despite its
+311
+lower occurrence.
+312
+Beyond instance counts, the spatial distribution of tar-
+313
+gets is another critical factor in evaluating an instance seg-
+314
+mentation dataset. The placement of defects within images
+315
+influences a model’s spatial awareness, which represents its
+316
+ability to recognize objects across different locations, and
+317
+directly affects robustness to target offset or positional shifts.
+318
+In practical UAV inspection scenarios, defects often appear
+319
+sparsely and unpredictably across the façade. Models trained
+320
+on datasets with well-distributed targets are therefore more
+321
+capable of detecting defects located near image borders, in
+322
+corners, or in unconventional positions. Figure 3(a) visual-
+323
+izes the scatter plot of ground-truth bounding-box centers
+324
+for all defect instances. The distribution is reasonably uni-
+325
+form across the image plane, with a moderate concentration
+326
+near the central region: approximately 63% of all targets
+327
+(39,078 instances) fall within the normalized range [𝑥, 𝑦] ∈
+328
+{0.5±0.175}. Such a distribution ensures that models trained
+329
+on our CUBIT-InSeg dataset develop strong spatial gen-
+330
+eralization capabilities and exhibit higher robustness when
+331
+deployed in real-world UAV inspection scenarios.
+332
+2.4. Foreground and Background Box Sizes
+333
+To further characterize the geometric variability of
+334
+CUBIT-InSeg, Fig. 4(a) illustrates the size distribution of
+335
+ground-truth defect bounding boxes. The defects span an
+336
+exceptionally wide scale range: crack instances form thin,
+337
+elongated structures with short sides sometimes below 5
+338
+pixels, whereas spalling regions may exceed 4800 pixels
+339
+along their longer dimension. The strong concentration of
+340
+points near the lower boundary of the "Smaller side" axis
+341
+reflects the high anisotropy and extreme slenderness of
+342
+cracks, while the marginal histograms reveal a long-tailed
+343
+5
+
+--- Page 6 (CUBIT-Inseg.pdf) ---
+(b) Background Box Sizes
+(a) Defect Targets Foreground Box Sizes
+Figure 4: (a) Distribution of annotated bounding box sizes for
+defects, (b) Distribution of sizes for sampled non-overlapping
+background bounding boxes.
+distribution covering both microscopic and very large facade
+344
+defects. This pronounced scale diversity poses a significant
+345
+challenge for both detection and segmentation.
+346
+Fig. 4(b) shows the distribution of background boxes,
+347
+which are randomly sampled non-defect patches used as a
+348
+reference for contrastive analysis. These background patches
+349
+are intentionally constrained to moderate sizes so that they
+350
+remain representative of local non-defect regions. The empty
+351
+region in the lower-left corner is expected: background
+352
+boxes smaller than 20 pixels on either side are excluded,
+353
+corresponding to the 20-pixel receptive field induced by
+354
+the 32× downsampling operation (P5-stage) in common
+355
+instance segmentation models (input size 640 / 32 = 20).
+356
+Patches below this scale do not constitute meaningful se-
+357
+mantic context for the model and are therefore omitted.
+358
+Compared with the highly heterogeneous foreground dis-
+359
+tribution, the background boxes exhibit a more compact
+360
+and uniform pattern, highlighting the intrinsic difficulty of
+361
+detecting tiny cracks that may occupy less than 0.01% of the
+362
+image while simultaneously handling large-scale structural
+363
+defects. Together, these characteristics underscore the geo-
+364
+metric richness and real-world complexity embodied in the
+365
+CUBIT-InSeg dataset.
+366
+2.5. Physically Based Defect Measurement from
+367
+Pixel-Level Segmentations
+368
+Given the equal-distance UAV imaging and automatic
+369
+flight planning strategy described in the previous subsec-
+370
+tion, all façade images in CUBIT-InSeg are captured at a
+371
+prescribed, nearly constant standoff distance 𝑑target from the
+372
+building surface. This imaging geometry enables pixel-level
+373
+defect segmentations to be directly converted into physically
+374
+meaningful measurements, which are later used for DT-
+375
+based defect quantification with the workflow in Fig. 5.
+376
+Let 𝐼𝑖denote the 𝑖-th UAV image captured at distance
+377
+𝑑target with camera focal length 𝑓and pixel pitch 𝛿𝑝(physical
+378
+size of one pixel on the sensor). Under the pinhole camera
+379
+model, the ground-sample distance (GSD) on the façade
+380
+plane can be approximated as
+381
+GSD =
+𝑑target
+𝑓
+𝛿𝑝,
+(3)
+which, thanks to the equal-distance imaging strategy, is
+382
+assumed to be approximately constant across all images and
+383
+within each façade patch. Consequently, one pixel corre-
+384
+sponds to a fixed physical length GSD on the façade, and an
+385
+axis-aligned pixel square relates to a physical area of GSD2.
+386
+Using the instance-level segmentation model trained on
+387
+CUBIT-InSeg, each image 𝐼𝑖is associated with a set of
+388
+defect instances
+389
+𝑖= {Ω(𝑘)
+𝑖}𝑁𝑖
+𝑘=1,
+where Ω(𝑘)
+𝑖
+⊂ℤ2 denotes the pixel set of the 𝑘-th defect
+390
+instance (either crack or spalling) in image 𝐼𝑖.
+391
+For crack-type instances, we first compute a skeletonised
+392
+representation to decouple crack length and width. Let Γ(𝑘)
+𝑖
+393
+be the skeleton pixels of instance Ω(𝑘)
+𝑖, extracted by a stan-
+394
+dard thinning algorithm, and let 𝐭(𝐩) be the unit tangent
+395
+direction along the skeleton at pixel 𝐩∈Γ(𝑘)
+𝑖. The corre-
+396
+sponding normal direction is
+397
+𝐧⟂(𝐩) = 𝐑90◦𝐭(𝐩),
+where 𝐑90◦rotates a 2D vector by 90◦.
+398
+Crack width. For each skeleton pixel 𝐩, we count the
+399
+number of consecutive crack pixels along 𝐧⟂(𝐩) that remain
+400
+inside Ω(𝑘)
+𝑖:
+401
+𝑁⟂(𝐩) = |||{𝐪∈Ω(𝑘)
+𝑖
+∣𝐪lies on the normal line through 𝐩}|||.
+The local physical crack width at 𝐩is then
+402
+𝑤(𝑘)
+𝑖(𝐩) = 𝑁⟂(𝐩) GSD.
+(4)
+An instance-level crack width can be defined as the mean or
+403
+maximum of 𝑤(𝑘)
+𝑖(𝐩) over all 𝐩∈Γ(𝑘)
+𝑖, e.g.
+404
+̄𝑤(𝑘)
+𝑖
+=
+1
+|Γ(𝑘)
+𝑖|
+∑
+𝐩∈Γ(𝑘)
+𝑖
+𝑤(𝑘)
+𝑖(𝐩).
+(5)
+6
+
+--- Page 7 (CUBIT-Inseg.pdf) ---
+Crack length. Similarly, the crack length is obtained by
+405
+summing the physical distances between adjacent skeleton
+406
+pixels along Γ(𝑘)
+𝑖. Let Γ(𝑘)
+𝑖
+= {𝐩1, … , 𝐩𝐿𝑘} be ordered along
+407
+the crack centreline; the physical length is approximated as
+408
+𝐿(𝑘)
+𝑖
+≈
+𝐿𝑘−1
+∑
+𝑗=1
+‖𝐩𝑗+1 −𝐩𝑗‖2 GSD.
+(6)
+For spalling-type instances, the primary geometric de-
+409
+scriptor at the image level is the defect area. Given an
+410
+instance mask Ω(𝑘)
+𝑖
+labelled as spalling, its area in pixels is
+411
+simply |Ω(𝑘)
+𝑖|; the corresponding physical area is
+412
+𝐴(𝑘)
+𝑖
+= |Ω(𝑘)
+𝑖| GSD2.
+(7)
+Additional shape descriptors, such as equivalent diam-
+413
+eter, aspect ratio, or compactness, can be derived from the
+414
+pixel mask and converted to physical units by scaling lengths
+415
+with GSD. These descriptors form a physically consistent
+416
+feature set for spalling, which is particularly important given
+417
+its higher severity in façade safety assessment compared
+418
+with cracks.
+419
+The above procedure yields, for each defect instance
+420
+Ω(𝑘)
+𝑖, a collection of physically interpretable measurements,
+421
+e.g.,
+422
+(𝐿(𝑘)
+𝑖, ̄𝑤(𝑘)
+𝑖, 𝐴(𝑘)
+𝑖, shape features, defect type),
+all expressed in metric units under the equal-distance imag-
+423
+ing assumption. These image-level measurements are ag-
+424
+gregated at façade- or component-level (e.g., by grouping
+425
+instances within the same façade panel or elevation zone),
+426
+providing a compact statistical description of defect condi-
+427
+tions.
+428
+2.6. Physically Based Defect Quantification on the
+429
+Digital Twin
+430
+Building upon the physically measurable crack and
+431
+spalling descriptors derived from pixel-level segmentations,
+432
+this section integrates these measurements into a DT rep-
+433
+resentation of the façade. The goal is to transform 2D
+434
+image–based defect indicators into component-level con-
+435
+dition assessments that align with international building
+436
+pathology standards, including BS ISO 15686-7:2017 and
+437
+the inspection guidelines issued by the Hong Kong Buildings
+438
+Department and the Hong Kong Institute of Surveyors.
+439
+Let the façade DT be composed of 𝑀surface or BIM
+440
+elements {𝑗}𝑀
+𝑗=1. Each defect instance detected in images
+441
+is associated with one or more façade elements based on its
+442
+image footprint and field-of-view projection.
+443
+For each defect instance 𝑘in image 𝐼𝑖, we have the set
+444
+of physical measurements:
+445
+Φ(𝑘)
+𝑖
+= {𝐿(𝑘)
+𝑖, ̄𝑤(𝑘)
+𝑖, 𝐴(𝑘)
+𝑖, shape, type}.
+We assign these measurements to façade element 𝑗if the
+446
+defect appears within the region of the façade that is imaged
+447
+Figure 5: Physically based façade defect quantification work-
+flow: (a) defect registration; (b) defect assessment.
+by the camera when capturing 𝐼𝑖. Let 𝑗denote the set of
+448
+all defect instances assigned to 𝑗.
+449
+The aggregated defect state of element 𝑗is represented
+450
+as
+451
+Φ(𝑗) =
+⋃
+𝑘∈𝑗
+Φ(𝑘)
+𝑖.
+For practical analysis, we compute façade–element–level
+452
+statistics:
+453
+CrackLength(𝑗) =
+∑
+𝑘∈𝑗, type=𝐶
+𝐿(𝑘)
+𝑖,
+(8)
+MeanCrackWidth(𝑗) =
+1
+|𝐶
+𝑗|
+∑
+𝑘∈𝐶
+𝑗
+̄𝑤(𝑘)
+𝑖,
+(9)
+SpallingArea(𝑗) =
+∑
+𝑘∈𝑗, type=𝑆
+𝐴(𝑘)
+𝑖,
+(10)
+where 𝐶
+𝑗and 𝑆
+𝑗denote the crack and spalling instances,
+454
+respectively.
+455
+These metrics constitute the defect signature of each
+456
+façade component and serve as the input for severity grading
+457
+and maintenance prioritization.
+458
+According to BS ISO 15686-7:2017 [20], the Hong
+459
+Kong Buildings Department (BD) [21], and the Hong Kong
+460
+Institute of Surveyors (HKIS) [22], two defects are regarded
+461
+as highly safety-critical:
+462
+7
+
+--- Page 8 (CUBIT-Inseg.pdf) ---
+Table 2
+Severity classification for façade defects based on physical measurements and ISO/HK practice
+Level
+Description
+Typical Thresholds
+Action
+Low (SI < 0.25)
+Minor deterioration
+Crack width < 0.2 mm
+No spalling
+Routine monitoring
+Moderate (0.25 ≤SI < 0.50)
+Non-structural impact
+0.2–0.5 mm cracks
+Small spalling < 50 cm2
+Repair scheduling
+Severe (0.50 ≤SI < 0.75)
+Significant safety concern
+Cracks > 0.5 mm
+Spalling 50–200 cm2
+Urgent repair
+Critical (SI ≥0.75)
+High risk of failure
+Wide cracks > 1 mm
+Large spalling > 200 cm2
+Immediate action / cordon-off
+• Cracks: Risk of moisture ingress, reinforcement cor-
+463
+rosion, propagation into spalling.
+464
+• Spalling: Classified as a high-risk defect that may
+465
+lead to detachment of concrete cover and localized
+466
+collapse.
+467
+To align with these standards, we define a unified Sever-
+468
+ity Index (SI) for each façade element:
+469
+𝑆𝐼(𝑗) = 𝛼1𝑊𝐶(𝑗) + 𝛼2𝐿𝐶(𝑗) + 𝛽1𝐴𝑆(𝑗),
+where:
+470
+- 𝑊𝐶(𝑗) = normalized mean crack width - 𝐿𝐶(𝑗) =
+471
+normalized total crack length - 𝐴𝑆(𝑗) = normalized total
+472
+spalling area - 𝛼1, 𝛼2, 𝛽1 = weights reflecting relative safety
+473
+impact (typically 𝛽1 > 𝛼1 > 𝛼2 due to the high risk of
+474
+spalling)
+475
+Normalization is performed with respect to ISO guide-
+476
+line thresholds and BD practice notes.
+477
+Using the Severity Index, we define four façade defect
+478
+levels consistent with ISO 15686 and Hong Kong inspection
+479
+practice.
+480
+These thresholds reflect:
+481
+• ISO 15686’s durability and condition-rating guidance
+482
+• Hong Kong BD’s classification of “defective concrete
+483
+cover”
+484
+• HKIS’s façade safety inspection criteria
+485
+The final DT representation stores the severity level, nu-
+486
+merical SI value, and detailed defect metrics for each façade
+487
+component. This enables automatic maintenance schedul-
+488
+ing, lifecycle cost estimation, and longitudinal tracking of
+489
+defect evolution within the DT environment.
+490
+Each façade element 𝑗in the DT is annotated with:
+491
+(𝑆𝐼(𝑗), Φ(𝑗), Severity Level),
+allowing users to:
+492
+• visualize defect locations and severities on the DT
+493
+model;
+494
+• perform time–series monitoring as new UAV inspec-
+495
+tions are collected;
+496
+• support automated condition assessment reports;
+497
+• prioritize repairs based on quantitative risk levels.
+498
+This establishes a full pipeline from UAV image acqui-
+499
+sition and pixel-level segmentation to physically grounded
+500
+DT-based structural assessment.
+501
+3. Benchmark Experiments of the Proposed
+502
+CUBIT-InSeg Dataset
+503
+To comprehensively evaluate the proposed CUBIT-
+504
+InSeg dataset, we trained an extensive suite of deep learn-
+505
+ing models, encompassing 17 model families and more
+506
+than 80 individual networks, including convolution-based
+507
+architectures (Starnet [23], FasterNet [24], MobileNetV4 [25],
+508
+EMO [26], ConvNeXtV2 [27]), transformer-based architectures
+509
+(Swin-Transformer [28], CSwin-Transformer [29], RepViT [30],
+510
+EfficientViT [31]), and YOLO variants (YOLOv8 [32], YOLOv9
+511
+[33], YOLOv10 [34], YOLOv11 [35], YOLOv12 [36], YOLOv13 [37],
+512
+Mamba-YOLO [38], Hyper-YOLO [39]). These SOTA approaches
+513
+cover a wide spectrum of design paradigms and represent the
+514
+leading techniques in modern object detection and instance
+515
+segmentation. Leveraging such architectural diversity allows
+516
+us to establish a comprehensive benchmark while simulta-
+517
+neously validating the robustness and applicability of the
+518
+dataset across different defect inspection scenarios.
+519
+For evaluation metrics, we utilize mean Average Preci-
+520
+sion (mAP) by following the widely adopted MS COCO [40]
+521
+instance segmentation task, reporting bounding GT-Box
+522
+mAP0.5 and mAP0.5∶0.95 for objects localization, as well
+523
+as mask mAP0.5 and mAP0.5∶0.95 for objects segmentation
+524
+(detailed in Section 3.2). Adopting these widely accepted
+525
+metrics also aligns our dataset with common object-centric
+526
+benchmarks, thereby enhancing its comparability and gen-
+527
+eral applicability within the broader community.
+528
+3.1. Experimental Setup
+529
+All experiments—including both the benchmark evalu-
+530
+ation on the CUBIT-InSeg dataset and cross-domain vali-
+531
+dation on external datasets—are conducted on an Ubuntu
+532
+8
+
+--- Page 9 (CUBIT-Inseg.pdf) ---
+𝐼𝑜𝑈= 𝑎𝑟𝑒𝑎(𝐺𝑇∩𝑃)
+𝑎𝑟𝑒𝑎(𝐺𝑇∪𝑃)
+𝐺𝑟𝑜𝑢𝑛𝑑 𝑇𝑟𝑢𝑡ℎ 𝐵𝑜𝑥 & 𝑀𝑎𝑠𝑘 
+(𝐺𝑇−𝐵𝑜𝑥 & 𝐺𝑇−𝑀𝑎𝑠𝑘)
+𝑃𝑟𝑒𝑑𝑖𝑐𝑡𝑒𝑑 𝐵𝑜𝑥 & 𝑀𝑎𝑠𝑘 
+(𝑃−𝐵𝑜𝑥 & 𝑃−𝑀𝑎𝑠𝑘)
+𝐵𝑜𝑥 𝐼𝑜𝑈 
+𝑀𝑎𝑠𝑘 𝐼𝑜𝑈 
+𝐺𝑇∩𝑃 
+𝐺𝑇∪𝑃 
+𝐺𝑇∩𝑃 
+𝐺𝑇∪𝑃 
+Figure 6: Visualization of Intersection-over-Union (IoU). Red
+and orange represent the ground-truth bounding box / mask
+(GT-Box / GT-Mask) and predicted box / mask (P-Box /
+P-Mask) of this spalling sample, respectively. In IoU equation,
+the denominator symbolizes the union of the GT and the P,
+which is represented by a blue area. The overlapping area of
+the GT and the P, which denoted their intersection, is also
+indicated by the blue part.
+22.04 workstation equipped with an Intel i9-13900K CPU
+533
+and dual NVIDIA RTX 4090 GPUs. All models are trained
+534
+for 300 epochs with a batch size of 16, and no pre-trained
+535
+weights from any common object or defect-related datasets
+536
+(e.g. [40, 41]) are used. Stochastic Gradient Descent (SGD)
+537
+is adopted as the optimizer, and the detailed configurations
+538
+of optimization parameters and hyperparameters are summa-
+539
+rized in Table 3.
+540
+During inference, Non-Maximum Suppression (NMS)
+541
+[42] is applied to remove redundant detections. For instance
+542
+segmentation, although the segmentation mask is ultimately
+543
+evaluated using mask-level IoU, the suppression process still
+544
+relies on the GT-Box IoU, consistent with the procedure
+545
+defined in Algorithm 1. Given an initial list of detected
+546
+bounding boxes 𝐵and their confidence scores 𝑆, NMS
+547
+iteratively selects the box with the highest confidence score,
+548
+denoted as 𝑀, and adds it to the final detection set 𝐷.
+549
+All remaining boxes 𝑏𝑖
+∈
+𝐵whose box IoU with 𝑀
+550
+exceeds the suppression threshold 𝑁𝑡are removed along
+551
+with their corresponding scores. Although mask-level IoU
+552
+is later used to compute mask-based evaluation metrics such
+553
+as Mask_AP0.5 and Mask_AP0.5∶0.95, the suppression step
+554
+remains box-based to ensure consistency and computational
+555
+efficiency. These mask-based metrics evaluate the quality of
+556
+the predicted segmentation masks by measuring their pixel-
+557
+level agreement with the ground-truth shapes, thus reflecting
+558
+the accuracy of instance-level defect delineation.
+559
+The IoU criterion evaluates the overlap ratio between a
+560
+predicted box / mask (P-Box / P-Mask) and the ground-truth
+561
+box / mask (GT-Box / GT-Mask). We adopt a confidence
+562
+threshold of 0.25 and an IoU threshold of 0.7, which follows
+563
+the setting of Ultratlytics framework. A visual illustration of
+564
+the IoU of computation is provided in Figure 6.
+565
+Table 3
+Optimizer and Hyperparameters of Experiments
+Optimizer Type
+SGD
+Learning Rate Schedule
+Linear
+Initial Learning Rate 𝛼
+1e-2
+Final Learning Rate 𝛼
+1e-4
+Momentum 𝛽
+0.937
+Weight Decay 𝜙
+5e-4
+Loss Coefficients 𝜆cls, 𝜆box, 𝜆dfl
+0.5, 7.5 1.5
+For benchmark training and testing our CUBIT-InSeg
+566
+dataset, it is split into training (5,596 images, 80%), vali-
+567
+dation (700 images, 10%), and test (700 images, 10%) sets
+568
+with resolution 640×640. Among the aforementioned SOTA
+569
+models, both convolution-based and transformer-based ar-
+570
+chitectures serve as powerful feature extraction backbones.
+571
+To ensure a fair comparison, we integrated all these back-
+572
+bones into the Ultralytics3, which is the framework used for
+573
+YOLO series and its variants, and adopted the same Ultra-
+574
+lytics neck and segmentation head, scaled using consistent
+575
+multipliers (n, s, m, l, x). This unified implementation elim-
+576
+inates architectural discrepancies and allows performance
+577
+differences to be attributed solely to the backbone design.
+578
+Algorithm 1: Non-maximum suppression (NMS)
+procedure used in instance segmentation pipeline
+Input: The input initial detection boxes 𝐵, the corresponding
+confidence scores 𝑆, and the IoU suppression threshold
+𝑁𝑡.
+Output: The output final selected boxes 𝐷and their
+corresponding scores 𝑆.
+1 D ←∅
+2 while 𝐵≠𝑒𝑚𝑝𝑡𝑦do
+3
+Select the maximum value in the set of 𝑆, and give this
+value to 𝑚. 𝑚←𝑎𝑟𝑔𝑚𝑎𝑥(𝑆)
+4
+𝑀←𝑏𝑚
+5
+𝐷←𝐷∪𝑀
+6
+𝐵←𝐵−𝑀
+7
+for 𝑏𝑖in 𝐵do
+8
+if 𝑖𝑜𝑢(𝑀, 𝑏𝑖) > 𝑁𝑡then
+9
+𝐵←𝐵−𝑏𝑖; 𝑆←𝑆−𝑠𝑖;
+10
+return D, S
+3.2. Evaluation Metrics
+579
+We evaluate all models using the standard COCO eval-
+580
+uation protocol, which is applicable to both object detection
+581
+and segmentation. For each predicted instance, the IoU
+582
+between the prediction and its corresponding ground truth is
+583
+computed—using bounding boxes for detection and pixel-
+584
+level masks for segmentation. Based on IoU, a prediction
+585
+is classified as a true positive (𝑇𝑃), false positive (𝐹𝑃), or
+586
+false negative (𝐹𝑁).
+587
+The fundamental metrics Precision (P) and Recall (R)
+588
+are defined as:
+589
+Precision =
+𝑇𝑃
+𝑇𝑃+ 𝐹𝑃,
+Recall =
+𝑇𝑃
+𝑇𝑃+ 𝐹𝑁, (11)
+3https://github.com/ultralytics/ultralytics
+9
+
+--- Page 10 (CUBIT-Inseg.pdf) ---
+Table 4
+Benchmark Results of Selected End-to-End Models on the Test Set of CUBIT-InSeg
+Models
+#Params(M)↓
+FLOPs(G)↓
+FPS↑
+Box_mAP𝑡𝑒𝑠𝑡
+0.5 ↑
+Box_mAP𝑡𝑒𝑠𝑡
+0.5∶0.95↑
+Crack (Box)
+Spalling (Box)
+Mask_mAP𝑡𝑒𝑠𝑡
+0.5 ↑
+Mask_mAP𝑡𝑒𝑠𝑡
+0.5∶0.95↑
+Crack (Mask)
+Spalling (Mask)
+AP𝑡𝑒𝑠𝑡
+0.5 ↑
+AP𝑡𝑒𝑠𝑡
+0.5∶0.95↑
+AP𝑡𝑒𝑠𝑡
+0.5 ↑
+AP𝑡𝑒𝑠𝑡
+0.5∶0.95↑
+AP𝑡𝑒𝑠𝑡
+0.5 ↑
+AP𝑡𝑒𝑠𝑡
+0.5∶0.95↑
+AP𝑡𝑒𝑠𝑡
+0.5 ↑
+AP𝑡𝑒𝑠𝑡
+0.5∶0.95↑
+Conv-based Models
+EMO-1M (n) [26]
+3.27
+13.1
+498.35
+84.5%
+74.4%
+71.1%
+54.5%
+97.9%
+94.4%
+76.1%
+52.7%
+54.7%
+19.0%
+97.4%
+86.3%
+EMO-2M (s) [26]
+9.06
+37.1
+356.96
+88.0%
+78.7%
+77.6%
+61.9%
+98.4%
+95.5%
+78.6%
+55.3%
+59.6%
+22.4%
+97.7%
+88.2%
+EMO-5M (m) [26]
+20.46
+86.1
+242.75
+90.4%2
+82.2%
+82.0%2
+68.0%
+98.8%
+96.4%
+81.6%1
+57.5%
+64.9%2
+25.2%1
+98.3%1
+89.8%
+EMO-6M (l) [26]
+32.12
+149.5
+203.45
+90.5%1
+82.4%2
+82.1%1
+68.2%2
+98.8%
+96.7%1
+81.2%
+57.9%1
+64.0%
+25.0%
+98.3%1
+90.7%1
+MobileNetV4-S (s) [25]
+10.19
+41.8
+592.27
+78.3%
+66.4%
+58.9%
+40.8%
+97.7%
+92.0%
+71.2%
+48.5%
+45.5%
+13.3%
+96.9%
+83.7%
+MobileNetV4-M (m) [25]
+23.27
+140.0
+340.33
+79.1%
+67.6%
+60.4%
+42.3%
+97.8%
+93.0%
+71.3%
+48.6%
+45.7%
+13.7%
+97.0%
+83.4%
+MobileNetV4-L (l) [25]
+34.49
+154.7
+285.14
+80.9%
+70.0%
+64.1%
+46.1%
+97.6%
+93.8%
+72.9%
+50.5%
+48.6%
+14.8%
+97.1%
+86.1%
+FasterNet-t0 (n) [24]
+4.15
+13.1
+729.192
+79.7%
+68.2%
+61.7%
+43.2%
+97.8%
+93.1%
+72.2%
+49.0%
+47.1%
+14.1%
+97.4%
+84.0%
+FasterNet-t1 (n) [24]
+7.79
+21.7
+640.52
+82.1%
+70.6%
+66.0%
+47.4%
+98.2%
+93.9%
+74.4%
+50.3%
+51.0%
+16.0%
+97.8%
+84.7%
+FasterNet-t2 (n) [24]
+15.17
+39.4
+508.73
+82.7%
+71.3%
+67.4%
+48.9%
+98.1%
+93.7%
+74.2%
+50.6%
+50.7%
+15.5%
+97.7%
+85.8%
+FasterNet-s (s) [24]
+35.85
+100.2
+302.47
+85.8%
+78.0%
+72.8%
+54.2%
+98.8%
+95.3%
+76.0%
+52.3%
+53.8%
+16.9%
+98.1%
+87.7%
+FasterNet-m (m) [24]
+65.57
+228.4
+160.52
+87.6%
+77.3%
+76.5%
+58.8%
+98.8%
+95.8%
+77.9%
+53.9%
+57.5%
+19.2%
+98.2%2
+88.5%
+FasterNet-l (l) [24]
+109.29
+349.8
+124.97
+88.4%
+78.2%
+78.0%
+60.2%
+98.9%2
+96.2%
+78.5%
+54.5%
+58.8%
+19.9%
+98.3%1
+88.9%
+Starnet-s50 (n) [23]
+2.191
+8.91
+828.821
+72.9%
+61.0%
+48.8%
+31.9%
+97.1%
+90.0%
+67.6%
+46.0%
+39.1%
+11.2%
+96.1%
+80.8%
+Starnet-s100 (n) [23]
+2.692
+10.42
+689.58
+76.8%
+65.0%
+56.0%
+38.2%
+97.5%
+91.8%
+69.9%
+47.5%
+43.1%
+12.8%
+96.7%
+82.2%
+Starnet-s150 (n) [23]
+3.19
+11.2
+665.89
+77.1%
+65.1%
+56.7%
+38.5%
+97.6%
+91.7%
+70.8%
+47.8%
+44.7%
+13.2%
+96.8%
+82.4%
+Starnet-s1 (s) [23]
+8.45
+30.8
+480.88
+82.3%
+71.3%
+66.5%
+48.3%
+98.1%
+94.2%
+74.8%
+51.5%
+52.1%
+17.2%
+97.5%
+85.9%
+Starnet-s2 (m) [23]
+16.4
+91.6
+341.02
+85.6%
+75.4%
+72.5%
+55.1%
+98.7%
+95.6%
+77.0%
+53.4%
+56.3%
+18.4%
+97.8%
+88.3%
+Starnet-s3 (l) [23]
+21.7
+104.3
+287.39
+86.0%
+75.4%
+73.3%
+55.5%
+98.8%
+95.3%
+77.4%
+53.4%
+56.8%
+18.7%
+98.0%
+88.1%
+Starnet-s4 (x) [23]
+43.3
+223.0
+173.83
+86.6%
+76.1%
+74.4%
+56.7%
+98.8%
+95.5%
+78.3%
+54.1%
+58.6%
+19.8%
+98.0%
+88.4%
+ConvNeXtV2-nano (n) [27]
+17.91
+47.8
+210.86
+87.6%
+79.6%
+77.4%
+63.8%
+97.8%
+95.4%
+79.1%
+55.8%
+60.7%
+23.0%
+97.4%
+88.6%
+ConvNeXtV2-tiny (s) [27]
+35.36
+97.7
+136.16
+87.8%
+79.7%
+77.5%
+63.2%
+98.2%
+96.2%
+79.3%
+56.5%
+60.7%
+22.7%
+97.8%
+90.4%2
+ConvNeXtV2-base (m) [27]
+103.21
+335.6
+60.87
+89.0%
+81.0%
+79.7%
+65.9%
+98.3%
+96.2%
+80.6%
+57.0%
+63.2%
+24.3%
+97.9%
+89.7%
+ConvNeXtV2-large (l) [27]
+217.03
+656.9
+37.58
+90.1%
+82.5%1
+81.8%
+68.4%1
+98.5%
+96.7%1
+81.5%2
+57.7%2
+65.1%1
+25.1%2
+98.0%
+90.4%2
+Transformer-based Models
+Swin-Transformer-Tiny (n) [28]
+29.97
+81.5
+200.99
+82.6%
+72.3%
+67.4%
+50.4%
+97.9%
+94.2%
+74.0%
+51.9%
+50.7%
+17.2%
+97.4%
+86.5%
+Swin-Transformer-Small (s) [28]
+55.57
+168.8
+129.89
+86.2%
+76.2%
+74.1%
+57.0%
+98.3%
+95.3%
+76.3%
+53.7%
+54.7%
+18.9%
+97.9%
+88.5%
+Swin-Transformer-Base (m) [28]
+62.77
+228.0
+111.19
+87.1%
+77.6%
+75.5%
+59.0%
+98.6%
+96.1%
+77.3%
+54.6%
+56.4%
+19.8%
+98.1%
+89.5%
+Swin-Transformer-Large (l) [28]
+66.04
+237.4
+101.03
+87.9%
+78.3%
+77.2%
+60.9%
+98.6%
+95.8%
+78.2%
+55.0%
+58.3%
+20.4%
+98.1%
+89.6%
+CSwin-Transformer-Tiny (n) [29]
+23.94
+74.4
+210.68
+81.8%
+69.2%
+66.3%
+46.2%
+97.2%
+92.2%
+72.9%
+49.7%
+49.1%
+14.4%
+96.8%
+84.9%
+CSwin-Transformer-Small (s) [29]
+40.39
+129.1
+136.11
+84.4%
+72.8%
+71.5%
+52.3%
+97.4%
+93.3%
+76.2%
+52.1%
+55.5%
+17.6%
+96.8%
+86.7%
+CSwin-Transformer-Base (m) [29]
+90.53
+318.7
+72.24
+86.1%
+75.0%
+74.7%
+56.0%
+97.5%
+94.1%
+77.3%
+53.8%
+57.9%
+18.9%
+96.8%
+88.7%
+CSwin-Transformer-Large (l) [29]
+190.15
+621.2
+42.75
+86.4%
+75.3%
+75.2%
+56.7%
+97.6%
+93.9%
+78.5%
+54.5%
+59.6%
+20.1%
+97.4%
+88.9%
+EfficientViT-M0 (n) [31]
+3.99
+11.8
+641.55
+79.1%
+67.4%
+60.3%
+41.9%
+97.9%
+92.9%
+71.6%
+48.6%
+45.7%
+13.1%
+97.5%
+84.2%
+EfficientViT-M1 (n) [31]
+4.63
+16.5
+546.71
+81.3%
+69.3%
+64.4%
+45.4%
+98.1%
+93.3%
+73.6%
+50.1%
+50.1%
+15.1%
+97.2%
+85.1%
+EfficientViT-M2 (s) [31]
+9.81
+35.2
+474.59
+84.2%
+73.0%
+70.0%
+51.3%
+98.3%
+94.8%
+76.0%
+52.3%
+54.2%
+17.4%
+97.8%
+87.1%
+EfficientViT-M3 (m) [31]
+19.71
+97.8
+312.00
+87.0%
+76.7%
+75.2%
+57.6%
+98.8%
+95.9%
+78.2%
+54.4%
+58.3%
+19.8%
+98.0%
+89.0%
+EfficientViT-M4 (l) [31]
+24.88
+109.2
+264.32
+87.3%
+77.2%
+75.7%
+58.3%
+98.8%
+96.1%
+78.7%
+54.7%
+59.2%
+20.3%
+98.2%2
+89.0%
+EfficientViT-M5 (x) [31]
+48.60
+236.1
+172.96
+89.0%
+79.4%
+79.1%
+62.2%
+99.0%1
+96.5%2
+80.0%
+56.0%
+61.8%
+21.8%
+98.2%2
+90.2%
+RepViT-m09 (n) [30]
+6.68
+20.9
+504.95
+82.5%
+71.1%
+66.9%
+48.8%
+98.0%
+93.8%
+75.2%
+51.4%
+53.0%
+16.9%
+97.4%
+86.0%
+RepViT-m10 (s) [30]
+12.5
+42.4
+384.80
+86.2%
+75.9%
+73.7%
+56.3%
+98.8%
+95.4%
+78.1%
+54.3%
+58.1%
+20.4%
+98.1%
+88.3%
+RepViT-m11 (m) [30]
+21.1
+105.2
+294.08
+87.0%
+77.2%
+75.2%
+58.0%
+98.9%2
+96.4%
+78.7%
+54.8%
+59.2%
+20.6%
+98.1%
+89.0%
+RepViT-m15 (l) [30]
+30.2
+129.7
+239.38
+87.3%
+77.2%
+75.9%
+58.5%
+98.6%
+95.8%
+78.8%
+54.8%
+59.5%
+20.3%
+98.1%
+89.4%
+RepViT-m23 (x) [30]
+59.3
+281.0
+129.65
+87.7%
+77.5%
+76.4%
+59.1%
+98.9%2
+95.9%
+79.2%
+54.9%
+60.2%
+20.8%
+98.1%
+89.0%
+(1) ↑(↓) indicates that larger (smaller) values lead to better (worse) results. The best are in orange, the second best are in blue.
+measuring the correctness of predictions and the ability to
+590
+recover ground-truth defects, respectively.
+591
+To summarize performance across different recall levels,
+592
+we adopt the COCO-style Average Precision (AP), com-
+593
+puted by integrating the Precision–Recall curve. Following
+594
+the COCO protocol, AP is evaluated at IoU threshold 0.5
+595
+(AP0.5) and averaged across ten thresholds from 0.50 to 0.95
+596
+(AP0.5∶0.95).
+597
+𝐴𝑃= ∫
+1
+0
+𝑝(𝑟) 𝑑𝑟,
+(12)
+and for multi-class tasks, the mAP is obtained by averaging
+598
+AP over all defect categories:
+599
+𝑚𝐴𝑃= 1
+𝑛
+𝑛
+∑
+𝑘=1
+𝐴𝑃𝑘.
+(13)
+We report both Box_mAP (based on box IoU) and
+600
+Mask_mAP (based on mask IoU). The box-based metrics
+601
+evaluate localization accuracy, while the mask-based metrics
+602
+assess pixel-level agreement and boundary fidelity—crucial
+603
+for infrastructure defect segmentation.
+604
+3.3. Benchmarking Experiment and Analysis
+605
+3.3.1. Overall and Category-wise Performance
+606
+Analysis of Instance Segmentation
+607
+Table 4 and 5 not only show the overall experimental re-
+608
+sults but also report of the per-defect-type evaluation results
+609
+tested on our proposal CUBIT-InSeg dataset.
+610
+Box mean AP
+Mask AP of Crack
+Box AP of Crack
+Mask mean AP
+Box mean AP
+Mask mean AP
+Box AP of 
+Spalling
+Mask AP of 
+Spalling
+Box AP of 
+Spalling
+Mask AP of 
+Spalling
+(a) IoU=0.5, Average Precision Comparison of the Selected 
+Models on our CUBIT-InSeg dataset
+(b) IoU=0.95, Average Precision Comparison of the Selected 
+Models on our CUBIT-InSeg dataset
+Figure 7: Comparison of six evaluation metrics at IoU thresh-
+olds of 0.5 (a) and 0.5:0.95 (b) using radar plots. Dashed
+curves correspond to End-to-End models, whereas solid curves
+correspond to Single-stage Real-time models.
+As the sample data showed in Fig. 2, the detection
+611
+and segmentation of the cracks are substantially more chal-
+612
+lenging than spallings: cracks typically appear thin, elon-
+613
+gated, and fragmented, with ambiguous boundaries, whereas
+614
+spalling regions are larger, more coherent, and visually well-
+615
+defined. And the significant disparity of the number of
+616
+targets is another factor (showed in Fig. 3). As illustrated in
+617
+Fig. 7, the Box and Mask AP of Spalling lie much closer
+618
+to the outer boundary of the radar plots compared with
+619
+those for Crack, which means that the performance gap
+620
+among models on spallings is relatively small, while cracks
+621
+10

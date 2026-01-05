@@ -1,12 +1,55 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isRegister, setIsRegister] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [formData, setFormData] = useState({ email: '', password: '', name: '' });
+  const [error, setError] = useState('');
+
+  // 页面加载时检查登录状态
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then(res => res.json())
+      .then(data => {
+        if (data.user) setUser(data.user);
+      });
+  }, []);
+
+  const handleAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    const endpoint = isRegister ? '/api/auth/register' : '/api/auth/login';
+    
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUser(data.user);
+        setIsLoginOpen(false);
+        setFormData({ email: '', password: '', name: '' });
+      } else {
+        setError(data.error || '认证失败');
+      }
+    } catch (err) {
+      setError('服务器错误');
+    }
+  };
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    setUser(null);
+  };
 
   const figures = [
+// ... (rest of the figures)
     {
       title: "Hierarchical Framework",
       src: "/images/framework.png",
@@ -62,15 +105,32 @@ export default function Home() {
             ))}
           </div>
           <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setIsLoginOpen(true)}
-              className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 transition-colors"
-            >
-              Sign In
-            </button>
-            <a href="#download" className="bg-slate-950 text-white px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all">
-              Register
-            </a>
+            {user ? (
+              <>
+                <span className="text-[10px] font-black uppercase tracking-widest text-blue-600">Hi, {user.name}</span>
+                <button 
+                  onClick={handleLogout}
+                  className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-red-500 transition-colors"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <button 
+                  onClick={() => { setIsRegister(false); setIsLoginOpen(true); }}
+                  className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 transition-colors"
+                >
+                  Sign In
+                </button>
+                <button 
+                  onClick={() => { setIsRegister(true); setIsLoginOpen(true); }}
+                  className="bg-slate-950 text-white px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all"
+                >
+                  Register
+                </button>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -231,8 +291,8 @@ imgname score xmin ymin xmax ymax
                     <a href="https://drive.google.com/drive/folders/YOUR_ID_HERE" target="_blank" className="flex items-center justify-between p-5 bg-slate-50 rounded-2xl hover:bg-blue-600 hover:text-white transition-all group/item">
                       <span className="text-[10px] font-black uppercase tracking-widest">Annotations Only (450 MB)</span>
                       <svg className="w-5 h-5 opacity-40 group-hover/item:opacity-100" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2v-2zm0-10h2v8h-2V6z"/></svg>
-                    </a>
-                  </div>
+          </a>
+        </div>
                 </div>
               </div>
             </div>
@@ -309,25 +369,68 @@ imgname score xmin ymin xmax ymax
         </div>
       </footer>
 
-      {/* Login Modal Overlay */}
+      {/* Auth Modal Overlay */}
       {isLoginOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
           <div 
             className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
-            onClick={() => setIsLoginOpen(false)}
+            onClick={() => { setIsLoginOpen(false); setError(''); }}
           ></div>
           <div className="relative bg-white rounded-[3rem] w-full max-w-md p-12 shadow-3xl animate-in fade-in zoom-in duration-300">
             <div className="text-center mb-10">
-              <h4 className="text-3xl font-black text-slate-900 tracking-tighter mb-2">Welcome Back</h4>
-              <p className="text-slate-400 text-sm font-medium">Sign in to CUBIT Challenge Server</p>
+              <h4 className="text-3xl font-black text-slate-900 tracking-tighter mb-2">
+                {isRegister ? 'Create Account' : 'Welcome Back'}
+              </h4>
+              <p className="text-slate-400 text-sm font-medium">
+                {isRegister ? 'Join the CUBIT Benchmark Community' : 'Sign in to CUBIT Challenge Server'}
+              </p>
             </div>
-            <div className="space-y-6">
-              <input type="email" placeholder="Email" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600 outline-none transition-all" />
-              <input type="password" placeholder="Password" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600 outline-none transition-all" />
-              <button className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl hover:bg-blue-700 transition-all">Sign In</button>
-            </div>
+            
+            <form onSubmit={handleAuth} className="space-y-6">
+              {isRegister && (
+                <input 
+                  type="text" 
+                  placeholder="Full Name" 
+                  required
+                  className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                />
+              )}
+              <input 
+                type="email" 
+                placeholder="Email" 
+                required
+                className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+              />
+              <input 
+                type="password" 
+                placeholder="Password" 
+                required
+                className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                value={formData.password}
+                onChange={(e) => setFormData({...formData, password: e.target.value})}
+              />
+              
+              {error && <p className="text-red-500 text-xs font-bold text-center">{error}</p>}
+              
+              <button className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl hover:bg-blue-700 transition-all">
+                {isRegister ? 'Register' : 'Sign In'}
+              </button>
+            </form>
+
             <div className="mt-8 text-center">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Don't have an account? <span className="text-blue-600 cursor-pointer">Register</span></p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                {isRegister ? 'Already have an account?' : "Don't have an account?"} 
+                <span 
+                  className="text-blue-600 cursor-pointer ml-2"
+                  onClick={() => { setIsRegister(!isRegister); setError(''); }}
+                >
+                  {isRegister ? 'Sign In' : 'Register'}
+                </span>
+              </p>
             </div>
           </div>
         </div>

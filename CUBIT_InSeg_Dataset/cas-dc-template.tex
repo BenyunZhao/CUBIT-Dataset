@@ -1,0 +1,1607 @@
+
+%% 
+%% Copyright 2019-2021 Elsevier Ltd
+%% 
+%% This file is part of the 'CAS Bundle'.
+%% --------------------------------------
+%% 
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version. The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% The list of all files belonging to the 'CAS Bundle' is
+%% given in the file `manifest.txt'.
+%% 
+%% Template article for cas-dc documentclass for 
+%% double column output.
+\documentclass[a4paper,fleqn]{cas-dc} 
+
+% If the frontmatter runs over more than one page
+% use the longmktitle option.
+
+% ===== 编码与版式 =====
+\usepackage[T1]{fontenc}
+\usepackage{setspace}
+\pagestyle{plain}
+\pagenumbering{arabic}
+\usepackage[switch]{lineno}
+\linenumbers 
+
+% ===== 参考文献：选择 natbib（不要再用 cite）=====
+\usepackage[sort,numbers]{natbib}
+
+% ===== 数学 =====
+\usepackage{amsmath,amssymb,amsfonts}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\usepackage{bm}
+
+% ===== 图表与浮动体 =====
+\usepackage{graphicx}   % 替代过时的 epsfig
+\usepackage{float}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{threeparttable} % 若需选项： [para,online,flushleft]
+\usepackage{diagbox}
+\usepackage{rotating}
+\usepackage{lscape}
+\usepackage{arydshln}
+\usepackage{stackengine}
+\usepackage{pdfpages}
+
+% ===== 符号与文本 =====
+\usepackage{textcomp}
+\usepackage{soul}
+\usepackage{pifont}
+\providecommand{\cmark}{\ding{51}}%
+\providecommand{\xmark}{\ding{55}}%
+
+% ===== 颜色 =====
+\usepackage[dvipsnames]{xcolor} % 已含 \usepackage{xcolor}
+% 如无特别需求，不要再次 \usepackage{color}
+\definecolor{carrot}{RGB}{255,87,0}
+\definecolor{indigo}{RGB}{37,234,210}
+\definecolor{link}{RGB}{253,44,143}
+\definecolor{homo_green}{RGB}{68,187,105}
+\definecolor{homo_yellow}{RGB}{255,199,61}
+\definecolor{homo_blue}{RGB}{61,184,241}
+\definecolor{homo_orange}{RGB}{240,139,74}
+\definecolor{homo_violet}{RGB}{129,72,170}
+\definecolor{Crack}{RGB}{145,236,50}
+\definecolor{Spalling}{RGB}{116,249,251}
+\definecolor{Moisture}{RGB}{148,244,215}
+\definecolor{orange}{RGB}{255,153,0}
+\definecolor{pink}{RGB}{235,161,153}
+\definecolor{purple}{RGB}{212,49,209}
+\definecolor{dark_green}{RGB}{21,221,87}
+\definecolor{iou_blue}{RGB}{0,176,240}
+\definecolor{iou_orange}{RGB}{255,192,0}
+\definecolor{iou_green}{RGB}{146,208,80}
+\definecolor{green_dash}{RGB}{0,128,0}
+
+
+% ===== 算法环境（建议二选一）=====
+% 方案 A：algorithm2e（你现在在用）
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+% 方案 B：algorithm + algorithmic（若想用 algorithmic 环境就启用下两行，并删除上面的 algorithm2e）
+% \usepackage{algorithm}
+% \usepackage{algorithmic}
+
+% ===== 超链接与引用（顺序很重要）=====
+\usepackage{url}
+\usepackage{hyperref}   % 尽量靠后加载
+\usepackage{cleveref}   % 必须在 hyperref 之后
+
+% ===== 其他 =====
+\usepackage{footnote}
+\makesavenoteenv{tabular}
+\makesavenoteenv{table}
+\usepackage{balance}
+
+% ===== 行号（如需）=====
+\usepackage[switch]{lineno}
+% \linenumbers  % 需要时再启用，避免影响投稿版式
+
+%\usepackage[sorting=none]{biblatex}
+% For author et al. citation
+% \usepackage[longnamesfirst, authoryear]{natbib}
+
+% Define et al.
+\newcommand{\etal}{\textit{et al.}}
+
+%\usepackage[linesnumbered,algoruled,boxed,lined]{algorithm2e}
+%%%Author macros
+\def\tsc#1{\csdef{#1}{\textsc{\lowercase{#1}}\xspace}}
+\tsc{WGM}
+\tsc{QE}
+%%%
+
+% Uncomment and use as if needed
+%\newtheorem{theorem}{Theorem}
+%\newtheorem{lemma}[theorem]{Lemma}
+%\newdefinition{rmk}{Remark}
+%\newproof{pf}{Proof}
+%\newproof{pot}{Proof of Theorem \ref{thm}}
+\begin{document}
+
+\let\printorcid\relax
+
+\let\WriteBookmarks\relax
+\def\floatpagepagefraction{1}
+\def\textpagefraction{.001}
+% Short title
+\shorttitle{CUPID}    
+% Short author
+\shortauthors{B. Zhao~\etal}  
+% Main title of the paper
+\title [mode = title]{From Instance Segmentation to Physical Quantification: A High-Resolution UAV Dataset for Façade Defect Assessment}
+
+% Title footnote mark
+% eg: \tnotemark[1]Datasets and Methods for Boosting Visual Inspection of Civil Infrastructure:
+% A Comprehensive Review and Comparison of Defect
+% Classification, Segmentation, and Detection
+
+% Title footnote 1.
+% eg: \tnotetext[1]{Title footnote text}
+%\tnotetext{1: Both authors contributed equally to this work} 
+
+% First author
+%
+% Options: Use if required
+% eg: \author[1,3]{Author Name}[type=editor,
+%       style=chinese,
+%       auid=000,
+%       bioid=1,
+%       prefix=Sir,
+%       orcid=0000-0000-0000-0000,
+%       facebook=<facebook id>,
+%       twitter=<twitter id>,
+%       linkedin=<linkedin id>,
+%       gplus=<gplus id>]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% author 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\author[1]{Benyun~Zhao}[orcid=0009-0008-7298-2927]
+
+% Corresponding author indication
+% \cormark[1]
+
+% Footnote of the first author
+% \fnmark[1]
+
+% Email id of the first author
+% \ead{byzhao@mae.cuhk.edu.hk}
+
+% URL of the first author
+% \ead[url]{}
+
+% Credit authorship
+% eg: \credit{Conceptualization of this study, Methodology, Software}
+\credit{Conceptualization, Investigation, Formal analysis, Writing - Original Draft}
+
+% Address/affiliation
+\affiliation[1]{organization={Department~of~Mechanical~and~Automation~Engineering,~The~Chinese~University~of~Hong~Kong},             
+addressline={Shatin District}, 
+city={N.T.},
+%          citysep={}, % Uncomment if no comma needed between city and postcode
+            % postcode={}, 
+            % state={},
+            country={Hong Kong}}
+
+
+\author[1]{Jihan~Zhang}%[]
+% Footnote of the second author
+% \fnmark[1]
+% \cormark[1]
+% \ead{jihanzhang@cuhk.edu.hk}
+% Email id of the second author
+% \ead{gdyang@mae.cuhk.edu.hk}
+
+% URL of the second author
+% \ead[url]{}
+
+% Credit authorship
+% \credit{}
+
+% Address/affiliation
+\credit{Conceptualization, Investigation, Formal analysis, Writing - Original Draft}
+
+% ################### author ###################
+\author[1]{Guidong~Yang}%[]
+
+% Footnote of the second author
+% \fnmark[1]
+
+% Email id of the second author
+% \ead{gdyang@mae.cuhk.edu.hk}
+
+% URL of the second author
+% \ead[url]{}
+
+% Credit authorship
+% \credit{}
+
+% Address/affiliation
+\credit{Conceptualization, Investigation, Formal analysis, Writing - Original Draft}
+
+
+% ################### author ###################
+\author[1]{Yijun~Huang}%[]
+% \fnmark[1]
+
+% Email id of the second author
+% \ead{yjhuang@mae.cuhk.edu.hk}
+
+% URL of the second author
+% \ead[url]{}
+
+% Credit authorship
+% \credit{}
+
+% Address/affiliation
+\credit{Method and Dataset Investigation, Formal analysis, Writing - Original Draft}
+
+\author[1]{Lei~Lei}
+% Footnote of the first author
+% \fnmark[1]
+
+% Corresponding author indication
+% Credit authorship
+% eg: \credit{Conceptualization of this study, Methodology, Software}
+
+\credit{Hardware Platform, Real-world Experiment, Writing - Review \& Editing}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% author 4 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\author[1]{Qingxiang~Li}
+% \fnmark[1]
+% \cormark[1]
+% Corresponding author indication
+%\fntext[1]{}
+% Email id of the first author
+% \ead{xichen002@cuhk.edu.hk}
+% URL of the first author
+% \ead[url]{<URL>}
+            
+%\credit{Dataset Investigation, Formal analysis, Writing - Review \& Editing}
+
+
+% ################### author ###################
+\author[1]{Xi~Chen}%[]
+\cormark[1]
+% \fnmark[1]
+
+% Email id of the second author
+\ead{xichen002@cuhk.edu.hk}
+
+% URL of the second author
+% \ead[url]{}
+
+% Credit authorship
+% \credit{}
+
+% Address/affiliation
+\credit{Funding acquisition, Supervision, Writing - Review \& Editing, Project administration}
+
+
+% ################### author ###################
+\author[1]{Ben~M.~Chen}%[]
+
+% Corresponding author indication
+% \fnmark[1]
+
+% Email id of the second author
+% \ead{gdyang@mae.cuhk.edu.hk}
+
+% URL of the second author
+% \ead[url]{}
+
+% Credit authorship
+% \credit{}
+
+% Address/affiliation
+\credit{Conceptualization, Funding acquisition, Resources, Supervision, Writing - Review \& Editing, Project administration}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Here goes the abstract
+\begin{abstract}
+Visual inspection of civil infrastructure, particularly building façades, has long been an essential yet labor-intensive and high-risk task. Recent advances in unmanned aerial vehicle (UAV) systems and deep learning–based defect segmentation have substantially improved the efficiency and safety of visual inspection. However, despite significant progress in pixel-level defect localization, most existing approaches remain limited to visual detection, providing only 2D appearance cues without the metric or geometric information required for physical defect modeling. As a result, current segmentation outputs cannot reliably quantify severity indicators—such as crack width, crack propagation, or spalling volume—which fundamentally restricts their value for engineering assessment, maintenance prioritization, and automated decision-making. This limitation is amplified by the scarcity of high-quality datasets that not only offer pixel-level annotations but also support modeling defects in a physically meaningful, scalable manner.
+To address these gaps, this study introduces \textbf{\textit{CUBIT-InSeg}}, a high-resolution UAV-based façade defect dataset designed to advance the field from pixel-level segmentation toward physically grounded defect modeling. The dataset contains 6,996 high-definition images captured from diverse real-world building scenarios using a customised high-resolution UAV platform. CUBIT-InSeg focuses on two structurally critical defect types—cracks and spalling—chosen for their prevalence and strong relevance to severity assessment under engineering standards. Each image is annotated with precise instance-level masks to support geometric reconstruction and quantitative measurement.
+We conduct extensive benchmark evaluations on more than 18 state-of-the-art segmentation models, providing a comprehensive performance analysis and establishing a strong baseline for subsequent modeling tasks. Furthermore, zero-shot deployments on real-world building façades demonstrate the practical robustness and applicability of models trained on CUBIT-InSeg. By bridging the gap between visual segmentation and physical defect modeling, this work provides a foundational dataset and benchmark that pave the way for scalable, autonomous, and quantitatively informed façade defect assessment.
+
+\end{abstract}
+
+% Use if graphical abstract is present
+%\begin{graphicalabstract}
+%\includegraphics{}
+%\end{graphicalabstract}
+
+% *****************Research highlights*******************
+% \begin{highlights}
+% \item Proposed a dual-branch lightweight infrastructure defect detector.
+% \item Proposed a high-resolution infrastructure defect dataset: CUBIT2024. 
+% \item Proposed a compact autonomous exploration drone for inspection.
+% \item Analyzed the detector and validated on the proposed dataset.
+% \item Deployed the detector onto the the proposed drone for in-the-field test.
+% \end{highlights}
+
+
+% Keywords
+% Each keyword is separated by \sep
+\begin{keywords}
+Infrastructure Inspection \sep Building Inspection \sep Defect Detection \sep Unmanned Aerial Vehicle \sep Dataset 
+\end{keywords}
+
+\maketitle
+\thispagestyle{plain}
+
+\footnotetext[1]{CUBIT stand for \underline{CU}HK \underline{B}uilding \underline{I}nformation \underline{T}echnology.}
+
+
+% Main text
+\section{Introduction}
+\label{sec: introduction}
+Civil infrastructure is vulnerable to damage caused by a multitude of factors such as weather impacts, external loads, structural deterioration, and poor design. Periodic infrastructure inspections are crucial for remaining safe and functional infrastructures. Currently, non-destructive testing (NDT) devices like optical cameras~\cite{} [1], laser scanners [2], impact echo [3], and ground-penetrating radar [4] are used for manual defect detections in civil infrastructure. Although human visual inspection is the most flexible and feasible method for preliminary diagnosis, it is subjective, time-consuming, laborious, and error-prone. It can also pose significant health and safety risks to human inspectors, especially when inspecting high-rise buildings and large spaces. To overcome these challenges, robotic platforms like unmanned aerial vehicles (UAVs) and unmanned ground vehicles (UGVs) [5,6] have been developed to achieve more accurate and efficient infrastructure inspections, from data collection and defect analysis. These unmanned platforms integrating computer vision techniques help achieve better inspection results.
+
+In recent years, automatic image processing technologies driven by deep learning methods [7–10] have achieved remarkable breakthroughs, demonstrating substantial advantages in both efficiency and effectiveness compared with traditional image processing techniques [11,12]. Among these, instance segmentation—a task requiring pixel-level understanding—plays a pivotal role not only in achieving precise defect localization but also in enabling quantitative defect analysis, thereby showcasing the superior capability of deep learning in tackling complex visual challenges. Consequently, an increasing number of researchers in the architecture, engineering, and construction (AEC) domain [13,14] have shifted toward deep learning–based segmentation approaches for the inspection and management of infrastructure defects.
+
+However, deep learning algorithms are notoriously data-hungry, demanding large, high-quality, and domain-specific datasets tailored to the characteristics of building defect segmentation tasks. Most existing segmentation models are trained on general-purpose open-source datasets such as MS COCO [17], which feature abundant images, diverse object categories, and complex scene compositions. In contrast, the collection and pixel-level annotation of defect-related images in civil infrastructure pose unique challenges due to the complexity and dynamic nature of construction environments. As a result, there remains a significant scarcity of well-curated, instance-level segmentation datasets specifically designed for the building and infrastructure sector.
+
+Despite the rapid progress of AI-driven visual inspection for civil infrastructure, existing UAV- or camera-based approaches largely focus on detecting or segmenting surface-level defects without providing the geometric or physical attributes required for engineering-grade assessment. As highlighted by recent studies, the community has reached a turning point where defect modeling---rather than mere defect detection---is becoming essential for structural health monitoring \citep{chen2024shifting}. Purely image-based recognition, even at pixel-level precision, cannot convey crucial physical information such as defect dimensions, depth, or volumetric loss, which are fundamental for quantifying severity, prioritising maintenance, and complying with engineering standards. Consequently, systems relying solely on 2D visual cues struggle to support downstream decision-making and cannot provide inspectors with actionable parameters linked to structural integrity or deterioration mechanisms.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\columnwidth]{images/framework.pdf}
+	\caption{The overall pipeline of the our pixel-to-physical modeling for infrastructure defects.}
+\label{figure:framework}
+\end{figure}
+
+To address this gap, a growing body of research has begun exploring more sophisticated forms of defect modeling. For instance, pixel-level reconstruction combined with photogrammetric texture mapping has been used to derive 3D crack representations \citep{chaiyasarn2022integrated}. Volumetric assessment using depth-enhanced imaging further illustrates the potential of geometric cues for evaluating damage extent \citep{beckman2019deep}. More recently, methods leveraging 3D point clouds and dynamic graph convolutional networks have achieved promising results in constructing as-inspected defect models that capture both geometric structure and semantic attributes \citep{BAHREINI2024105282}. Alongside these developments, advanced segmentation approaches—including SAM-based models \citep{ye2024sam} and weakly supervised or scribble-annotation-based pipelines \citep{wang2025optimizing}—demonstrate notable progress toward generalisable and annotation-efficient defect understanding. Furthermore, deep learning frameworks integrating appearance, texture, and material characteristics show potential for more accurate defect quality assessment \citep{liu2024deep}.
+
+However, a persistent limitation remains: most publicly available datasets are exclusively image-based and lack the physical metrics necessary for accurate defect modeling. Whether designed for detection, segmentation, or instance-level labeling, existing datasets typically provide only RGB visual information without corresponding 3D geometry, calibrated physical scales, or standardized severity labels. This absence of physically grounded information hampers real-world deployment in several ways: (i) defect severity cannot be quantified due to the absence of metric scale; (ii) algorithmic generalization is limited, particularly when transferring from curated datasets to large-scale façade environments; and (iii) autonomous UAV operation becomes difficult, as the lack of metric cues impedes planning, standoff control, and automated follow-up inspection.
+
+These limitations underscore the urgent need for high-resolution, physically meaningful, UAV-derived defect datasets that support not only visual recognition but also the modeling, measurement, and interpretation of defects within the context of engineering standards. This motivation directly leads to the key contributions of our work: (i) a UAV-acquired, high-resolution façade defect dataset that includes both common and severe defects---not limited to cracks but also covering spalling, which is emphasized in ISO-based severity indicators; (ii) extensive benchmarks including two cross-domain datasets to evaluate robustness and transferability; and (iii) a quantitative zero-shot evaluation on real-world scenes demonstrating the deployability of the proposed system in autonomous inspection scenarios.
+
+\section{Related Work}
+\label{sec: related}
+%\subsection{UAV}
+
+%\subsection{AI/segmentation for defect}
+
+\begin{figure*}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/mawan.pdf}
+    \caption{Sample of our proposed \textit{\textbf{CUBIT-InSeg}} dataset.}
+    \label{fig:sample-of-dataset}
+\vspace{-1em}
+\end{figure*}
+
+%\subsection{Defect Modeling}
+With the rapid advance of UAV-based inspection platforms and deep learning techniques, research in civil infrastructure monitoring has moved beyond basic defect detection toward a more ambitious goal: modeling defects in a physically meaningful manner. While earlier systems mainly focused on identifying cracks or spalling regions from images \citep{bang2019encoder, jiang2020real}, an increasing body of work now emphasises the need to extract geometric, metric, and structural attributes of defects rather than treating them solely as 2D visual patterns.
+
+This shift is reflected in several recent research directions. One prominent line of work integrates multi-view photogrammetry or depth-enhanced imaging to reconstruct cracks or damaged areas in three-dimensional space, enabling volumetric or shape-based assessment \citep{beckman2019deep, chaiyasarn2022integrated}. Similarly, studies leveraging 3D point clouds and graph-based semantic segmentation have demonstrated the feasibility of building as-inspected defect models that encode both geometry and material characteristics of concrete surfaces \citep{BAHREINI2024105282}. Beyond purely image-driven approaches, researchers have also explored aligning UAV imagery with Building Information Models (BIM) to achieve defect-level reconstruction within semantically rich building geometry \citep{chen2023automatic}. Recent developments further illustrate the integration of UAV sensing, AI, and GeoBIM into high-precision digital twin frameworks that directly embed defect information into geometric and lifecycle management systems \citep{zhang2025ai}. Collectively, these studies highlight a clear trajectory: the field is transitioning from what a defect looks like to what it physically means for structural safety and maintenance planning.
+
+However, despite rapidly growing interest in defect modeling, the majority of existing datasets remain limited to image-only crack or spalling annotations—typically at the bounding GT-Box or pixel level—without providing the geometric, metric, or severity-related information necessary for physically grounded modeling. As recent reviews point out \citep{chen2024shifting}, the absence of datasets capable of supporting defect geometry reconstruction or physical-scale estimation has become a key barrier for the development and evaluation of modeling-oriented algorithms. Moreover, the lack of high-resolution UAV datasets capturing diverse façade defects under real operational conditions further restricts the robustness and generalization of such methods.
+
+
+\label{sec:data-analy}
+
+\subsection{Comparison with Existing Infrastructure Defect Segmentation Datasets}
+To highlight the characteristics of the proposed CUBIT-InSeg dataset, we compare it with existing infrastructure defect segmentation datasets in Table~\ref{tab:dataset_compare}. Most publicly available datasets primarily target road and pavement scenarios, resulting in limited diversity in defect types, imaging perspectives, and environmental conditions. Road-focused datasets such as GAPs384~\cite{Crack500_tits}, EdmCrack600~\cite{EdmCrak600-aic}, 
+and GAPs-10m~\cite{GAPs-10m} provide pixel-level annotations but are restricted to ground-level imaging. Highway-Crack~\cite{hong2021highway} is the only UAV-based dataset in this group, containing 4,118 post-earthquake highway images; however, it remains constrained to roadway surfaces.
+
+For building facade defects, publicly available datasets are extremely limited. Crack-Seg~\cite{crack-seg} includes 4,029 images covering pavements and partial building scenes, yet lacks true aerial viewpoints and the high resolution required for UAV inspection scenarios. UAV75~\cite{UAV75} provides UAV imagery but contains only 75 low-resolution samples, making 
+it unsuitable for training modern deep segmentation models. Moreover, existing datasets overwhelmingly focus solely on cracks and do not include more severe facade defects such as spalling, which are critical for structural safety. According to established building pathology standards\footnote{British Standards Institution standards publication about "building and constructed assets -- service life planning" BS ISO 15686-7:2017} and professional inspection guidelines issued by the Hong Kong Buildings Department\footnote{Volume 1: Pre-1980 Residential\&Composite Buildings in Hong Kong} and the Hong Kong Institute of Surveyors, spalling of the concrete cover is classified as a high-risk defect: it is commonly induced by prolonged moisture exposure, oxidation of reinforcement, 
+and the progressive widening of pre-existing cracks, and may lead to detachment of concrete or even localized collapse if left unattended. Guided by these standards and by our prior defect taxonomy studies, CUBIT-InSeg explicitly includes spalling—along with cracks—to better 
+reflect the defect types of greatest concern in real-world facade safety assessment.
+
+Another limitation observed across these datasets is their generally low image resolution and low defect density: most images contain only a single defect instance, which does not reflect real-world UAV inspection conditions where multiple, spatially distributed defects commonly appear within the same facade view. Our CUBIT-InSeg addresses the aforementioned limitations by providing high-resolution UAV imagery, diverse defect types (crack and spalling), complex multi-instance scenarios, and realistic aerial inspection perspectives, thereby offering a 
+comprehensive and practically relevant benchmark for building defect segmentation.
+
+\begin{table*}
+\renewcommand{\arraystretch}{1.25}
+\caption{The Comparison between Other Unmanned System-captured Defects Segmentation Dataset with our \textit{CUBIT-InSeg} }
+\centering
+\resizebox{0.9\textwidth}{!}{
+    \begin{tabular}{{l|c|c|c|c|c|c}}
+    \Xhline{1.2pt}
+    Dataset & Image Volume & Resolution & Data Collection Platform & Defect Type & Infrastructure & Task Type \\
+    \hline
+    \hline
+    GAPs384~\cite{Crack500_tits} & 384 & $1920\times1080$ & Ground Vehicle & Crack & Pavement & Pixel Level \\
+
+    \hline
+    GAPs-10m~\cite{GAPs-10m} & 20 & $5030\times11505$ & Ground Vehicle & Crack & Pavement & Pixel Level \\
+
+    \hline
+    EdmCrack600~\cite{EdmCrak600-aic} & 600 & $1920\times1080$ & Ground Vehicle & Crack & Pavement & Pixel Level \\
+
+    \hline
+    Highway-Crack~\cite{hong2021highway} & 4,118 & $512\times512$ & Unmanned Aerial Vehicle & Crack & Highway & Pixel Level \\
+
+    \hline
+    \multirow{2}{*}{Crack-Seg~\cite{crack-seg}} & \multirow{2}{*}{4,029} & \multirow{2}{*}{$416\times416$} & \multirow{2}{*}{Ground Vehicle} & \multirow{2}{*}{Crack} & Building & \multirow{2}{*}{Pixel Level} \\
+    & & & & & Pavement &  \\
+
+    \hline
+    UAV75~\cite{UAV75} & 75 & $512\times512$ & Unmanned Aerial Vehicle & Crack & Building & Pixel Level \\
+
+    \hline
+    \hline
+    \multirow{2}{*}{\textbf{CUBIT-InSeg} (\textcolor{red}{\textit{\textbf{Ours}}})} & \textbf{6,996} & \multirow{2}{*}{\bm{$4800\times3200$}} & \multirow{2}{*}{\textbf{Unmanned Aerial Vehicle}} & \textbf{Crack} & \multirow{2}{*}{\textbf{Building}} & \multirow{2}{*}{\textbf{Instance Level}} \\
+    & \textbf{62,178 instances}  & & & \textbf{Spalling} & & \\
+    \hline
+    
+    \Xhline{1.2pt}
+    \end{tabular}
+}
+\vspace{-1em}
+\label{tab:dataset_compare}
+\end{table*}
+
+
+\subsection{Path Planning for Data Collection}
+In this study, we develop an equal-distance UAV imaging framework that enables high-quality data acquisition for digital-twin-based fa\c{c}ade defect modeling. The key objective is to ensure that each image is captured from a prescribed, nearly constant standoff distance to the building surface, so that pixel-level defect segmentation can be consistently linked to physical dimensions (e.g., crack width, spalling area and depth) in the reconstructed 3D model. Our framework extends recent explore--then--exploit multi-UAV coverage schemes for infrastructure inspection and reconstruction \citep{wang2023fast,gao2024hierarchical},
+and integrates them with depth-aware surface modeling, equal-distance viewpoint generation, and DT updating for defect-aware asset management.
+
+We adopt an explore--then--exploit paradigm similar to recent hierarchical multi-UAV frameworks for building inspection.
+During the exploration stage, each UAV performs depth-visual SLAM to estimate its six-degree-of-freedom pose and incrementally reconstruct a dense point cloud of the fa\c{c}ade and nearby obstacles. The environment is discretised into a 3D occupancy grid, where each voxel stores (i) occupancy probability, (ii) distance to the nearest obstacle, and (iii) a reconstructability score.
+
+The reconstructability is computed by combining stereo-geometry and light-field principles: voxels that can be observed from multiple viewpoints with favourable parallax angles and sufficient field-of-view coverage receive higher scores, while voxels that are too close to obstacles or outside the effective sensing range are penalised.
+This results in a density map $R(\mathbf{p})$ that reflects both the reconstructability of the fa\c{c}ade and safety margins around obstacles.
+
+Let $W \subset \mathbb{R}^3$ denote the workspace, $B$ the building volume, and $\{\mathbf{s}_k\}$ the set of surface points of the fa\c{c}ade estimated from the depth-based SLAM. The density map is initialised using a coarse bounding box of $B$ and is iteratively updated as more points are observed.
+
+To coordinate multiple UAVs, we employ a Voronoi-based spatial deployment strategy inspired by distributed coverage control.
+Let $P(t) = [\mathbf{p}_1(t),\dots,\mathbf{p}_n(t)]$ be the UAV positions at time $t$. The workspace $W$ is partitioned into non-overlapping Voronoi cells $V_i(t)$ such that each UAV $i$ is responsible for coverage within its own cell. The density-weighted coverage cost
+\begin{equation}
+  H(P) = \sum_{i=1}^n \int_{V_i} \|\mathbf{p} - \mathbf{p}_i\|^2
+  R(\mathbf{p}) \,\mathrm{d}\mathbf{p}
+\end{equation}
+is minimised by a gradient-descent control law that drives the UAVs towards a centroidal Voronoi tessellation.
+This yields a load-balanced spatial deployment where each UAV converges to the ``best'' region of the fa\c{c}ade in terms of reconstructability and safety.
+
+To guarantee collision avoidance, we follow the hyperplane-based construction of safe convex corridors between UAVs and obstacles. The Voronoi cells are intersected with these corridors to ensure that the motion of each UAV remains within a collision-free region while the global coverage cost is reduced.
+
+Once the exploration stage converges and a sufficiently accurate fa\c{c}ade surface model is obtained, we switch to the exploitation stage to generate equal-distance viewpoints for high-quality imaging and defect modeling. For each surface point $\mathbf{s}_k$ with outward normal $\mathbf{n}_k$, we define a desired camera position 
+\begin{equation}
+  \mathbf{v}_k = \mathbf{s}_k + d_{\text{target}} \,\mathbf{n}_k,
+\end{equation}
+where $d_{\text{target}}$ is the prescribed standoff distance, chosen based on camera field-of-view, required ground-sample distance (GSD) for defect segmentation, and safety requirements.
+
+To avoid redundancy, the fa\c{c}ade is first discretised into small patches (e.g., in the $(u,v)$ parameter space of the surface), and one or several viewpoints are generated per patch such that:
+(i) the angle between the viewing direction and the surface normal is within a specified bound, (ii) the overlap between neighbouring images exceeds a minimum threshold, and (iii) the viewpoints lie within the collision-free corridors and do not violate minimum distance-to-obstacle constraints. This procedure yields a set of candidate equal-distance viewpoints $\mathcal{V} = \{\mathbf{v}_1,\dots,\mathbf{v}_{N_v}\}$ for each UAV.
+
+After viewpoint generation, the viewpoints assigned to each UAV are further partitioned into capacity-constrained subregions by applying a
+capacity-constrained Voronoi tessellation inside its working cell. The capacity of each subregion is defined in terms of (i) the number of viewpoints and (ii) the estimated travel cost, which reflects the limited endurance of each UAV.
+
+For each subregion, we formulate a trajectory-based travelling salesman problem (TSP): the edges between viewpoints are weighted by collision-free path lengths obtained with an A* or kinodynamic planner in the occupancy map. Solving the TSP for each subregion yields a set of short, feasible routes that visit all viewpoints while minimising inspection time.
+
+The resulting routes are then converted into an automatic flight plan by exporting time-parameterised waypoints (position, yaw, and desired camera trigger events) in the format required by the UAV autopilot (e.g., MAVLink mission file). In this way, the proposed methodology extends existing coverage-control algorithms from ``high-level exploration'' to a fully integrated, DT-ready automatic route planner for equal-distance fa\c{c}ade imaging.
+
+
+
+\subsection{Statistics and Target Position Distribution}
+% crack共有3528个图片，spalling有3428个图片。 
+% 图\ref{fig:statistic}展示了CUBIT-InSeg的目标数据统计和位置分布。在6996个图片数据中共有62187个目标，其中crack和spalling目标分别有51865和10322个，分别占到83%和17% （\ref{fig:statistic}(b)）。crack和spalling的总数量的差距也显示出Spalling数据的稀缺性。spalling已经是比较严重程度的外立面缺陷，容易引坍塌，所以尽管远不如crack常见，却更需要引起重视从而加大采集力度。
+
+% 除了数量分析之外，目标的分布is another significant consideration in the instance segmentation dataset。The distribution of objects can affect the model's spatial awareness, which is the model's understanding of the distribution and relative position of objects in space. This distribution can also affect the model's ability to detect offset targets, indicating the model's robustness to target position shifts. When detecting buildings in real scenes, many defects could be sparsely distributed in various locations of the image input to the deep neural network model. Models with strong target offset detection capabilities can easily capture these defects. Furthermore, the generalization ability of the model has a strong relationship with the target position distribution. If the target distribution in the training dataset is not representative, the model will encounter targets with unknown positions in the real scene, and false detections and missed detections will occur. \ref{fig:statistic}(a)展示了的每个缺陷目标的ground truth bounding box中心的散点，可以看出相对均匀的分布在图像各个位置。中间区域偏多，在[x,y]\in{0.5\pm0.175}的区间内，共有39078个目标，占比63%。这样的的目标分布情况也确保了基于我们CUBIT-InSeg数据集训练出来的模型，会有比较好的空间感知能力和鲁棒性。
+Figure~\ref{fig:statistic} presents the statistical summary and spatial distribution of defect instances in the CUBIT-InSeg dataset. Among the 6,996 images, a total of 62,187 annotated targets are included, of which \textit{crack} accounts for 51,865 instances (83\%) and \textit{spalling} for 10,322 instances (17\%), as shown in Fig.~\ref{fig:statistic}(b). This imbalance highlights the natural rarity of spalling in real infrastructure scenes. Although less frequently observed, spalling represents a more severe façade defect with higher safety risks, underscoring the need for increased attention and dedicated data collection despite its lower occurrence.
+
+Beyond instance counts, the spatial distribution of targets is another critical factor in evaluating an instance segmentation dataset. The placement of defects within images influences a model’s \textit{spatial awareness}, which represents its ability to recognize objects across different locations, and directly affects robustness to target offset or positional shifts. In practical UAV inspection scenarios, defects often appear sparsely and unpredictably across the façade. Models trained on datasets with well-distributed targets are therefore more capable of detecting defects located near image borders, in corners, or in unconventional positions. Figure~\ref{fig:statistic}(a) visualizes the scatter plot of ground-truth bounding-box centers for all defect instances. The distribution is reasonably uniform across the image plane, with a moderate concentration near the central region: approximately 63\% of all targets (39,078 instances) fall within the normalized range $[x,y] \in \{0.5 \pm 0.175\}$. Such a distribution ensures that models trained on our CUBIT-InSeg dataset develop strong spatial generalization capabilities and exhibit higher robustness when deployed in real-world UAV inspection scenarios.
+
+
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\columnwidth]{images/counting.pdf}
+    \caption{(a) Distribution of annotated bounding box sizes for defects, (b) Distribution of sizes for sampled non-overlapping background bounding boxes.}
+    \label{fig:statistic}
+\vspace{-1em}
+\end{figure}
+
+
+\subsection{Foreground and Background Box Sizes}
+To further characterize the geometric variability of CUBIT-InSeg, Fig.~\ref{fig:distribution}(a) illustrates the size distribution of ground-truth defect bounding boxes. The defects span an exceptionally wide scale range: crack instances form thin, elongated structures with short sides sometimes below 5 pixels, whereas spalling regions may exceed 4800 pixels along their longer dimension. The strong concentration of points near the lower boundary of the "Smaller side" axis reflects the high anisotropy and extreme slenderness of cracks, while the marginal histograms reveal a long-tailed distribution covering both microscopic and very large facade defects. This pronounced scale diversity poses a significant challenge for both detection and segmentation.
+
+Fig.~\ref{fig:distribution}(b) shows the distribution of background boxes, which are randomly sampled non-defect patches used as a reference for contrastive analysis. These background patches are intentionally constrained to moderate sizes so that they remain representative of local non-defect regions. The empty region in the lower-left corner is expected: background boxes smaller than 20 pixels on either side are excluded, corresponding to the 20-pixel receptive field induced by the 32× downsampling operation (P5-stage) in common instance segmentation models (input size 640 / 32 = 20). Patches below this scale do not constitute meaningful semantic context for the model and are therefore omitted. Compared with the highly heterogeneous foreground distribution, the background boxes exhibit a more compact and uniform pattern, highlighting the intrinsic difficulty of detecting tiny cracks that may occupy less than 0.01\% of the image while simultaneously handling large-scale structural defects. Together, these characteristics underscore the geometric richness and real-world complexity embodied in the CUBIT-InSeg dataset.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.98\columnwidth]{images/distribution-dataset.pdf}
+    \caption{(a) Distribution of annotated bounding box sizes for defects, (b) Distribution of sizes for sampled non-overlapping background bounding boxes.}
+    \label{fig:distribution}
+\vspace{-1em}
+\end{figure}
+
+\subsection{Physically Based Defect Measurement from Pixel-Level Segmentations}
+\label{subsec:defect_measurement}
+
+Given the equal-distance UAV imaging and automatic flight planning strategy
+described in the previous subsection, all façade images in CUBIT-InSeg are captured at a prescribed, nearly constant standoff distance $d_{\mathrm{target}}$ from the building surface. This imaging geometry enables pixel-level defect segmentations to be directly converted into physically meaningful measurements, which are later used for DT-based defect quantification with the workflow in Fig.~\ref{figure:regis}.
+
+Let $I_i$ denote the $i$-th UAV image captured at distance $d_{\mathrm{target}}$ with camera focal length $f$ and pixel pitch
+$\delta_p$ (physical size of one pixel on the sensor).
+Under the pinhole camera model, the ground-sample distance (GSD) on the façade plane can be approximated as
+\begin{equation}
+  \label{eq:gsd}
+  \mathrm{GSD} = \frac{d_{\mathrm{target}}}{f} \, \delta_p ,
+\end{equation}
+which, thanks to the equal-distance imaging strategy, is assumed to be
+approximately constant across all images and within each façade patch.
+Consequently, one pixel corresponds to a fixed physical length
+$\mathrm{GSD}$ on the façade, and an axis-aligned pixel square relates to a
+physical area of $\mathrm{GSD}^2$.
+
+Using the instance-level segmentation model trained on CUBIT-InSeg, each image $I_i$ is associated with a set of
+defect instances
+\[
+  \mathcal{M}_i = \{\Omega_i^{(k)}\}_{k=1}^{N_i},
+\]
+where $\Omega_i^{(k)} \subset \mathbb{Z}^2$ denotes the pixel set of the
+$k$-th defect instance (either crack or spalling) in image $I_i$.
+
+For crack-type instances, we first compute a skeletonised representation to
+decouple crack \emph{length} and \emph{width}. Let $\Gamma_i^{(k)}$ be the
+skeleton pixels of instance $\Omega_i^{(k)}$, extracted by a standard
+thinning algorithm, and let $\mathbf{t}(\mathbf{p})$ be the unit tangent
+direction along the skeleton at pixel $\mathbf{p} \in \Gamma_i^{(k)}$.
+The corresponding normal direction is
+\[
+  \mathbf{n}_{\perp}(\mathbf{p})
+  = \mathbf{R}_{90^\circ}\,\mathbf{t}(\mathbf{p}),
+\]
+where $\mathbf{R}_{90^\circ}$ rotates a 2D vector by $90^\circ$.
+
+\paragraph{Crack width.}
+For each skeleton pixel $\mathbf{p}$, we count the number of consecutive
+crack pixels along $\mathbf{n}_{\perp}(\mathbf{p})$ that remain inside
+$\Omega_i^{(k)}$:
+\[
+  N_{\perp}(\mathbf{p}) =
+  \big|\{\mathbf{q} \in \Omega_i^{(k)} \mid
+  \mathbf{q} \text{ lies on the normal line through } \mathbf{p}\}\big|.
+\]
+The local physical crack width at $\mathbf{p}$ is then
+\begin{equation}
+  w_i^{(k)}(\mathbf{p}) = N_{\perp}(\mathbf{p}) \, \mathrm{GSD}.
+\end{equation}
+An instance-level crack width can be defined as the mean or maximum of
+$w_i^{(k)}(\mathbf{p})$ over all $\mathbf{p} \in \Gamma_i^{(k)}$, e.g.
+\begin{equation}
+  \bar{w}_i^{(k)} =
+  \frac{1}{|\Gamma_i^{(k)}|}
+  \sum_{\mathbf{p} \in \Gamma_i^{(k)}} w_i^{(k)}(\mathbf{p}).
+\end{equation}
+
+\paragraph{Crack length.}
+Similarly, the crack length is obtained by summing the physical distances
+between adjacent skeleton pixels along $\Gamma_i^{(k)}$. Let
+$\Gamma_i^{(k)} = \{\mathbf{p}_1,\dots,\mathbf{p}_{L_k}\}$ be ordered along
+the crack centreline; the physical length is approximated as
+\begin{equation}
+  L_i^{(k)} \approx
+  \sum_{j=1}^{L_k - 1}
+  \|\mathbf{p}_{j+1} - \mathbf{p}_j\|_2 \,\mathrm{GSD}.
+\end{equation}
+
+For spalling-type instances, the primary geometric descriptor at the image level is the defect area. Given an instance mask $\Omega_i^{(k)}$ labelled as spalling, its area in pixels is simply $|\Omega_i^{(k)}|$; the corresponding physical area is
+\begin{equation}
+  A_i^{(k)} = |\Omega_i^{(k)}| \,\mathrm{GSD}^2.
+\end{equation}
+
+Additional shape descriptors, such as equivalent diameter, aspect ratio, or compactness, can be derived from the pixel mask and converted to physical units by scaling lengths with $\mathrm{GSD}$. These descriptors form a physically consistent feature set for spalling, which is particularly important given its higher severity in façade safety assessment compared with cracks.
+
+The above procedure yields, for each defect instance $\Omega_i^{(k)}$, a collection of physically interpretable measurements,
+e.g.,
+\[
+  \big(L_i^{(k)}, \bar{w}_i^{(k)}, A_i^{(k)}, \text{shape features}, \text{defect type}\big),
+\]
+all expressed in metric units under the equal-distance imaging assumption. These image-level measurements are aggregated at façade- or component-level (e.g., by grouping instances within the same façade panel or elevation zone), providing a compact statistical description of defect conditions.
+
+\subsection{Physically Based Defect Quantification on the Digital Twin}
+\label{sec:dt-quantification}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\columnwidth]{images/regis.pdf}
+	\caption{Physically based façade defect quantification workflow: (a) defect registration; (b) defect assessment.}
+\label{figure:regis}
+\end{figure}
+
+
+Building upon the physically measurable crack and spalling descriptors derived from pixel-level segmentations, this section integrates these measurements into a DT representation of the façade. The goal is to transform 2D image–based defect indicators into component-level condition assessments that align with international building pathology standards, including BS ISO 15686-7:2017 and the inspection guidelines issued by the Hong Kong Buildings Department and the Hong Kong Institute of Surveyors.
+
+Let the façade DT be composed of $M$ surface or BIM elements $\{\mathcal{E}_j\}_{j=1}^M$. Each defect instance detected in images is associated with one or more façade elements based on its image footprint and field-of-view projection.
+
+For each defect instance $k$ in image $I_i$, we have the set of physical
+measurements:
+\[
+  \Phi_i^{(k)} = 
+  \{L_i^{(k)},\ \bar{w}_i^{(k)},\ A_i^{(k)},\ \mathrm{shape},\ \mathrm{type}\}.
+\]
+We assign these measurements to façade element $\mathcal{E}_j$ if the defect appears within the region of the façade that is imaged by the camera when capturing $I_i$. Let $\mathcal{K}_j$ denote the set of all defect instances assigned to $\mathcal{E}_j$.
+
+The aggregated defect state of element $\mathcal{E}_j$ is represented as
+\[
+  \Phi(\mathcal{E}_j) = 
+  \bigcup_{k \in \mathcal{K}_j} \Phi_i^{(k)}.
+\]
+
+For practical analysis, we compute façade–element–level statistics:
+\begin{align}
+  \mathrm{CrackLength}(\mathcal{E}_j) &= \sum_{k \in \mathcal{K}_j,\ \mathrm{type}=C} L_i^{(k)}, \\
+  \mathrm{MeanCrackWidth}(\mathcal{E}_j) &= 
+    \frac{1}{|\mathcal{K}_j^C|} 
+    \sum_{k \in \mathcal{K}_j^C} \bar{w}_i^{(k)}, \\
+  \mathrm{SpallingArea}(\mathcal{E}_j) &= 
+    \sum_{k \in \mathcal{K}_j,\ \mathrm{type}=S} A_i^{(k)},
+\end{align}
+where $\mathcal{K}_j^C$ and $\mathcal{K}_j^S$ denote the crack and spalling instances, respectively.
+
+These metrics constitute the defect signature of each façade component and serve as the input for severity grading and maintenance prioritization.
+
+According to BS ISO 15686-7:2017 \citep{ISO15686_7_2017}, the Hong Kong Buildings Department (BD) \citep{HKBD_MBIS_2017}, and the Hong Kong Institute of Surveyors (HKIS) \citep{HKIS_Facade_Inspection}, two defects are regarded as highly safety-critical:
+
+\begin{itemize}
+  \item \textbf{Cracks}: Risk of moisture ingress, reinforcement corrosion,
+        propagation into spalling.
+  \item \textbf{Spalling}: Classified as a high-risk defect that may lead to
+        detachment of concrete cover and localized collapse.
+\end{itemize}
+
+To align with these standards, we define a unified \textbf{Severity Index (SI)}
+for each façade element:
+\[
+  SI(\mathcal{E}_j) = 
+  \alpha_1 W_C(\mathcal{E}_j)
+  + \alpha_2 L_C(\mathcal{E}_j)
+  + \beta_1 A_S(\mathcal{E}_j),
+\]
+where:
+
+- $W_C(\mathcal{E}_j)$ = normalized mean crack width  
+- $L_C(\mathcal{E}_j)$ = normalized total crack length  
+- $A_S(\mathcal{E}_j)$ = normalized total spalling area  
+- $\alpha_1, \alpha_2, \beta_1$ = weights reflecting relative safety impact  
+  (typically $\beta_1 > \alpha_1 > \alpha_2$ due to the high risk of spalling)
+
+Normalization is performed with respect to ISO guideline thresholds and BD practice notes.
+
+Using the Severity Index, we define four façade defect levels consistent with ISO 15686 and Hong Kong inspection practice.
+
+\begin{table*}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\caption{Severity classification for façade defects based on physical measurements and ISO/HK practice}
+\begin{tabular}{l|c|c|c}
+\Xhline{1.2pt}
+\textbf{Level} & \textbf{Description} & \textbf{Typical Thresholds} & \textbf{Action} \\
+\Xhline{1.2pt}
+Low (SI $<$ 0.25) &
+Minor deterioration &
+\begin{tabular}{@{}c@{}}Crack width $< 0.2$ mm\\No spalling\end{tabular} &
+Routine monitoring \\
+\hline
+Moderate (0.25 $\le$ SI $<$ 0.50) &
+Non-structural impact &
+\begin{tabular}{@{}c@{}}0.2--0.5 mm cracks\\Small spalling $< 50$ cm$^2$\end{tabular} &
+Repair scheduling \\
+\hline
+Severe (0.50 $\le$ SI $<$ 0.75) &
+Significant safety concern &
+\begin{tabular}{@{}c@{}}Cracks $>0.5$ mm \\ Spalling 50--200 cm$^2$ \end{tabular} &
+Urgent repair \\
+\hline
+Critical (SI $\ge$ 0.75) &
+High risk of failure &
+\begin{tabular}{@{}c@{}}Wide cracks $>1$ mm\\Large spalling $>200$ cm$^2$ \end{tabular} &
+Immediate action / cordon-off \\
+\Xhline{1.2pt}
+\end{tabular}
+\label{tab:severity}
+\end{table*}
+
+These thresholds reflect:
+
+\begin{itemize}
+\item  ISO 15686’s durability and condition-rating guidance  
+\item  Hong Kong BD’s classification of “defective concrete cover”  
+\item  HKIS’s façade safety inspection criteria  
+\end{itemize}
+
+The final DT representation stores the severity level, numerical SI value, and detailed defect metrics for each façade component. This enables automatic maintenance scheduling, lifecycle cost estimation, and longitudinal tracking of defect evolution within the DT environment.
+
+Each façade element $\mathcal{E}_j$ in the DT is annotated with:
+
+\[
+  \big(SI(\mathcal{E}_j),\ \Phi(\mathcal{E}_j),\ \text{Severity Level}\big),
+\]
+allowing users to:
+
+\begin{itemize}
+  \item visualize defect locations and severities on the DT model;
+  \item perform time–series monitoring as new UAV inspections are collected;
+  \item support automated condition assessment reports;
+  \item prioritize repairs based on quantitative risk levels.
+\end{itemize}
+
+This establishes a full pipeline from UAV image acquisition and pixel-level segmentation to physically grounded DT-based structural assessment.
+
+
+\section{Benchmark Experiments of the Proposed CUBIT-InSeg Dataset}
+\label{sec: experiments}
+
+To comprehensively evaluate the proposed CUBIT-InSeg dataset, we trained an extensive suite of deep learning models, encompassing 17 model families and more than 80 individual networks, including convolution-based architectures (\textbf{\texttt{Starnet}} \cite{starnet}, \textbf{\texttt{FasterNet}} \cite{CVPR-fasternet}, \textbf{\texttt{MobileNetV4}} \cite{mobilenetv4}, \textbf{\texttt{EMO}} \cite{ICCV_emo}, \textbf{\texttt{ConvNeXtV2}} \cite{cvpr-convnextv2}), transformer-based architectures (\textbf{\texttt{Swin-Transformer}} \cite{cvpr-swin}, \textbf{\texttt{CSwin-Transformer}} \cite{cvpr-cswintrans}, \textbf{\texttt{RepViT}} \cite{repvit}, \textbf{\texttt{EfficientViT}} \cite{CVPR_efficientvit}), and YOLO variants (\textbf{\texttt{YOLOv8}} \cite{yolov8}, \textbf{\texttt{YOLOv9}} \cite{wang2024yolov9}, \textbf{\texttt{YOLOv10}} \cite{wang2024yolov10}, \textbf{\texttt{YOLOv11}} \cite{yolo11}, \textbf{\texttt{YOLOv12}} \cite{yolov12}, \textbf{\texttt{YOLOv13}} \cite{lei2025yolov13}, \textbf{\texttt{Mamba-YOLO}} \cite{mambayolo}, \textbf{\texttt{Hyper-YOLO}} \cite{hyperyolo}). These SOTA approaches cover a wide spectrum of design paradigms and represent the leading techniques in modern object detection and instance segmentation. Leveraging such architectural diversity allows us to establish a comprehensive benchmark while simultaneously validating the robustness and applicability of the dataset across different defect inspection scenarios.
+
+For evaluation metrics, we utilize mean Average Precision (mAP) by following the widely adopted MS COCO~\cite{mscoco} instance segmentation task, reporting bounding GT-Box mAP$_{0.5}$ and mAP$_{0.5:0.95}$ for objects localization, as well as mask mAP$_{0.5}$ and mAP$_{0.5:0.95}$ for objects segmentation (detailed in Section~\ref{subsec:metrics}). Adopting these widely accepted metrics also aligns our dataset with common object-centric benchmarks, thereby enhancing its comparability and general applicability within the broader community. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\columnwidth]{images/iou.pdf}
+	\caption{\textbf{Visualization of Intersection-over-Union (IoU).} \textcolor{red}{Red} and \textcolor{iou_orange}{orange} represent the ground-truth bounding box / mask (GT-Box / GT-Mask) and predicted box / mask (P-Box / P-Mask) of this spalling sample, respectively. In IoU equation, the denominator symbolizes the union of the GT and the P, which is represented by a \textcolor{iou_blue}{blue} area. The overlapping area of the GT and the P, which denoted their intersection, is also indicated by the \textcolor{iou_blue}{blue} part.}
+    \label{fig:iou}
+\vspace{-1em}
+\end{figure}
+
+\subsection{Experimental Setup}
+\label{subsec:setup}
+All experiments—including both the benchmark evaluation on the CUBIT-InSeg dataset and cross-domain validation on external datasets—are conducted on an Ubuntu 22.04 workstation equipped with an Intel i9-13900K CPU and dual NVIDIA RTX 4090 GPUs. All models are trained for 300 epochs with a batch size of 16, and no pre-trained weights from any common object or defect-related datasets (e.g.~\cite{mscoco, aic_zby}) are used. Stochastic Gradient Descent (SGD) is adopted as the optimizer, and the detailed configurations of optimization parameters and hyperparameters are summarized in Table~\ref{tab:optimizer}.
+
+During inference, Non-Maximum Suppression (NMS) \cite{nms} is applied to remove redundant detections. For instance segmentation, although the segmentation mask is ultimately evaluated using mask-level IoU, the suppression process still relies on the GT-Box IoU, consistent with the procedure defined in Algorithm~\ref{alg_nms}. Given an initial list of detected bounding boxes $B$ and their confidence scores $S$, NMS iteratively selects the box with the highest confidence score, denoted as $M$, and adds it to the final detection set $D$. All remaining boxes 
+$b_i \in B$ whose box IoU with $M$ exceeds the suppression threshold $N_t$ are removed along with their corresponding scores. Although mask-level IoU is later used to compute mask-based evaluation metrics such as Mask\_AP$_{0.5}$ and Mask\_AP$_{0.5:0.95}$, the suppression step remains box-based to ensure consistency and computational efficiency. These mask-based metrics evaluate the quality of the predicted segmentation masks by measuring their pixel-level agreement with the ground-truth shapes, thus reflecting the accuracy of instance-level defect delineation.
+
+The IoU criterion evaluates the overlap ratio between a predicted box / mask (P-Box / P-Mask) and the ground-truth box / mask (GT-Box / GT-Mask). We adopt a confidence threshold of 0.25 and an IoU threshold of 0.7, which follows the setting of Ultratlytics framework. A visual illustration of the IoU of computation is provided in Figure~\ref{fig:iou}.
+
+For benchmark training and testing our CUBIT-InSeg dataset, it is split into training (\textbf{5,596} images, \textbf{80}\%), validation (\textbf{700} images, \textbf{10}\%), and test (\textbf{700} images, \textbf{10}\%) sets with resolution $640\times640$. Among the aforementioned SOTA models, both convolution-based and transformer-based architectures serve as powerful feature extraction backbones. To ensure a fair comparison, we integrated all these backbones into the Ultralytics\footnote{\textcolor{link}{https://github.com/ultralytics/ultralytics}}, which is the framework used for YOLO series and its variants, and adopted the same Ultralytics neck and segmentation head, scaled using consistent multipliers (\textbf{\texttt{n}}, \textbf{\texttt{s}}, \textbf{\texttt{m}}, \textbf{\texttt{l}}, \textbf{\texttt{x}}). This unified implementation eliminates architectural discrepancies and allows performance differences to be attributed solely to the backbone design.
+
+
+\begin{table}
+\renewcommand{\arraystretch}{1.2}
+    \centering
+    \tiny % 缩小字体
+    \caption{Optimizer and Hyperparameters of Experiments}
+    \resizebox{0.9\columnwidth}{!}{
+    \begin{tabular}{c|c}
+    \Xhline{1.0pt}
+        Optimizer Type & SGD \\
+        Learning Rate Schedule & Linear \\
+        Initial Learning Rate $\alpha$ & 1e-2 \\
+        Final Learning Rate $\alpha$ & 1e-4 \\
+        Momentum $\beta$ &  0.937 \\         
+        Weight Decay $\phi$ & 5e-4 \\
+        Loss Coefficients $\lambda_{\text{cls}}$, $\lambda_{\text{box}}$, $\lambda_{\text{dfl}}$ & 0.5, 7.5 1.5 \\
+    \Xhline{1.0pt}
+    \end{tabular}
+}
+\label{tab:optimizer}
+\vspace{-1em}
+\end{table}
+
+
+\begin{algorithm}
+\footnotesize
+\label{alg_nms}
+\setlength{\abovecaptionskip}{-0.35cm}
+\setlength{\belowcaptionskip}{-0.35cm}
+%    \SetAlgoNoLine  %去掉之前的竖线
+% The Learning based Semantically Similar Region Expansion for points clustering
+     \caption{Non-maximum suppression (NMS) procedure used in instance segmentation pipeline} 
+    \KwIn{The \textbf{input} initial detection boxes $B$, the corresponding confidence scores $S$, and the IoU suppression threshold $N_t$.}
+    \KwOut{The \textbf{output} final selected boxes $D$ and their corresponding scores $S$.}
+
+  	\textit{D} $\leftarrow \varnothing$ \\
+  \While{$B \neq empty$}
+{ Select the maximum value in the set of $S$, and give this value to $m$.
+        $m$ $\leftarrow argmax(S)$ \\
+        $M$  $\leftarrow b_m$ \\
+        $D$  $\leftarrow D \cup M$ \\
+        $B$  $\leftarrow B - M$ \\
+        \For{$b_i$ in $B$} 
+        {%   {Re}          \textbf{Continue}
+            %Regard the points as the planar points
+            % \If{\textcolor{red}{$\phi \leq 2^{\circ}$}}
+            % \If{$\phi \leq 2^{\circ}$}}
+            \If{$iou(M, b_i) > N_t$}
+            {$B \leftarrow B - b_i; S \leftarrow S - s_i$\;
+            
+                % \If{$\Delta R \leq \sigma $}
+            }
+}
+\Return \textit{D, S}
+        %     {Regard the points as the isolated points\;
+        %  \textbf{Continue}}
+ %\Else{Regard the point as new seed points}
+        } 
+% \EndWhile
+ %Assign $P_2$ the same class label as $P_1$. Take the attentional-PSP-Net, for example. The related algorithms are given in a very detailed way as shown in the Figure \ref{fig_UNet}.
+\end{algorithm}
+
+% ******************* CUBIT-InSeg dataset table ******************* 
+
+\begin{table*}
+    \centering
+    \caption{Benchmark Results of Selected End-to-End Models on the Test Set of \textbf{\textit{CUBIT-InSeg}}}
+    \renewcommand{\arraystretch}{1.25}
+    \resizebox{0.925\textwidth}{!}{
+    \begin{tabular}{c | c c c | c c | c c | c c | c c | c c | c c }
+    \Xhline{1.2pt}
+    
+    \multirow{2}{*}{\textbf{Models}} & \multirow{2}{*}{\textbf{\#Params}(M)$\downarrow$} & \multirow{2}{*}{\textbf{FLOPs}(G)$\downarrow$} & \multirow{2}{*}{\textbf{FPS}$\uparrow$}  & \multirow{2}{*}{\textbf{Box\_mAP}$_{0.5}^{test}$$\uparrow$} & \multirow{2}{*}{\textbf{Box\_mAP}$_{0.5:0.95}^{test}$$\uparrow$} & \multicolumn{2}{c}{\textbf{Crack} (\textbf{Box})} & \multicolumn{2}{|c|}{\textbf{Spalling} (\textbf{Box})} & \multirow{2}{*}{\textbf{Mask\_mAP}$_{0.5}^{test}$$\uparrow$} & \multirow{2}{*}{\textbf{Mask\_mAP}$_{0.5:0.95}^{test}$$\uparrow$} & \multicolumn{2}{c}{\textbf{Crack} (\textbf{Mask})} & \multicolumn{2}{|c}{\textbf{Spalling} (\textbf{Mask})} \\
+    
+    \cline{7-10}
+    \cline{13-16} 
+    & & & & & & \textbf{AP}$_{0.5}^{test}$$\uparrow$ & \textbf{AP}$_{0.5:0.95}^{test}$$\uparrow$ & \textbf{AP}$_{0.5}^{test}$$\uparrow$ & \textbf{AP}$_{0.5:0.95}^{test}$$\uparrow$ & & & \textbf{AP}$_{0.5}^{test}$ $\uparrow$& \textbf{AP}$_{0.5:0.95}^{test}$$\uparrow$ & \textbf{AP}$_{0.5}^{test}$$\uparrow$ & AP$_{0.5:0.95}^{test}$$\uparrow$ \\
+    
+    \hline
+    \hline
+    \rowcolor{gray!15} 
+    \textit{\textbf{Conv-based Models}} &  &  &  &  &  &  &  &  &  &  &  &  &  & & \\
+
+    \hline
+    EMO-1M (n)~\cite{ICCV_emo} & $3.27$ & $13.1$ & $498.35$ & $84.5\%$ & $74.4\%$ & $71.1\%$ & $54.5\%$ & $97.9\%$ & $94.4\%$ & $76.1\%$ & $52.7\%$ & $54.7\%$ & $19.0\%$ & $97.4\%$ & $86.3\%$ \\
+    EMO-2M (s)~\cite{ICCV_emo} & $9.06$ & $37.1$ & $356.96$ & $88.0\%$ & $78.7\%$ & $77.6\%$ & $61.9\%$ & $98.4\%$ & $95.5\%$ & $78.6\%$ & $55.3\%$ & $59.6\%$ & $22.4\%$ & $97.7\%$ & $88.2\%$ \\
+    EMO-5M (m)~\cite{ICCV_emo} & $20.46$ & $86.1$ & $242.75$ & \cellcolor{iou_blue!60}{$90.4\%_2$} & $82.2\%$ & \cellcolor{iou_blue!60}{$82.0\%_2$} & $68.0\%$ & $98.8\%$ & $96.4\%$ & \cellcolor{orange!65}{$81.6\%_1$} & $57.5\%$ & \cellcolor{iou_blue!60}{$64.9\%_2$} & \cellcolor{orange!65}{$25.2\%_1$} & \cellcolor{orange!65}{$98.3\%_1$} & $89.8\%$ \\
+    EMO-6M (l)~\cite{ICCV_emo} & $32.12$ & $149.5$ & $203.45$ & \cellcolor{orange!65}{$90.5\%_1$} & \cellcolor{iou_blue!60}{$82.4\%_2$} & \cellcolor{orange!65}{$82.1\%_1$} & \cellcolor{iou_blue!60}{$68.2\%_2$} & $98.8\%$ & \cellcolor{orange!65}{$96.7\%_1$} & $81.2\%$ & \cellcolor{orange!65}{$57.9\%_1$} & $64.0\%$ & $25.0\%$ & \cellcolor{orange!65}{$98.3\%_1$} & \cellcolor{orange!65}{$90.7\%_1$} \\
+
+    \hline
+    MobileNetV4-S (s)~\cite{mobilenetv4} & $10.19$ & $41.8$ & $592.27$ & $78.3\%$ & $66.4\%$ & $58.9\%$ & $40.8\%$ & $97.7\%$ & $92.0\%$ & $71.2\%$ & $48.5\%$ & $45.5\%$ & $13.3\%$ & $96.9\%$ & $83.7\%$ \\
+    MobileNetV4-M (m)~\cite{mobilenetv4} & $23.27$ & $140.0$ & $340.33$ & $79.1\%$ & $67.6\%$ & $60.4\%$ & $42.3\%$ & $97.8\%$ & $93.0\%$ & $71.3\%$ & $48.6\%$ & $45.7\%$ & $13.7\%$ & $97.0\%$ & $83.4\%$ \\
+    MobileNetV4-L (l)~\cite{mobilenetv4} & $34.49$ & $154.7$ & $285.14$ & $80.9\%$ & $70.0\%$ & $64.1\%$ & $46.1\%$ & $97.6\%$ & $93.8\%$ & $72.9\%$ & $50.5\%$ & $48.6\%$ & $14.8\%$ & $97.1\%$ & $86.1\%$ \\
+    
+    \hline
+    FasterNet-t0 (n)~\cite{CVPR-fasternet} & $4.15$ & $13.1$ & \cellcolor{iou_blue!60}{$729.19_2$} & $79.7\%$ & $68.2\%$ & $61.7\%$ & $43.2\%$ & $97.8\%$ & $93.1\%$ & $72.2\%$ & $49.0\%$ & $47.1\%$ & $14.1\%$ & $97.4\%$ & $84.0\%$ \\
+    FasterNet-t1 (n)~\cite{CVPR-fasternet} & $7.79$ & $21.7$ & $640.52$ & $82.1\%$ & $70.6\%$ & $66.0\%$ & $47.4\%$ & $98.2\%$ & $93.9\%$ & $74.4\%$ & $50.3\%$ & $51.0\%$ & $16.0\%$ & $97.8\%$ & $84.7\%$ \\
+    FasterNet-t2 (n)~\cite{CVPR-fasternet} & $15.17$ & $39.4$ & $508.73$ & $82.7\%$ & $71.3\%$ & $67.4\%$ & $48.9\%$ & $98.1\%$ & $93.7\%$ & $74.2\%$ & $50.6\%$ & $50.7\%$ & $15.5\%$ & $97.7\%$ & $85.8\%$ \\
+    FasterNet-s (s)~\cite{CVPR-fasternet} & $35.85$ & $100.2$ & $302.47$ & $85.8\%$ & $78.0\%$ & $72.8\%$ & $54.2\%$ & $98.8\%$ & $95.3\%$ & $76.0\%$ & $52.3\%$ & $53.8\%$ & $16.9\%$ & $98.1\%$ & $87.7\%$ \\
+    FasterNet-m (m)~\cite{CVPR-fasternet} & $65.57$ & $228.4$ & $160.52$ & $87.6\%$ & $77.3\%$ & $76.5\%$ & $58.8\%$ & $98.8\%$ & $95.8\%$ & $77.9\%$ & $53.9\%$ & $57.5\%$ & $19.2\%$ & \cellcolor{iou_blue!60}{$98.2\%_2$} & $88.5\%$ \\
+    FasterNet-l (l)~\cite{CVPR-fasternet} & $109.29$ & $349.8$ & $124.97$ & $88.4\%$ & $78.2\%$ & $78.0\%$ & $60.2\%$ & \cellcolor{iou_blue!60}{$98.9\%_2$} & $96.2\%$ & $78.5\%$ & $54.5\%$ & $58.8\%$ & $19.9\%$ & \cellcolor{orange!65}{$98.3\%_1$} & $88.9\%$ \\
+    
+
+    \hline
+    Starnet-s50 (n)~\cite{starnet} & \cellcolor{orange!65}{$2.19_1$} & \cellcolor{orange!65}{$8.9_1$} & \cellcolor{orange!65}{$828.82_1$} & $72.9\%$ & $61.0\%$ & $48.8\%$ & $31.9\%$ & $97.1\%$ & $90.0\%$ & $67.6\%$ & $46.0\%$ & $39.1\%$ & $11.2\%$ & $96.1\%$ & $80.8\%$ \\
+    Starnet-s100 (n)~\cite{starnet} & \cellcolor{iou_blue!60}{$2.69_2$} & \cellcolor{iou_blue!60}{$10.4_2$} & $689.58$ & $76.8\%$ & $65.0\%$ & $56.0\%$ & $38.2\%$ & $97.5\%$ & $91.8\%$ & $69.9\%$ & $47.5\%$ & $43.1\%$ & $12.8\%$ & $96.7\%$ & $82.2\%$ \\
+    Starnet-s150 (n)~\cite{starnet} & $3.19$ & $11.2$ & $665.89$ & $77.1\%$ & $65.1\%$ & $56.7\%$ & $38.5\%$ & $97.6\%$ & $91.7\%$ & $70.8\%$ & $47.8\%$ & $44.7\%$ & $13.2\%$ & $96.8\%$ & $82.4\%$ \\
+    Starnet-s1 (s)~\cite{starnet} & $8.45$ & $30.8$ & $480.88$ & $82.3\%$ & $71.3\%$ & $66.5\%$ & $48.3\%$ & $98.1\%$ & $94.2\%$ & $74.8\%$ & $51.5\%$ & $52.1\%$ & $17.2\%$ & $97.5\%$ & $85.9\%$ \\
+    Starnet-s2 (m)~\cite{starnet} & $16.4$ & $91.6$ & $341.02$ & $85.6\%$ & $75.4\%$ & $72.5\%$ & $55.1\%$ & $98.7\%$ & $95.6\%$ & $77.0\%$ & $53.4\%$ & $56.3\%$ & $18.4\%$ & $97.8\%$ & $88.3\%$ \\
+    Starnet-s3 (l)~\cite{starnet} & $21.7$ & $104.3$ & $287.39$ & $86.0\%$ & $75.4\%$ & $73.3\%$ & $55.5\%$ & $98.8\%$ & $95.3\%$ & $77.4\%$ & $53.4\%$ & $56.8\%$ & $18.7\%$ & $98.0\%$ & $88.1\%$ \\
+    Starnet-s4 (x)~\cite{starnet} & $43.3$ & $223.0$ & $173.83$ & $86.6\%$ & $76.1\%$ & $74.4\%$ & $56.7\%$ & $98.8\%$ & $95.5\%$ & $78.3\%$ & $54.1\%$ & $58.6\%$ & $19.8\%$ & $98.0\%$ & $88.4\%$ \\
+    
+    \hline
+    ConvNeXtV2-nano (n)~\cite{cvpr-convnextv2} & $17.91$ & $47.8$ & $210.86$ & $87.6\%$ & $79.6\%$ & $77.4\%$ & $63.8\%$ & $97.8\%$ & $95.4\%$ & $79.1\%$ & $55.8\%$ & $60.7\%$ & $23.0\%$ & $97.4\%$ & $88.6\%$ \\
+    ConvNeXtV2-tiny (s)~\cite{cvpr-convnextv2} & $35.36$ & $97.7$ & $136.16$ & $87.8\%$ & $79.7\%$ & $77.5\%$ & $63.2\%$ & $98.2\%$ & $96.2\%$ & $79.3\%$ & $56.5\%$ & $60.7\%$ & $22.7\%$ & $97.8\%$ & \cellcolor{iou_blue!60}{$90.4\%_2$} \\ 
+    ConvNeXtV2-base (m)~\cite{cvpr-convnextv2} & $103.21$ & $335.6$ & $60.87$ & $89.0\%$ & $81.0\%$ & $79.7\%$ & $65.9\%$ & $98.3\%$ & $96.2\%$ & $80.6\%$ & $57.0\%$ & $63.2\%$ & $24.3\%$ & $97.9\%$ & $89.7\%$ \\
+    ConvNeXtV2-large (l)~\cite{cvpr-convnextv2} & $217.03$ & $656.9$ & $37.58$ & $90.1\%$ & \cellcolor{orange!65}{$82.5\%_1$} & $81.8\%$ & \cellcolor{orange!65}{$68.4\%_1$} & $98.5\%$ & \cellcolor{orange!65}{$96.7\%_1$} & \cellcolor{iou_blue!60}{$81.5\%_2$} & \cellcolor{iou_blue!60}{$57.7\%_2$} & \cellcolor{orange!65}{$65.1\%_1$} & \cellcolor{iou_blue!60}{$25.1\%_2$} & $98.0\%$ & \cellcolor{iou_blue!60}{$90.4\%_2$} \\
+
+    \hline
+    \hline
+    \rowcolor{gray!15} 
+    \textit{\textbf{Transformer-based Models}} &  &  &  &  &  &  &  &  &  &  &  &  &  & & \\
+
+    \hline
+    Swin-Transformer-Tiny (n)~\cite{cvpr-swin} & $29.97$ & $81.5$ & $200.99$ & $82.6\%$ & $72.3\%$ & $67.4\%$ & $50.4\%$ & $97.9\%$ & $94.2\%$ & $74.0\%$ & $51.9\%$ & $50.7\%$ & $17.2\%$ & $97.4\%$ & $86.5\%$ \\
+    Swin-Transformer-Small (s)~\cite{cvpr-swin} & $55.57$ & $168.8$ & $129.89$ & $86.2\%$ & $76.2\%$ & $74.1\%$ & $57.0\%$ & $98.3\%$ & $95.3\%$ & $76.3\%$ & $53.7\%$ & $54.7\%$ & $18.9\%$ & $97.9\%$ & $88.5\%$ \\
+    Swin-Transformer-Base (m)~\cite{cvpr-swin} & $62.77$ & $228.0$ & $111.19$ & $87.1\%$ & $77.6\%$ & $75.5\%$ & $59.0\%$ & $98.6\%$ & $96.1\%$ & $77.3\%$ & $54.6\%$ & $56.4\%$ & $19.8\%$ & $98.1\%$ & $89.5\%$ \\
+    Swin-Transformer-Large (l)~\cite{cvpr-swin} & $66.04$ & $237.4$ & $101.03$ & $87.9\%$ & $78.3\%$ & $77.2\%$ & $60.9\%$ & $98.6\%$ & $95.8\%$ & $78.2\%$ & $55.0\%$ & $58.3\%$ & $20.4\%$ & $98.1\%$ & $89.6\%$ \\
+    
+    \hline
+    CSwin-Transformer-Tiny (n)~\cite{cvpr-cswintrans} & $23.94$ & $74.4$ & $210.68$ & $81.8\%$ & $69.2\%$ & $66.3\%$ & $46.2\%$ & $97.2\%$ & $92.2\%$ & $72.9\%$ & $49.7\%$ & $49.1\%$ & $14.4\%$ & $96.8\%$ & $84.9\%$ \\
+    CSwin-Transformer-Small (s)~\cite{cvpr-cswintrans} & $40.39$ & $129.1$ & $136.11$ & $84.4\%$ & $72.8\%$ & $71.5\%$ & $52.3\%$ & $97.4\%$ & $93.3\%$ & $76.2\%$ & $52.1\%$ & $55.5\%$ & $17.6\%$ & $96.8\%$ & $86.7\%$ \\
+    CSwin-Transformer-Base (m)~\cite{cvpr-cswintrans} & $90.53$ & $318.7$ & $72.24$ & $86.1\%$ & $75.0\%$ & $74.7\%$ & $56.0\%$ & $97.5\%$ & $94.1\%$ & $77.3\%$ & $53.8\%$ & $57.9\%$ & $18.9\%$ & $96.8\%$ & $88.7\%$ \\
+    CSwin-Transformer-Large (l)~\cite{cvpr-cswintrans} & $190.15$ & $621.2$ & $42.75$ & $86.4\%$ & $75.3\%$ & $75.2\%$ & $56.7\%$ & $97.6\%$ & $93.9\%$ & $78.5\%$ & $54.5\%$ & $59.6\%$ & $20.1\%$ & $97.4\%$ & $88.9\%$ \\
+
+    
+    \hline
+    EfficientViT-M0 (n)~\cite{CVPR_efficientvit} & $3.99$  & $11.8$ & $641.55$ & $79.1\%$ & $67.4\%$ & $60.3\%$ & $41.9\%$ & $97.9\%$ & $92.9\%$ & $71.6\%$ & $48.6\%$ & $45.7\%$ & $13.1\%$ & $97.5\%$ & $84.2\%$ \\
+    EfficientViT-M1 (n)~\cite{CVPR_efficientvit} & $4.63$ & $16.5$ & $546.71$ & $81.3\%$ & $69.3\%$ & $64.4\%$ & $45.4\%$ & $98.1\%$ & $93.3\%$ & $73.6\%$ & $50.1\%$ & $50.1\%$ & $15.1\%$ & $97.2\%$ & $85.1\%$ \\
+    EfficientViT-M2 (s)~\cite{CVPR_efficientvit} & $9.81$ & $35.2$ & $474.59$ & $84.2\%$ & $73.0\%$ & $70.0\%$ & $51.3\%$ & $98.3\%$ & $94.8\%$ & $76.0\%$ & $52.3\%$ & $54.2\%$ & $17.4\%$ & $97.8\%$ & $87.1\%$ \\
+    EfficientViT-M3 (m)~\cite{CVPR_efficientvit} & $19.71$  & $97.8$ & $312.00$ & $87.0\%$ & $76.7\%$ & $75.2\%$ & $57.6\%$ & $98.8\%$ & $95.9\%$ & $78.2\%$ & $54.4\%$ & $58.3\%$ & $19.8\%$ & $98.0\%$ & $89.0\%$ \\
+    EfficientViT-M4 (l)~\cite{CVPR_efficientvit} & $24.88$ & $109.2$ & $264.32$ & $87.3\%$ & $77.2\%$ & $75.7\%$ & $58.3\%$ & $98.8\%$ & $96.1\%$ & $78.7\%$ & $54.7\%$ & $59.2\%$ & $20.3\%$ & \cellcolor{iou_blue!60}{$98.2\%_2$} & $89.0\%$ \\
+    EfficientViT-M5 (x)~\cite{CVPR_efficientvit} & $48.60$ & $236.1$ & $172.96$ & $89.0\%$ & $79.4\%$ & $79.1\%$ & $62.2\%$ & \cellcolor{orange!65}{$99.0\%_1$} & \cellcolor{iou_blue!60}{$96.5\%_2$} & $80.0\%$ & $56.0\%$ & $61.8\%$ & $21.8\%$ & \cellcolor{iou_blue!60}{$98.2\%_2$} & $90.2\%$ \\
+
+    \hline
+    RepViT-m09 (n)~\cite{repvit} & $6.68$ & $20.9$ & $504.95$ & $82.5\%$ & $71.1\%$ & $66.9\%$ & $48.8\%$ & $98.0\%$ & $93.8\%$ & $75.2\%$ & $51.4\%$ & $53.0\%$ & $16.9\%$ & $97.4\%$ & $86.0\%$ \\
+    RepViT-m10 (s)~\cite{repvit} & $12.5$  & $42.4$ & $384.80$ & $86.2\%$ & $75.9\%$ & $73.7\%$ & $56.3\%$ & $98.8\%$ & $95.4\%$ & $78.1\%$ & $54.3\%$ & $58.1\%$ & $20.4\%$ & $98.1\%$ & $88.3\%$ \\
+    RepViT-m11 (m)~\cite{repvit} & $21.1$ & $105.2$ & $294.08$ & $87.0\%$ & $77.2\%$ & $75.2\%$ & $58.0\%$ & \cellcolor{iou_blue!60}{$98.9\%_2$} & $96.4\%$ & $78.7\%$ & $54.8\%$ & $59.2\%$ & $20.6\%$ & $98.1\%$ & $89.0\%$ \\
+    RepViT-m15 (l)~\cite{repvit} & $30.2$ & $129.7$ & $239.38$ & $87.3\%$ & $77.2\%$ & $75.9\%$ & $58.5\%$ & $98.6\%$ & $95.8\%$ & $78.8\%$ & $54.8\%$ & $59.5\%$ & $20.3\%$ & $98.1\%$ & $89.4\%$ \\
+    RepViT-m23 (x)~\cite{repvit} & $59.3$ & $281.0$ & $129.65$ & $87.7\%$ & $77.5\%$ & $76.4\%$ & $59.1\%$ & \cellcolor{iou_blue!60}{$98.9\%_2$} & $95.9\%$ & $79.2\%$ & $54.9\%$ & $60.2\%$ & $20.8\%$ & $98.1\%$ & $89.0\%$ \\
+
+
+    
+    \Xhline{1.2pt}
+    \end{tabular}
+    }
+    
+    \parbox{0.925\textwidth}{
+    \footnotesize
+    (1) \(\uparrow\) (\(\downarrow\)) indicates that larger (smaller) values lead to better (worse) results. The best are in \textcolor{orange!65}{orange}, the second best are in \textcolor{iou_blue!60}{blue}.
+    }
+    \label{tab:mawan-endtoend}
+\vspace{-1.75em}
+\end{table*}
+
+
+\begin{table*}
+    \centering
+    \caption{Benchmark Results of Selected Single-stage Real-time Models on the Test Set of \textbf{\textit{CUBIT-InSeg}}}
+    \renewcommand{\arraystretch}{1.25}
+    \resizebox{0.925\textwidth}{!}{
+    \begin{tabular}{c | c c c | c c | c c | c c | c c | c c | c c }
+    \Xhline{1.2pt}
+    
+    \multirow{2}{*}{\textbf{Models}} & \multirow{2}{*}{\textbf{\#Params}(M)$\downarrow$} & \multirow{2}{*}{\textbf{FLOPs}(G)$\downarrow$} & \multirow{2}{*}{\textbf{FPS}$\uparrow$}  & \multirow{2}{*}{\textbf{Box\_mAP}$_{0.5}^{test}$$\uparrow$} & \multirow{2}{*}{\textbf{Box\_mAP}$_{0.5:0.95}^{test}$$\uparrow$} & \multicolumn{2}{c}{\textbf{Crack} (\textbf{Box})} & \multicolumn{2}{|c|}{\textbf{Spalling} (\textbf{Box})} & \multirow{2}{*}{\textbf{Mask\_mAP}$_{0.5}^{test}$$\uparrow$} & \multirow{2}{*}{\textbf{Mask\_mAP}$_{0.5:0.95}^{test}$$\uparrow$} & \multicolumn{2}{c}{\textbf{Crack} (\textbf{Mask})} & \multicolumn{2}{|c}{\textbf{Spalling} (\textbf{Mask})} \\
+    
+    \cline{7-10}
+    \cline{13-16} 
+    & & & & & & \textbf{AP}$_{0.5}^{test}$$\uparrow$ & \textbf{AP}$_{0.5:0.95}^{test}$$\uparrow$ & \textbf{AP}$_{0.5}^{test}$$\uparrow$ & \textbf{AP}$_{0.5:0.95}^{test}$$\uparrow$ & & & \textbf{AP}$_{0.5}^{test}$ $\uparrow$& \textbf{AP}$_{0.5:0.95}^{test}$$\uparrow$ & \textbf{AP}$_{0.5}^{test}$$\uparrow$ & AP$_{0.5:0.95}^{test}$$\uparrow$ \\
+
+    \hline
+    \hline
+    \rowcolor{gray!15} 
+    \textit{\textbf{YOLO Series Models}} &  &  &  &  &  &  &  &  &  &  &  &  &  &  & \\   
+
+    \hline
+    YOLOv8(8.1)-n~\cite{yolov8} & $3.25$ & $12.0$ & \cellcolor{iou_blue!60}{$835.53_2$} & $82.9\%$ & $73.0\%$ & $68.3\%$ & $52.2\%$ & $97.5\%$ & $93.7\%$ & $75.3\%$ & $52.0\%$ & $53.7\%$ & $19.2\%$ & $96.9\%$ & $84.9\%$ \\
+    YOLOv8(8.1)-s~\cite{yolov8} & $11.78$ & $42.4$ & $545.83$ & $88.4\%$ & $79.2\%$ & $78.2\%$ & $62.6\%$ & $98.6\%$ & $95.8\%$ & $79.6\%$ & $55.7\%$ & $60.9\%$ & $22.7\%$ & $98.2\%$ & $88.8\%$ \\
+    YOLOv8(8.1)-m~\cite{yolov8} & $27.22$ & $111.0$ & $311.14$ & $90.5\%$ & $82.4\%$ & $82.3\%$ & $68.2\%$ & $98.6\%$ & $96.5\%$ & $81.6\%$ & $57.8\%$ & $65.2\%$ & $25.5\%$ & $98.0\%$ & $90.0\%$ \\
+    YOLOv8(8.1)-l~\cite{yolov8} & $45.91$ & $220.1$ & $220.34$ & $91.5\%$ & $83.8\%$ & $84.0\%$ & $70.7\%$ & \cellcolor{iou_blue!60}{$99.0\%_2$} & $96.9\%$ & $82.6\%$ & $58.7\%$ & $66.7\%$ & $26.6\%$ & \cellcolor{orange!65}{$98.5\%_1$} & $90.7\%$ \\
+    YOLOv8(8.1)-x~\cite{yolov8} & $71.72$ & $343.7$ & $145.91$ & $92.0\%$ & $85.1\%$ & $85.1\%$ & $73.1\%$ & $98.8\%$ & $97.1\%$ & $83.0\%$ & $59.4\%$ & $67.9\%$ & $28.1\%$ & $98.2\%$ & $90.7\%$ \\
+    
+    \hline
+    YOLOv9-n~\cite{wang2024yolov9} & $3.09$ & $54.1$ & $536.10$ & $80.7\%$ & $70.6\%$ & $63.7\%$ & $47.6\%$ & $97.8\%$ & $93.6\%$ & $74.0\%$ & $52.0\%$ & $50.8\%$ & $17.5\%$ & $97.3\%$ & $86.4\%$ \\
+    YOLOv9-s~\cite{wang2024yolov9} & $8.52$ & $75.4$ & $408.28$ & $87.6\%$ & $78.5\%$ & $76.9\%$ & $61.5\%$ & $98.3\%$ & $95.5\%$ & $79.6\%$ & $55.9\%$ & $61.3\%$ & $23.0\%$ & $97.9\%$ & $88.7\%$ \\
+    YOLOv9-m~\cite{wang2024yolov9} & $22.25$ & $131.2$ & $275.07$ & $91.0\%$ & $82.9\%$ & $83.2\%$ & $69.3\%$ & $98.8\%$ & $96.5\%$ & $81.4\%$ & $57.8\%$ & $64.9\%$ & $25.4\%$ & $98.0\%$ & $90.2\%$ \\
+    YOLOv9-c~\cite{wang2024yolov9} & $27.62$ & $157.6$ & $235.83$ & $91.9\%$ & $84.3\%$ & $85.0\%$ & $71.7\%$ & $98.8\%$ & $96.8\%$ & $82.5\%$ & $58.7\%$ & $66.8\%$ & $26.6\%$ & $98.2\%$ & $90.9\%$ \\
+    YOLOv9-e~\cite{wang2024yolov9} & $59.68$ & $244.4$ & $128.57$ & \cellcolor{orange!65}{$92.5\%_1$} & \cellcolor{orange!65}{$85.7\%_1$} & \cellcolor{orange!65}{$86.0\%_1$} & \cellcolor{iou_blue!60}{$74.2\%_2$} & $98.9\%$ & \cellcolor{orange!65}{$97.3\%_1$} & \cellcolor{orange!65}{$83.9\%_1$} & \cellcolor{orange!65}{$60.4\%_1$} & \cellcolor{orange!65}{$69.6\%_1$} & \cellcolor{orange!65}{$29.5\%_1$} & $98.3\%$ & \cellcolor{orange!65}{$91.2\%_1$} \\
+
+    \hline
+    YOLOv10-n~\cite{wang2024yolov10} & $2.84$ & $11.7$ & \cellcolor{orange!65}{$836.54_1$} & $84.4\%$ & $74.8\%$ & $71.2\%$ & $55.7\%$ & $97.7\%$ & $93.9\%$ & $77.5\%$ & $53.6\%$ & $57.5\%$ & $21.1\%$ & $94.4\%$ & $86.1\%$ \\
+    YOLOv10-s~\cite{wang2024yolov10} & $9.17$ & $40.5$ & $530.40$ & $89.3\%$ & $80.6\%$ & $80.1\%$ & $65.3\%$ & $98.5\%$ & $96.0\%$ & $80.7\%$ & $56.7\%$ & $63.3\%$ & $24.5\%$ & $98.0\%$ & $88.9\%$ \\
+    YOLOv10-m~\cite{wang2024yolov10} & $19.33$ & $101.4$ & $305.73$ & $90.7\%$ & $82.8\%$ & $82.8\%$ & $69.2\%$ & $98.7\%$ & $96.3\%$ & $82.6\%$ & $58.3\%$ & $67.0\%$ & $26.8\%$ & $98.2\%$ & $89.8\%$ \\
+    YOLOv10-b~\cite{wang2024yolov10} & $25.48$& $166.6$ & $254.87$ & $90.9\%$ & $83.0\%$ & $83.2\%$ & $69.4\%$ & $98.6\%$ & $96.6\%$ & $82.2\%$ & $58.4\%$ & $66.4\%$ & $26.7\%$ & $98.1\%$ & $90.1\%$ \\
+    YOLOv10-l~\cite{wang2024yolov10} & $30.79$ & $194.9$ & $224.79$ & $90.8\%$ & $83.2\%$ & $82.7\%$ & $69.5\%$ & $98.9\%$ & $96.9\%$ & $82.3\%$ & $58.7\%$ & $66.2\%$ & $26.9\%$ & \cellcolor{iou_blue!60}{$98.4\%_2$} & $90.5\%$ \\
+    YOLOv10-x~\cite{wang2024yolov10} & $39.52$ & $276.9$ & $154.25$ & $91.4\%$ & $84.2\%$ & $83.9\%$ & $71.3\%$ & \cellcolor{iou_blue!60}{$99.0\%_2$} & \cellcolor{iou_blue!60}{$97.2\%_2$} & $83.0\%$ & $59.3\%$ & $67.5\%$ & $27.9\%$ & \cellcolor{iou_blue!60}{$98.4\%_2$} & $90.7\%$ \\
+    
+    
+    \hline
+    YOLOv11(8.3)-n~\cite{yolo11} & $2.83$  & \cellcolor{iou_blue!60}{$10.2_2$} & $723.71$ & $78.9\%$ & $66.8\%$ & $60.1\%$ & $41.2\%$ & $97.8\%$ & $92.4\%$ & $71.4\%$ & $48.3\%$ & $45.8\%$ & $13.5\%$ & $97.0\%$ & $83.1\%$ \\
+    YOLOv11(8.3)-s~\cite{yolo11} & $10.07$ & $35.3$ & $466.25$ & $85.8\%$ & $74.8\%$ & $73.2\%$ & $54.8\%$ & $98.3\%$ & $94.8\%$ & $77.8\%$ & $53.3\%$ & $57.7\%$ & $19.3\%$ & $98.0\%$ & $87.2\%$ \\
+    YOLOv11(8.3)-m~\cite{yolo11} & $22.34$ & $123.0$ & $283.47$ & $88.8\%$ & $78.5\%$ & $78.7\%$ & $61.3\%$ & $98.9\%$ & $95.7\%$ & $79.2\%$ & $55.0\%$ & $60.2\%$ & $21.2\%$ & $98.3\%$ & $88.8\%$ \\
+    YOLOv11(8.3)-l~\cite{yolo11} & $27.59$ & $141.9$ & $240.49$ & $89.1\%$ & $79.7\%$ & $79.3\%$ & $62.9\%$ & $98.9\%$ & $96.5\%$ & $80.0\%$ & $56.1\%$ & $61.7\%$ & $22.4\%$ & $98.3\%$ & $89.8\%$ \\
+    YOLOv11(8.3)-x~\cite{yolo11} & $62.01$ & $318.5$ & $131.13$ & $90.9\%$ & $81.8\%$ & $82.8\%$ & $66.8\%$ & \cellcolor{orange!65}{$99.1\%_1$} & $96.7\%$ & $81.1\%$ & $57.2\%$ & $63.7\%$ & $23.9\%$ & \cellcolor{iou_blue!60}{$98.4\%_2$} & $90.4\%$ \\
+    
+    \hline
+    YOLOv12-n~\cite{yolov12} & \cellcolor{iou_blue!60}{$2.81_2$} & \cellcolor{iou_blue!60}{$10.2_2$} & $727.60$ & $79.9\%$ & $68.2\%$ & $62.6\%$ & $44.0\%$ & $97.3\%$ & $92.5\%$ & $72.4\%$ & $49.2\%$ & $47.9\%$ & $14.6\%$ & $96.9\%$ & $83.9\%$ \\
+    YOLOv12-s~\cite{yolov12} & $9.89$  & $35.2$ & $450.47$ & $85.1\%$ & $74.1\%$ & $72.0\%$ & $53.6\%$ & $98.2\%$ & $94.7\%$ & $77.0\%$ & $52.5\%$ & $56.0\%$ & $18.4\%$ & $97.9\%$ & $86.6\%$ \\
+    YOLOv12-m~\cite{yolov12} & $22.41$ & $122.4$ & $248.22$ & $87.0\%$ & $76.2\%$ & $75.4\%$ & $57.0\%$ & $98.5\%$ & $95.3\%$ & $77.7\%$ & $53.7\%$ & $57.3\%$ & $19.1\%$ & $98.1\%$ & $88.4\%$ \\
+    YOLOv12-l~\cite{yolov12} & $28.65$ & $143.9$ & $191.08$ & $88.6\%$ & $78.5\%$ & $78.4\%$ & $60.8\%$ & $98.9\%$ & $96.3\%$ & $79.2\%$ & $55.0\%$ & $60.2\%$ & $20.8\%$ & $98.2\%$ & $89.2\%$ \\
+    YOLOv12-x~\cite{yolov12} & $64.22$ & $322.6$ & $109.11$ & $88.7\%$ & $78.9\%$ & $78.5\%$ & $61.5\%$ & $98.9\%$ & $96.4\%$ & $78.8\%$ & $55.2\%$ & $59.3\%$ & $20.6\%$ & $98.3\%$ & $89.7\%$ \\
+
+
+    \hline
+    YOLOv13-n~\cite{lei2025yolov13} & \cellcolor{orange!65}{$2.70_1$} & \cellcolor{orange!65}{$10.0_1$} & $614.38$ & $83.8\%$ & $75.4\%$ & $70.2\%$ & $56.7\%$ & $97.4\%$ & $94.1\%$ & $77.1\%$ & $53.9\%$ & $57.1\%$ & $21.2\%$ & $97.1\%$ & $86.5\%$ \\
+    YOLOv13-s~\cite{lei2025yolov13} & $9.66$  & $34.0$ & $367.35$ & $89.0\%$ & $81.6\%$ & $79.8\%$ & $66.9\%$ & $98.2\%$ & $96.3\%$ & $80.5\%$ & $57.0\%$ & $63.4\%$ & $25.3\%$ & $97.7\%$ & $88.8\%$ \\
+    YOLOv13-l~\cite{lei2025yolov13} & $29.19$ & $139.6$ & $140.64$ & $91.0\%$ & $84.0\%$ & $83.4\%$ & $71.2\%$ & $98.7\%$ & $96.8\%$ & $82.4\%$ & $58.9\%$ & $66.8\%$ & $27.2\%$ & $98.1\%$ & $90.5\%$ \\
+    YOLOv13-x~\cite{lei2025yolov13} & $67.64$ & $311.5$ & $84.86$ & $91.8\%$ & $84.3\%$ & $84.9\%$ & $71.9\%$ & $98.8\%$ & $96.7\%$ & $83.0\%$ & $59.1\%$ & $67.8\%$ & $27.5\%$ & $98.2\%$ & \cellcolor{iou_blue!60}{$90.8\%_2$} \\
+
+    \hline
+    Mamba-YOLO-T~\cite{mambayolo} & $5.92$ & $16.2$ & $243.10$ & $83.3\%$ & $72.3\%$ & $68.4\%$ & $50.2\%$ & $98.2\%$ & $94.5\%$ & $75.6\%$ & $52.2\%$ & $53.2\%$ & $17.5\%$ & $98.0\%$ & $87.0\%$ \\
+    Mamba-YOLO-B~\cite{mambayolo} & $21.15$ & $58.5$ & $121.19$ & $87.5\%$ & $76.7\%$ & $76.0\%$ & $57.5\%$ & $98.9\%$ & $95.9\%$ & $77.2\%$ & $54.0\%$ & $55.8\%$ & $18.3\%$ & \cellcolor{orange!65}{$98.5\%_1$} & $89.8\%$ \\
+    Mamba-YOLO-L~\cite{mambayolo} & $56.33$ & $175.9$ & $45.08$ & $88.5\%$ & $78.6\%$ & $78.0\%$ & $60.9\%$ & $98.9\%$ & $96.2\%$ & $80.0\%$ & $55.8\%$ & $61.6\%$ & $21.9\%$ & \cellcolor{iou_blue!60}{$98.4\%_2$} & $88.8\%$ \\
+
+
+    \hline
+    Hyper-YOLO-n~\cite{hyperyolo} & $3.87$ & $13.4$ & $742.44$ & $85.4\%$ & $76.5\%$ & $72.8\%$ & $58.1\%$ & $98.1\%$ & $94.8\%$ & $77.6\%$ & $54.0\%$ & $57.4\%$ & $21.2\%$ & $97.7\%$ & $86.8\%$ \\
+    Hyper-YOLO-s~\cite{hyperyolo} & $14.17$  & $47.8$ & $442.49$ & $89.7\%$ & $81.4\%$ & $80.7\%$ & $66.4\%$ & $98.8\%$ & $96.5\%$ & $80.9\%$ & $56.7\%$ & $63.7\%$ & $24.2\%$ & $98.1\%$ & $89.2\%$ \\
+    Hyper-YOLO-m~\cite{hyperyolo} & $32.08$ & $123.1$ & $249.75$ & $91.5\%$ & $84.3\%$ & $84.3\%$ & $71.7\%$ & $98.8\%$ & $96.9\%$ & $82.9\%$ & $58.7\%$ & $67.5\%$ & $27.0\%$ & $98.2\%$ & $90.3\%$ \\
+    Hyper-YOLO-l~\cite{hyperyolo} & $54.40$ & $246.3$ & $170.52$ & $92.0\%$ & \cellcolor{iou_blue!60}{$85.4\%_2$} & $85.3\%$ & $73.6\%$ & $98.8\%$ & $97.1\%$ & \cellcolor{iou_blue!60}{$83.6\%_2$} & $59.7\%$ & $69.0\%$ & $28.2\%$ & $98.3\%$ & \cellcolor{orange!65}{$91.2\%_1$} \\
+    Hyper-YOLO-x~\cite{hyperyolo} & $94.97$ & $384.4$ & $114.87$ & \cellcolor{iou_blue!60}{$92.4\%_2$} & \cellcolor{orange!65}{$85.7\%_1$} & \cellcolor{iou_blue!60}{$85.8\%_2$} & \cellcolor{orange!65}{$74.3\%_1$} & \cellcolor{iou_blue!60}{$99.0\%_2$} & $97.1\%$ & \cellcolor{orange!65}{$83.9\%_1$} & \cellcolor{iou_blue!60}{$59.9\%_2$} & \cellcolor{iou_blue!60}{$69.3\%_2$} & \cellcolor{iou_blue!60}{$28.6\%_2$} & \cellcolor{iou_blue!60}{$98.4\%_2$} & \cellcolor{orange!65}{$91.2\%_1$} \\
+
+    
+    \Xhline{1.2pt}
+    \end{tabular}
+    }
+    
+    \parbox{0.925\textwidth}{
+    \footnotesize
+    (1) \(\uparrow\) (\(\downarrow\)) indicates that larger (smaller) values lead to better (worse) results. The best in \textcolor{orange!65}{orange}, the second best are in \textcolor{iou_blue!70}{blue}.
+    }
+    
+    \label{tab:mawan-yolo}
+\vspace{-1.75em}
+\end{table*}
+
+
+\subsection{Evaluation Metrics}
+\label{subsec:metrics}
+We evaluate all models using the standard COCO evaluation protocol, which is applicable to both object detection and segmentation. For each predicted instance, the IoU between the prediction and its corresponding ground truth is computed—using bounding boxes for detection and pixel-level masks for segmentation. Based on IoU, a prediction is classified as a true positive ($TP$), false positive ($FP$), or false negative ($FN$).  
+
+The fundamental metrics \textit{Precision} (P) and \textit{Recall} (R) are defined as:
+\begin{equation}
+\mathrm{Precision}=\frac{TP}{TP+FP}, \qquad
+\mathrm{Recall}=\frac{TP}{TP+FN},
+\end{equation}
+measuring the correctness of predictions and the ability to recover ground-truth defects, respectively.
+
+To summarize performance across different recall levels, we adopt the COCO-style \textit{Average Precision} (AP), computed by integrating the Precision--Recall curve. Following the COCO protocol, AP is evaluated at IoU threshold 0.5 (AP$_{0.5}$) and averaged across ten thresholds from 0.50 to 0.95 (AP$_{0.5:0.95}$). 
+\begin{equation}
+AP = \int_{0}^{1} p(r) \, dr,
+\end{equation}
+and for multi-class tasks, the mAP is obtained by averaging AP over all defect categories:
+\begin{equation}
+mAP=\frac{1}{n}\sum_{k=1}^{n} AP_{k}.
+\end{equation}
+
+We report both Box\_mAP (based on box IoU) and Mask\_mAP (based on mask IoU). The box-based metrics evaluate localization accuracy, while the mask-based metrics assess pixel-level agreement and boundary fidelity—crucial for infrastructure defect segmentation.
+
+
+\subsection{Benchmarking Experiment and Analysis}
+\label{subsec:benchmark}
+
+\subsubsection{Overall and Category-wise Performance Analysis of Instance Segmentation}
+\label{subsubsec:overall}
+Table~\ref{tab:mawan-endtoend} and~\ref{tab:mawan-yolo} not only show the overall experimental results but also report of the per-defect-type evaluation results tested on our proposal CUBIT-InSeg dataset.
+
+As the sample data showed in Fig.~\ref{fig:sample-of-dataset}, the detection and segmentation of the \textit{cracks} are substantially more challenging than \textit{spallings}: cracks typically appear thin, elongated, and fragmented, with ambiguous boundaries, whereas spalling regions are larger, more coherent, and visually well-defined. And the significant disparity of the number of targets is another factor (showed in Fig.~\ref{fig:statistic}). As illustrated in Fig.~\ref{fig:radar-category}, the Box and Mask AP of Spalling lie much closer to the outer boundary of the radar plots compared with those for Crack, which means that the performance gap among models on spallings is relatively small, while cracks exhibit noticeably lower AP values and contributes more significantly to the mAP degradation.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\columnwidth]{images/radar-compare.pdf}
+    \caption{Comparison of six evaluation metrics at IoU thresholds of 0.5 (a) and 0.5:0.95 (b) using radar plots. Dashed curves correspond to End-to-End models, whereas solid curves correspond to Single-stage Real-time models.}
+    \label{fig:radar-category}
+\vspace{-2em}
+\end{figure}
+
+\textbf{End-to-End Models} 
+% In the end-to-end models，从Table~\ref{tab:mawan-endtoend}可以看出来conv-based的模型相比Transformer-based的模型不仅尺寸更小、并且性能更强。得意于在crack的4个指标上的超前表现，EMO以及ConvNeXtV2 series。Benefiting from its conv-based \textit{Expanded Window Multi-Head Self-Attention} (EW-MHSA) module，EMO-5M在Mask mAP0.5上排第一，EMO-6M在Box mAP0.5和Mask AP0.5:0.95两个指标上排第一，\textbf{\texttt{ConvNeXtV2-Large}}~\cite{cvpr-convnextv2}, with the \textit{Global Response Normalization} (GRN) layer, attains the best performance in Box\_mAP$_{0.5:0.95}$. For Spalling的四个指标，大尺寸的模型之间差距仅在伯仲之间。transformer-based的EfficientViT-M5在iou 0.5的Box和mask的AP上，也可以和conv-based的EMO-6M、FasterNet-l以及ConNeXtV2-Large来竞争一下。
+As shown in Table~\ref{tab:mawan-endtoend}, the conv-based architectures consistently outperform the transformer-based ones while also maintaining noticeably smaller model sizes. This performance advantage is largely driven by their superior ability to handle the more challenging \textit{crack} category across all four mAP metrics. Benefiting from its conv-based \textit{Expanded Window Multi-Head Self-Attention} (EW-MHSA) module, \textbf{\texttt{EMO-6M}} \cite{ICCV_emo} ranks first on Box\_mAP$_{0.5}$ and Mask\_mAP$_{0.5:0.95}$, while \textbf{\texttt{EMO-5M}} achieves the top score on Mask\_mAP$_{0.5}$. In addition, \textbf{\texttt{ConvNeXtV2-Large}} \cite{cvpr-convnextv2}, equipped with the \textit{Global Response Normalization} (GRN) layer, attains the best performance on Box\_mAP$_{0.5:0.95}$. 
+
+For the \textit{spalling} category, the performance differences among large models are marginal. Notably, the transformer-based \textbf{\texttt{EfficientViT-M5}} \cite{CVPR_efficientvit} performs competitively with conv-based models such as \textbf{\texttt{EMO-6M}} and \textbf{\texttt{FasterNet-l}} \cite{CVPR-fasternet} on both Box and Mask\_AP$_{0.5}$.
+
+\textbf{Single-stage Real-time Models}
+As presented in Table~\ref{tab:mawan-yolo}, the YOLO family and its representative variants deliver strong performance despite their relatively compact model sizes. \textbf{\texttt{YOLOv9-e}} \cite{wang2024yolov9}, supported by a \textit{plug-and-play auxiliary training branch}, ranks first in three out of four \textit{crack}-related AP metrics and ultimately achieves the best overall results across four box and mask mAP scores. The second-best performer is \textbf{\texttt{Hyper-YOLO-x}} \cite{hyperyolo}, which benefits from the \textit{Hypergraph Computation Empowered Semantic Collecting and Scattering} (HGCSCS) framework. \textbf{\texttt{Hyper-YOLO-x}} achieves the highest Box\_mAP$_{0.5:0.95}$ on crack, but its Mask\_mAP$_{0.5:0.95}$ is 0.9\% lower than that of \textbf{\texttt{YOLOv9-e}}, which is a notable margin at such a stringent IoU threshold.
+
+For the \textit{spalling} category, performance differences are again small. At IoU=0.5, \textbf{\texttt{YOLOv11-x}} \cite{yolo11} yields the highest Box\_AP, while \textbf{\texttt{Mamba-YOLO-M}} \cite{mambayolo} and \textbf{\texttt{YOLOv8-l}} \cite{yolov8} share the best Mask\_AP. At the more challenging IoU=0.5:0.95 setting, \textbf{\texttt{YOLOv9-e}} delivers the top Box\_AP and jointly shares the best Mask\_AP with \textbf{\texttt{Hyper-YOLO-l}} and \textbf{\texttt{Hyper-YOLO-x}}.
+
+
+\textbf{Comparison between End-to-End Models and Single-stage Real-time Models}
+% 对比Table3和4，single-stage real-time models在同尺寸的模型param以及flops相比起end-to-end models基本都有明显的优势，尤其是对比起ConvNeXtV2、Swin-Transformer以及CSwin-Transformer时。在实例分割性能方面，四个mAP指标下，single-stage models的的优点更明显，尤其在Box AP0.5:0.95和Mask AP0.5:0.95这两个指标下，single-stage model的top1（YOLOv9-e）要比end-to-end model的top1（ConvNeXtV2-Large、EMO-6M）分别高3.2%和2.5%，这个差距主要来源于对难度更大的crack类型的定位（box）以及分割（mask）。
+Comparing Table~\ref{tab:mawan-endtoend} with Table~\ref{tab:mawan-yolo}, the advantages of single-stage real-time models become substantially more evident. Under comparable model scales, single-stage architectures require fewer parameters and FLOPs, particularly when contrasted with complicated end-to-end architectures such as \textbf{\texttt{ConvNeXtV2}} \cite{cvpr-convnextv2}, \textbf{\texttt{Swin-Transformer}} \cite{cvpr-swin}, and \textbf{\texttt{CSwin-Transformer}} \cite{cvpr-cswintrans}. In terms of instance segmentation accuracy, their superiority is even more pronounced. Across all four mAP metrics, the second-best single-stage model already surpasses the top-performing end-to-end model. The gap becomes striking under stricter IoU conditions: on Box\_AP$_{0.5:0.95}$ and Mask\_AP$_{0.5:0.95}$, the leading single-stage model (\textbf{\texttt{YOLOv9-e}}) exceeds the best end-to-end models (\textbf{\texttt{ConvNeXtV2-Large}} and \textbf{\texttt{EMO-6M}}) by 3.2\% and 2.5\%, respectively. This performance margin is primarily attributed to the markedly better handling of the more challenging \emph{crack} category in both localization (Box-related metrics) and segmentation (Mask-related metrics).
+
+% 图\ref{fig:radar-category}我们摘取了每个series中模型的性能最强的一个，可以看出single-stage real-time model对end-to-end模型的性能雷达是全包围的。
+To further illustrate these trends, Fig.~\ref{fig:radar-category} visualizes the strongest model from each series using a six-metric radar chart. The solid hexagons (single-stage models) consistently envelop the dashed hexagons (end-to-end models), clearly indicating the uniformly stronger localization and segmentation performance achieved by single-stage models.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\columnwidth]{images/network-attributed.png}
+    \caption{(a) Model Complexity (FLOPs) vs Model Size (Params), (b) Model Complexity (FLOPs) vs Inference Efficiency (FPS). Solid line correspond to End-to-End models, while dashed line represent Single-stage models.}
+    \label{fig:network-attribute}
+\vspace{-2em}
+\end{figure}
+
+\subsubsection{Network Attributes Affecting Instance Segmentation}
+
+% The inference effciency of the algorithm is another crucial indicator for the practical implementation. Table~\ref{tab:mawan-endtoend} and Table~\ref{tab:mawan-yolo}展示不同模型的Params.、FLOPs以及FPS，as well。"Params.”是paramters的简写，refers to the number of trainable parameters in a neural network model. The small "Params" also represents the small storage space occupied by the trained model. FLOPs是"GFLOPs" stands for "giga floating point operations per second”的简写. It is a measure of the computational complexity of a model, calculated as the number of floating point operations, performed per second, divided by one billion, which is to express the value in billions of FLOPs per second. FPS是frame per second的简写，用于最直观的衡量模型推理效率。通常来说更小的Params所带来的FLOPs也更小，FPS也会更高，但是这也和模型的硬件加速的优化性能有关。This metric is often used to estimate the computational cost or efficiency of running a given model on a particular hardware platform。
+The computational efficiency of an algorithm is another key factor for practical deployment. 
+Table~\ref{tab:mawan-endtoend} and Table~\ref{tab:mawan-yolo} summarize the model size (Params), computational complexity (FLOPs), and inference speed (FPS) of all evaluated architectures, as well. Params denotes the number of trainable parameters in a neural network, which also reflects the storage footprint of the trained model. FLOPs measure the computational cost required for a single forward pass, indicating how many floating-point operations the model must perform. FPS (frames per second) provides the most direct assessment of runtime inference efficiency. 
+
+In general, models with fewer parameters tend to require fewer FLOPs and are therefore expected to achieve higher FPS, as showed in Fig.~\ref{fig:network-attribute}. However, real-world inference performance is jointly influenced by several additional factors: \textbf{(1)} the extent to which the network architecture can fully utilize GPU Tensor Cores and CUDA kernels; \textbf{(2)} the level of hardware-specific optimization achieved by the deployment backend; \textbf{(3)} the computational overhead of post-processing steps such as NMS in Algorithm~\ref{alg_nms}, which may increase when smaller inputs produce more small-object predictions. As a result, Params, FLOPs, and FPS should be interpreted together to provide a more reliable and comprehensive assessment of the practical efficiency of each model family.
+
+\textbf{End-to-End Models}
+\textbf{\texttt{StarNet}} \cite{starnet} series benefits from its lightweight design philosophy that relies on fewer layers and highly efficient element-wise multiplication. Consequently, \textbf{\texttt{StarNet-s50}} and \textbf{\texttt{StarNet-s100}} stand out as the two most compact models, each containing fewer than 3M parameters with only 8.9G and 10.4G FLOPs, respectively. As expected, \textbf{\texttt{StarNet-s50}} also delivers the highest inference speed, reaching 828.82 FPS on our Ubuntu 22.04 workstation. 
+It is also noteworthy that \textbf{\texttt{FasterNet-t0}} \cite{CVPR-fasternet}, despite not being the smallest model, attains the second-highest throughput (729.19 FPS), owing to its partial convolution mechanism that significantly improves operator efficiency.
+
+
+\textbf{Single-stage Real-time Models}
+Among all YOLO-family variants, the smallest architectures are \textbf{\texttt{YOLOv13-n}}~\cite{lei2025yolov13} and \textbf{\texttt{YOLOv12-n}}~\cite{yolov12}, with Params of 2.70M and 2.81M, and FLOPs of 10.0G and 10.2G, respectively. 
+Interestingly, the fastest models are not these smallest variants but rather \textbf{\texttt{YOLOv10-n}} \cite{wang2024yolov10} and \textbf{\texttt{YOLOv8-n}} \cite{yolov8}, achieving 836.54 FPS and 835.53 FPS. 
+In contrast, although \textbf{\texttt{Mamba-YOLO-T}} \cite{mambayolo} has relatively small Params and FLOPs, its inference speed is considerably lower due to the \textit{2D-Selective-Scan} \cite{liu2024vmamba}, which introduces sequential dependencies.
+
+\textbf{Comparison between End-to-End and Single-stage Real-time Models}
+Under the same model scaling factors, single-stage real-time architectures consistently exhibit lower Params and FLOPs while achieving substantially higher FPS, which can be more intuitively seen in Fig.~\ref{fig:network-attribute}. This efficiency gap is particularly evident when comparing with complex end-to-end models such as \textbf{\texttt{ConvNeXtV2}} \cite{cvpr-convnextv2}, \textbf{\texttt{Swin-Transformer}} \cite{cvpr-swin}, \textbf{\texttt{CSwin-Transformer}} \cite{cvpr-cswintrans}, highlighting the strong suitability of single-stage models for real-time defect inspection applications.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\columnwidth]{images/tSNE.pdf}
+    \caption{t-SNE visualization of our CUBIT-InSeg and (a) Highway-Crack~\cite{hong2021highway} and (b) Crack-Seg~\cite{crack-seg} datasets.}
+    \label{fig:tsne}
+\vspace{-1em}
+\end{figure}
+
+\subsubsection{Zero-shot Validation on Cross-domain Datasets}
+% 在完成了上述80多个individual networks在我们提出的CUBIT-InSeg数据集上进行benchmark测试之后，我们在两个公开数据集的test set上进行了zero-shot的验证。如图4所示，这两个数据集在数据分布上和我们的CUBIT-InSeg的差距较大，
+After completing the benchmark evaluation of over 80 individual networks on the proposed CUBIT-InSeg dataset, we further assess the cross-domain generalization ability of our models under a zero-shot setting. Specifically, we directly apply the trained models to the test set parts of two publicly available unmanned systems collected datasets, Highway-Crack~\cite{hong2021highway} for pure highway data and Crack-Seg~\cite{crack-seg} for building and pavement mixed data, without any training and fine-tuning. 
+
+To quantitatively and visually analyze the domain shift between datasets, Fig.~\ref{fig:tsne} presents a t-SNE visualization computed from color-histogram descriptors. For each image, 32-bin RGB histograms are extracted, concatenated, and normalized to form a compact appearance descriptor. These histogram features are standardized and optionally compressed using Principal component analysis (PCA) for improved stability, and then projected into a two-dimensional embedding space via t-SNE. The resulting distributions reveal clear structural differences between CUBIT-InSeg and the external datasets. To further quantify the discrepancy, we compute the Euclidean distance between the cluster centers of the two t-SNE embeddings as a simple domain-gap metric. The distances are 16.63 for Highway-Crack and 7.92 for Crack-Seg. These discrepancies in feature-space geometry highlight the inherent challenges of achieving robust defect instance segmentation under diverse real-world conditions, while simultaneously demonstrating that models trained on our CUBIT-InSeg dataset retain strong adaptability across different infrastructure scenarios in the zero-shot setting.
+
+% *******************  highway dataset table ******************* 
+
+\begin{table}[!t]
+    \centering
+    \caption{Zero-shot Evaluation of Selected End-to-End Models on the Test Set of \textbf{\textit{Highway-Crack}}~\cite{hong2021highway}}
+    \renewcommand{\arraystretch}{1.25}
+    \resizebox{1\columnwidth}{!}{
+    \begin{tabular}{c | c | c c | c c }
+    \Xhline{1.2pt}
+    
+    \textbf{Models} & \textbf{Input Size} & \textbf{Box\_AP}$_{0.5}^{test}$$\uparrow$ & \textbf{Box\_AP}$_{0.5:0.95}^{test}$$\uparrow$ & \textbf{Mask\_AP}$_{0.5}^{test}$$\uparrow$ & \textbf{Mask\_AP}$_{0.5:0.95}^{test}$$\uparrow$ \\
+    
+    \hline
+    \hline
+    \rowcolor{gray!15} 
+    \textit{\textbf{Conv-based Models}} &  &  &  &  & \\
+
+    \hline
+    EMO-1M (n)~\cite{ICCV_emo} & $512\times 512$ & $80.9\%$ & $54.8\%$ & $64.8\%$ & $21.2\%$ \\
+    EMO-2M (s)~\cite{ICCV_emo} & $512\times 512$ & $81.7\%$ & $56.8\%$ & $68.9\%$ & $23.5\%$ \\
+    EMO-5M (m)~\cite{ICCV_emo} & $512\times 512$ & \cellcolor{iou_blue!70}{$83.1\%_2$} & $58.5\%$ & $72.5\%$ & $25.4\%$ \\
+    EMO-6M (l)~\cite{ICCV_emo} & $512\times 512$ & $82.9\%$ & $59.7\%$ & $73.6\%$ & $26.6\%$ \\
+
+    \hline
+    MobileNetV4Conv-S (s)~\cite{mobilenetv4} & $512\times 512$ & $78.0\%$ & $54.9\%$ & $63.8\%$ & $22.6\%$ \\
+    MobileNetV4Conv-M (m)~\cite{mobilenetv4} & $512\times 512$ & $78.1\%$ & $55.5\%$ & $65.7\%$ & $22.8\%$ \\
+    MobileNetV4Conv-L (l)~\cite{mobilenetv4} & $512\times 512$ & $79.3\%$ & $56.6\%$ & $68.2\%$ & $23.7\%$ \\
+
+    \hline
+    FasterNet-t0 (n)~\cite{CVPR-fasternet} & $512\times 512$ & $77.4\%$ & $55.2\%$ & $64.3\%$ & $22.4\%$ \\
+    FasterNet-t1 (n)~\cite{CVPR-fasternet} & $512\times 512$ & $78.9\%$ & $56.4\%$ & $68.5\%$ & $24.2\%$ \\
+    FasterNet-t2 (n)~\cite{CVPR-fasternet} & $512\times 512$ & $79.8\%$ & $56.8\%$ & $69.8\%$ & $24.9\%$ \\
+    FasterNet-s (s)~\cite{CVPR-fasternet} & $512\times 512$ & $81.4\%$ & $58.7\%$ & $72.2\%$ & $27.1\%$ \\
+    FasterNet-m (m)~\cite{CVPR-fasternet} & $512\times 512$ & $82.6\%$ & $59.5\%$ & \cellcolor{iou_blue!70}{$74.0\%_2$} & $26.8\%$ \\
+    FasterNet-l (l)~\cite{CVPR-fasternet} & $512\times 512$ & $82.7\%$ & \cellcolor{iou_blue!70}{$59.8\%_2$} & $72.5\%$ & $26.9\%$ \\
+    
+    \hline
+    Starnet-s50 (n)~\cite{starnet} & $512\times 512$ & $77.0\%$ & $53.6\%$ & $60.4\%$ & $19.7\%$ \\
+    Starnet-s100 (n)~\cite{starnet} & $512\times 512$ & $78.1\%$ & $55.2\%$ & $64.9\%$ & $22.7\%$ \\
+    Starnet-s150 (n)~\cite{starnet} & $512\times 512$ & $77.1\%$ & $54.9\%$ & $65.8\%$ & $22.3\%$ \\
+    Starnet-s1 (s)~\cite{starnet} & $512\times 512$   & $79.2\%$ & $56.8\%$ & $69.4\%$ & $23.7\%$ \\
+    Starnet-s2 (m)~\cite{starnet} & $512\times 512$  & $81.2\%$ & $58.3\%$ & $71.4\%$ & $26.5\%$ \\
+    Starnet-s3 (l)~\cite{starnet} & $512\times 512$ & $80.7\%$ & $57.7\%$ & $71.7\%$ & $26.3\%$ \\
+    Starnet-s4 (x)~\cite{starnet} & $512\times 512$ & $82.2\%$ & $59.2\%$ & $71.0\%$ & $26.1\%$ \\
+
+    \hline
+    ConvNeXtV2-nano (n) & $512\times 512$ & $78.7\%$ & $56.5\%$ & $69.4\%$ & $26.3\%$ \\
+    ConvNeXtV2-tiny (s) & $512\times 512$ & $78.8\%$ & $56.9\%$ & $69.3\%$ & $25.5\%$ \\
+    ConvNeXtV2-base (m) & $512\times 512$ & $78.1\%$ & $57.1\%$ & $70.0\%$ & $27.1\%$ \\ 
+    ConvNeXtV2-large (l) & $512\times 512$ & $79.7\%$ & $58.3\%$ & $73.5\%$ & \cellcolor{iou_blue!70}{$27.9\%_2$} \\
+
+    \hline
+    \hline
+    \rowcolor{gray!10} 
+    \textit{\textbf{Transformer-based Models}} &  &  &  &  & \\  
+
+    \hline
+    Swin-Transformer-Tiny (n)~\cite{cvpr-swin} & $512\times 512$ & $74.8\%$ & $53.5\%$ & $62.8\%$ & $21.9\%$ \\
+    Swin-Transformer-Small (s)~\cite{cvpr-swin} & $512\times 512$ & $76.9\%$ & $55.0\%$ & $66.0\%$ & $24.3\%$ \\
+    Swin-Transformer-Base (m)~\cite{cvpr-swin} & $512\times 512$ & $78.5\%$ & $56.6\%$ & $69.9\%$ & $26.5\%$ \\
+    Swin-Transformer-Large (l)~\cite{cvpr-swin} & $512\times 512$ & $79.1\%$ & $57.3\%$ & $69.3\%$ & $26.9\%$ \\
+    
+    \hline
+    CSwin-Transformer-Tiny (n)~\cite{cvpr-cswintrans} & $512\times 512$ & $78.7\%$ & $56.5\%$ & $69.4\%$ & $24.7\%$ \\
+    CSwin-Transformer-Small (s)~\cite{cvpr-cswintrans} & $512\times 512$ & $81.3\%$ & $58.1\%$ & $71.4\%$ & $26.5\%$ \\
+    CSwin-Transformer-Base (m)~\cite{cvpr-cswintrans} & $512\times 512$ & $81.8\%$ & $59.1\%$ & $73.1\%$  & $27.7\%$ \\
+    CSwin-Transformer-Large (l)~\cite{cvpr-cswintrans} & $512\times 512$ & $82.2\%$ & $59.7\%$ & $73.7\%$  & $27.8\%$ \\
+    
+    \hline
+    EfficientViT-M0 (n)~\cite{CVPR_efficientvit} & $512\times 512$ & $78.2\%$ & $55.5\%$ & $66.3\%$ & $23.1\%$ \\
+    EfficientViT-M1 (n)~\cite{CVPR_efficientvit} & $512\times 512$ & $79.1\%$ & $56.6\%$ & $68.2\%$ & $23.7\%$ \\
+    EfficientViT-M2 (s)~\cite{CVPR_efficientvit} & $512\times 512$ & $80.6\%$ & $58.1\%$ & $68.5\%$ & $24.4\%$ \\
+    EfficientViT-M3 (m)~\cite{CVPR_efficientvit} & $512\times 512$ & $81.8\%$ & $59.0\%$ & $72.4\%$ & $26.6\%$ \\
+    EfficientViT-M4 (l)~\cite{CVPR_efficientvit} & $512\times 512$ & $81.8\%$ & $59.3\%$ & $73.8\%$ & $27.8\%$ \\
+    EfficientViT-M5 (x)~\cite{CVPR_efficientvit} & $512\times 512$ & \cellcolor{orange!65}{$83.3\%_1$} & \cellcolor{orange!65}{$60.7\%_1$} & \cellcolor{orange!65}{$74.7\%_1$} & \cellcolor{orange!65}{$28.2\%_1$} \\
+        
+    \hline
+    RepViT-m09 (n)~\cite{repvit} & $512\times 512$ & $79.3\%$ & $56.6\%$ & $69.7\%$ & $23.9\%$ \\
+    RepViT-m10 (s)~\cite{repvit} & $512\times 512$ & $80.8\%$ & $58.4\%$ & $71.1\%$ & $25.7\%$ \\ 
+    RepViT-m11 (m)~\cite{repvit} & $512\times 512$ & $80.9\%$ & $58.5\%$ & $71.7\%$ & $25.9\%$ \\
+    RepViT-m15 (l)~\cite{repvit} & $512\times 512$ & $80.5\%$ & $58.7\%$ & $71.2\%$ & $26.6\%$ \\
+    RepViT-m23 (x)~\cite{repvit} & $512\times 512$ & $81.5\%$ & $59.0\%$ & $71.7\%$ & $27.2\%$ \\
+
+    \Xhline{1.2pt}
+    \end{tabular}
+    }
+
+    \parbox{1\columnwidth}{
+    \footnotesize
+    (1) \(\uparrow\) (\(\downarrow\)) indicates that larger (smaller) values lead to better (worse) results. The best in \textcolor{orange!65}{orange}, the second best are in \textcolor{iou_blue!70}{blue}.
+    }
+
+\vspace{-1.5em}
+\label{tab:highway-endtoend}
+\end{table}
+
+
+\textbf{Zero-shot on Highway-Crack}
+% follow default setting about the test set of Highway-Crack，在进行zero-shot testing的时候，我们的input size为512x512. 表5展示了end-to-end models的zero-shot test结果，EMO和ConvNeXtV2将在our CUBIT-InSeg dataset上的表现延续了。值得注意的是，尽管在我们的CUBIT-InSeg的benchmark结果上表现一般，CSwin-Transformer在Highway-Crack的Zero-shot任务上表现比较突出，CSwin-Transformer-m有三个指标排第二，CSwin-Transforme-l的在Box AP50:95排第一。
+Following the default evaluation protocol of Highway-Crack~\cite{hong2021highway}, we resize all input images to $512\times512$ during zero-shot testing. Table~\ref{tab:highway-endtoend} reports the performance of the end-to-end models. Both \textbf{\texttt{EMO}} \cite{ICCV_emo} and \textbf{\texttt{ConvNeXtV2}} \cite{cvpr-convnextv2} series continue to exhibit strong performance consistent with their results on our CUBIT-InSeg dataset. Notably, although \textbf{\texttt{CSwin-Transformer}} \cite{cvpr-cswintrans} performs moderately on our benchmark, it shows surprisingly strong generalization to the Highway-Crack dataset: \textbf{\texttt{CSwin-Transformer-Base}} ranks second on three metrics, and \textbf{\texttt{CSwin-Transformer-Large}} achieves the highest Box\_AP$_{0.5:0.95}$. 
+
+% 表6展示了single-stage models的zero-shot test结果。除了延续在our CUBIT-InSeg dataset性能较好的YOLOv9和Hyper-YOLO外，YOLOv8和YOLO10也有突出表现。YOLOv8-l和x在IoU=50的Mask AP指标下并列第一，在Box AP指标下并列第二。而YOLOv10-b和l在IoU=50的Box AP指标下最强。
+Table~\ref{tab:highway-yolo} presents the zero-shot performance of the single-stage real-time models. Besides the consistently strong \textbf{\texttt{YOLOv9}} \cite{wang2024yolov9} and \textbf{\texttt{Hyper-YOLO}} \cite{hyperyolo}, both \textbf{\texttt{YOLOv8}} \cite{yolov8} and \textbf{\texttt{YOLOv10}} \cite{wang2024yolov10} also demonstrate competitive cross-domain robustness. \textbf{\texttt{YOLOv8-l}} and \textbf{\texttt{YOLOv8-x}} obtain the highest Mask\_AP$_{0.5}$ and rank second in Box\_AP$_{0.5}$, while \textbf{\texttt{YOLOv10-b}} and \textbf{\texttt{YOLOv10-l}} achieve the best Box\_AP$_{0.5}$.
+
+% 综合表5和表6的可以看出，针对无人机视角下的highway crack数据，which is 背景杂乱，目标较远较小，不同系列模型中，仍然是大尺寸的模型（m、l、x）有着比较明显的优势。不论是end-to-end models还是single-stage模型，在该数据下zero-shot测试中的鲁棒性都更强。
+Overall, combining the results from Table~\ref{tab:highway-endtoend} and Table~\ref{tab:highway-yolo}, it is obvious that for UAV-perspective highway-crack imagery, characterized by cluttered backgrounds and small, distant defects, larger-capacity models (\textbf{\texttt{m}}, \textbf{\texttt{l}}, \textbf{\texttt{x}}) consistently demonstrate stronger zero-shot robustness across both end-to-end and single-stage architectures.
+
+
+\begin{table}[!t]
+    \centering
+    \caption{Zero-shot Evaluation of the Selected Single-stage Real-time Models on the Test Set of \textbf{\textit{Highway-Crack}}~\cite{hong2021highway}}
+    \renewcommand{\arraystretch}{1.25}
+    \resizebox{1\columnwidth}{!}{
+    \begin{tabular}{c | c | c c | c c }
+    \Xhline{1.2pt}
+    
+    \textbf{Models} & \textbf{Input Size} & \textbf{Box\_AP}$_{0.5}^{test}$$\uparrow$ & \textbf{Box\_AP}$_{0.5:0.95}^{test}$$\uparrow$ & \textbf{Mask\_AP}$_{0.5}^{test}$$\uparrow$ & \textbf{Mask\_AP}$_{0.5:0.95}^{test}$$\uparrow$ \\
+
+    \hline
+    \hline
+    \rowcolor{gray!15} 
+    \textit{\textbf{YOLO Series Models}} &   &  &  &  & \\   
+
+    \hline
+    YOLOv8(8.1)-n~\cite{yolov8} & $512\times 512$ & $79.9\%$ & $55.0\%$ & $64.3\%$ & $21.8\%$ \\
+    YOLOv8(8.1)-s~\cite{yolov8} & $512\times 512$ & $81.3\%$ & $56.9\%$ & $67.4\%$ & $23.6\%$ \\
+    YOLOv8(8.1)-m~\cite{yolov8} & $512\times 512$ & $82.8\%$ & $59.0\%$ & $72.7\%$ & $26.6\%$ \\
+    YOLOv8(8.1)-l~\cite{yolov8} & $512\times 512$ & \cellcolor{iou_blue!70}{$84.7\%_2$} & $60.8\%$ & $76.4\%$ & $28.5\%$ \\
+    YOLOv8(8.1)-x~\cite{yolov8} & $512\times 512$ & $84.3\%$  & \cellcolor{iou_blue!70}{$61.3\%_2$} & \cellcolor{iou_blue!70}{$76.8\%_2$} & $29.5\%$ \\
+
+    \hline
+    YOLOv9-t ~\cite{wang2024yolov9} & $512\times 512$ & $81.0\%$ & $56.4\%$ & $66.0\%$ & $22.8\%$ \\
+    YOLOv9-s~\cite{wang2024yolov9} & $512\times 512$ & $83.3\%$ & $58.8\%$ & $71.4\%$ & $24.7\%$ \\
+    YOLOv9-m~\cite{wang2024yolov9} & $512\times 512$ & $84.3\%$ & $60.3\%$ & $75.0\%$ & $27.6\%$ \\
+    YOLOv9-c~\cite{wang2024yolov9} & $512\times 512$ & $84.4\%$ & $60.4\%$ & $75.2\%$ & $28.7\%$ \\
+    YOLOv9-e~\cite{wang2024yolov9} & $512\times 512$ & \cellcolor{orange!65}{$85.3\%_1$}  & \cellcolor{orange!65}{$62.0\%_1$} & \cellcolor{orange!65}{$77.2\%_1$} & \cellcolor{orange!65}{$30.4\%_1$} \\
+
+    \hline
+    YOLOv10-n ~\cite{wang2024yolov10} & $512\times 512$ & $80.9\%$ & $56.7\%$ & $66.1\%$ & $22.4\%$ \\
+    YOLOv10-s ~\cite{wang2024yolov10} & $512\times 512$ & $83.6\%$ & $58.7\%$ & $71.5\%$ & $24.8\%$ \\
+    YOLOv10-m ~\cite{wang2024yolov10} & $512\times 512$ & $83.3\%$ & $60.5\%$ & $75.3\%$ & $27.5\%$ \\
+    YOLOv10-b ~\cite{wang2024yolov10} & $512\times 512$ & $84.4\%$ & $60.1\%$ & $74.5\%$ & $27.6\%$ \\
+    YOLOv10-l ~\cite{wang2024yolov10} & $512\times 512$ & $84.3\%$ & $60.5\%$ & $74.7\%$ & $28.0\%$ \\
+    YOLOv10-x ~\cite{wang2024yolov10} & $512\times 512$ & $84.5\%$ & $61.2\%$ & $75.2\%$ & $28.8\%$ \\
+    
+    \hline
+    YOLOv11(8.3)-n~\cite{yolo11} & $512\times 512$ & $77.9\%$ & $55.0\%$ & $65.0\%$ & $21.9\%$ \\
+    YOLOv11(8.3)-s~\cite{yolo11} & $512\times 512$ & $80.8\%$ & $57.9\%$ & $70.0\%$ & $24.6\%$ \\
+    YOLOv11(8.3)-m~\cite{yolo11} & $512\times 512$ & $81.4\%$ & $58.3\%$ & $72.2\%$ & $26.4\%$ \\
+    YOLOv11(8.3)-l~\cite{yolo11} & $512\times 512$ & $82.8\%$ & $59.9\%$ & $73.7\%$ & $26.8\%$ \\
+    YOLOv11(8.3)-x~\cite{yolo11} & $512\times 512$ & $83.5\%$ & $60.5\%$ & $75.5\%$ & $28.6\%$ \\
+    
+    \hline
+    YOLOv12-n~\cite{yolov12} & $512\times 512$ & $78.7\%$ & $56.1\%$ & $65.3\%$ & $22.4\%$ \\
+    YOLOv12-s~\cite{yolov12} & $512\times 512$ & $81.1\%$ & $58.4\%$ & $70.3\%$ & $24.5\%$ \\
+    YOLOv12-m~\cite{yolov12} & $512\times 512$ & $81.6\%$ & $59.0\%$ & $73.7\%$ & $27.1\%$ \\
+    YOLOv12-l~\cite{yolov12} & $512\times 512$ & $82.4\%$ & $59.6\%$ & $74.8\%$ & $27.5\%$ \\
+    YOLOv12-x~\cite{yolov12} & $512\times 512$ & $83.0\%$ & $59.9\%$ & $74.7\%$ & $27.6\%$ \\
+    
+    \hline
+    YOLOv13-n~\cite{lei2025yolov13} & $512\times 512$ & $76.8\%$ & $54.6\%$ & $66.2\%$ & $23.3\%$ \\
+    YOLOv13-s~\cite{lei2025yolov13} & $512\times 512$ & $79.2\%$ & $57.3\%$ & $71.7\%$ & $26.7\%$ \\
+    YOLOv13-l~\cite{lei2025yolov13} & $512\times 512$ & $82.3\%$ & $59.7\%$ & $73.9\%$ & $28.6\%$ \\
+    YOLOv13-x~\cite{lei2025yolov13} & $512\times 512$ & $82.2\%$ & $60.3\%$ & $75.1\%$ & $29.2\%$ \\
+
+    \hline
+    MambaYOLO-T~\cite{mambayolo} & $512\times 512$ & $79.0\%$ & $57.7\%$ & $69.2\%$ & $25.4\%$ \\
+    MambaYOLO-B~\cite{mambayolo} & $512\times 512$ & $81.7\%$ & $59.7\%$ & $75.0\%$ & $28.2\%$ \\
+    MambaYOLO-L~\cite{mambayolo} & $512\times 512$ & $82.1\%$ & $60.3\%$ & $74.6\%$  & \cellcolor{iou_blue!70}{$29.8\%_2$} \\
+
+    \hline
+    Hyper-YOLO-n~\cite{hyperyolo} & $512\times 512$ & $78.3\%$ & $55.6\%$ & $65.1\%$ & $22.3\%$ \\
+    Hyper-YOLO-s~\cite{hyperyolo} & $512\times 512$ & $81.0\%$ & $58.6\%$ & $69.9\%$ & $25.0\%$ \\
+    Hyper-YOLO-m~\cite{hyperyolo} & $512\times 512$ & $82.8\%$ & $60.2\%$ & $73.7\%$ & $27.5\%$ \\
+    Hyper-YOLO-l~\cite{hyperyolo} & $512\times 512$ & $83.1\%$ & $61.0\%$ & $75.4\%$ & $29.3\%$ \\
+    Hyper-YOLO-x~\cite{hyperyolo} & $512\times 512$ & $83.6\%$ & \cellcolor{iou_blue!70}{$61.3\%_2$} & $75.5\%$ & $29.5\%$ \\
+    
+    \Xhline{1.2pt}
+    \end{tabular}
+    }
+
+    \parbox{1\columnwidth}{
+    \footnotesize
+    (1) \(\uparrow\) (\(\downarrow\)) indicates that larger (smaller) values lead to better (worse) results. The best in \textcolor{orange!65}{orange}, the second best are in \textcolor{iou_blue!70}{blue}.
+    }
+
+\vspace{-1.5em}
+\label{tab:highway-yolo}
+\end{table}
+
+% *******************  highway-crack dataset table Endddddd ******************* 
+
+
+
+% *******************  crack-seg dataset table ******************* 
+
+\begin{table}[!t]
+    \centering
+    \caption{Zero-shot Evaluation of Selected End-to-End Models on the Test Set of \textbf{\textit{Crack-Seg}}~\cite{yolov8}}
+    \renewcommand{\arraystretch}{1.25}
+    \resizebox{1\columnwidth}{!}{
+    \begin{tabular}{c | c | c c | c c }
+    \Xhline{1.2pt}
+    
+    \textbf{Models} & \textbf{Input Size} & \textbf{Box\_AP}$_{0.5}^{test}$$\uparrow$ & \textbf{Box\_AP}$_{0.5:0.95}^{test}$$\uparrow$ & \textbf{Mask\_AP}$_{0.5}^{test}$$\uparrow$ & \textbf{Mask\_AP}$_{0.5:0.95}^{test}$$\uparrow$ \\
+    
+    \hline
+    \hline
+    \rowcolor{gray!15} 
+    \textit{\textbf{Conv-based Models}}  &  &  &  &  & \\
+
+    \hline
+    EMO-1M (n)~\cite{ICCV_emo} & $416\times 416$ & $72.4\%$ & $60.1\%$ & $63.5\%$ & $28.2\%$ \\
+    EMO-2M (s)~\cite{ICCV_emo} & $416\times 416$ & $76.5\%$ & $62.6\%$ & $61.9\%$ & $29.2\%$ \\
+    EMO-5M (m)~\cite{ICCV_emo} & $416\times 416$ & $75.6\%$ & $64.3\%$ & $68.9\%$ & $29.8\%$ \\
+    EMO-6M (l)~\cite{ICCV_emo} & $416\times 416$ & $74.9\%$ & $62.3\%$ & $66.7\%$ & $29.1\%$ \\
+
+    
+    \hline
+    MobileNetV4Conv-S (s)~\cite{mobilenetv4} & $416\times 416$ & $71.8\%$ & $61.6\%$ & $66.0\%$ & $28.3\%$ \\
+    MobileNetV4Conv-M (m)~\cite{mobilenetv4} & $416\times 416$ & $72.6\%$ & $62.5\%$ & $63.9\%$ & $29.1\%$ \\
+    MobileNetV4Conv-L (l)~\cite{mobilenetv4} & $416\times 416$ & $75.0\%$ & $62.7\%$ & $66.5\%$ & $30.5\%$ \\
+
+    \hline
+    FasterNet-t0 (n)~\cite{CVPR-fasternet} & $416\times 416$ & $72.6\%$ & $63.3\%$ & $65.4\%$ & $27.8\%$ \\
+    FasterNet-t1 (n)~\cite{CVPR-fasternet} & $416\times 416$ & $72.4\%$ & $62.2\%$ & $64.7\%$ & $27.4\%$ \\
+    FasterNet-t2 (n)~\cite{CVPR-fasternet} & $416\times 416$ & $70.9\%$ & $60.8\%$ & $63.2\%$ & $27.9\%$ \\
+    FasterNet-s (s)~\cite{CVPR-fasternet} & $416\times 416$ & $71.6\%$ & $62.5\%$ & $66.4\%$ & $30.2\%$ \\
+    FasterNet-m (m)~\cite{CVPR-fasternet} & $416\times 416$ & $72.5\%$ & $62.1\%$ & $63.6\%$ & $30.1\%$ \\
+    FasterNet-l (l)~\cite{CVPR-fasternet} & $416\times 416$ & \cellcolor{iou_blue!70}{$77.6\%_2$} & $65.4\%$ & $69.8\%$ & $31.5\%$ \\
+
+    \hline
+    Starnet-s50 (n)~\cite{starnet} & $416\times 416$ & $65.8\%$ & $53.7\%$ & $54.2\%$ & $18.5\%$ \\
+    Starnet-s100 (n)~\cite{starnet} & $416\times 416$ & $72.8\%$ & $63.0\%$ & $64.9\%$ & $28.6\%$ \\
+    Starnet-s150 (n)~\cite{starnet} & $416\times 416$ & $70.2\%$ & $61.2\%$ & $63.5\%$ & $28.1\%$ \\
+    Starnet-s1 (s)~\cite{starnet} & $416\times 416$ & $71.9\%$ & $62.7\%$ & $67.0\%$ & $31.5\%$ \\
+    Starnet-s2 (m)~\cite{starnet} & $416\times 416$ & $73.5\%$ & $63.1\%$ & $63.8\%$ & $30.2\%$ \\
+    Starnet-s3 (l)~\cite{starnet} & $416\times 416$ & $77.4\%$ & $64.0\%$ & $66.8\%$ & $31.2\%$ \\
+    Starnet-s4 (x)~\cite{starnet} & $416\times 416$ & $76.5\%$ & $65.2\%$ & $67.1\%$ & $31.7\%$ \\
+
+    \hline
+    ConvNeXt2-nano (n)~\cite{cvpr-convnextv2} & $416\times 416$ & $73.9\%$ & $63.4\%$ & $68.2\%$ & $31.7\%$ \\
+    ConvNeXt2-tiny (s)~\cite{cvpr-convnextv2} & $416\times 416$ & $73.0\%$ & $62.2\%$ & $68.3\%$ & $31.2\%$ \\
+    ConvNeXt2-base (m)~\cite{cvpr-convnextv2} & $416\times 416$ & $75.6\%$ & $64.7\%$ & $66.7\%$ & $32.4\%$ \\
+    ConvNeXt2-large (l)~\cite{cvpr-convnextv2} & $416\times 416$ & $75.8\%$ & \cellcolor{iou_blue!70}{$65.6\%_2$} & $69.3\%$ & \cellcolor{iou_blue!70}{$32.8\%_2$} \\
+
+    
+    \hline
+    \hline
+    \rowcolor{gray!10} 
+    \textit{\textbf{Transformer-based Models}} &  &  &  &  & \\  
+
+    \hline
+    Swin-Transformer-Tiny (n) & $512\times 512$ & $75.0\%$ & $63.7\%$ & \cellcolor{orange!65}{$70.9\%_1$} & \cellcolor{orange!65}{$33.7\%_1$} \\
+    Swin-Transformer-Small (s) & $512\times 512$ & $76.8\%$ & $63.9\%$ & $68.9\%$ & $31.9\%$ \\
+    Swin-Transformer-Base (m) & $512\times 512$ & $75.8\%$ & $64.1\%$ & $69.2\%$ & $31.9\%$ \\
+    Swin-Transformer-Large (l) & $512\times 512$ & $76.7\%$ & $64.9\%$ & $65.7\%$  & $31.0\%$ \\
+    
+    \hline
+    CSwin-Transformer-Tiny (n)~\cite{cvpr-cswintrans} & $416\times 416$ & $72.7\%$ & $63.1\%$ & $69.3\%$ & $30.6\%$ \\
+    CSwin-Transformer-Small (s)~\cite{cvpr-cswintrans} & $416\times 416$ & $74.8\%$ & $63.9\%$ & $69.9\%$ & $31.7\%$ \\
+    CSwin-Transformer-Base (m)~\cite{cvpr-cswintrans} & $416\times 416$ & $75.1\%$ & $63.6\%$ & $69.3\%$  & $32.4\%$ \\
+    CSwin-Transformer-Large (l)~\cite{cvpr-cswintrans} & $416\times 416$ & \cellcolor{orange!65}{$77.9\%_1$} & \cellcolor{iou_blue!70}{$65.6\%_2$} & \cellcolor{iou_blue!70}{$70.1\%_2$}  & $32.2\%$ \\
+
+
+    \hline
+    EfficientViT-M0 (n)~\cite{CVPR_efficientvit} & $416\times 416$ & $72.3\%$ & $63.1\%$ & $64.7\%$ & $28.3\%$ \\
+    EfficientViT-M1 (n)~\cite{CVPR_efficientvit} & $416\times 416$ & $72.5\%$ & $63.2\%$ & $65.9\%$ & $29.2\%$ \\
+    EfficientViT-M2 (s)~\cite{CVPR_efficientvit} & $416\times 416$ & $71.3\%$ & $62.1\%$ & $66.1\%$ & $28.9\%$ \\
+    EfficientViT-M3 (m)~\cite{CVPR_efficientvit} & $416\times 416$ & $73.0\%$ & $63.0\%$ & $64.0\%$ & $31.0\%$ \\
+    EfficientViT-M4 (l)~\cite{CVPR_efficientvit} & $416\times 416$ & $74.1\%$ & $62.7\%$ & $66.6\%$ & $30.3\%$ \\
+    EfficientViT-M5 (x)~\cite{CVPR_efficientvit} & $416\times 416$ & $77.1\%$ & \cellcolor{orange!65}{$66.0\%_1$} & $66.5\%$ & $31.6\%$ \\
+
+    \hline
+    RepViT-m09 (n)~\cite{repvit} & $416\times 416$ & $72.7\%$ & $62.5\%$ & $64.1\%$ & $28.7\%$ \\
+    RepViT-m10 (s)~\cite{repvit} & $416\times 416$ & $71.8\%$ & $62.9\%$ & $67.2\%$ & $30.9\%$ \\
+    RepViT-m11 (m)~\cite{repvit} & $416\times 416$ & $73.5\%$ & $63.3\%$ & $64.0\%$ & $30.8\%$ \\
+    RepViT-m11 (l)~\cite{repvit} & $416\times 416$ & $76.7\%$ & $64.3\%$ & $68.4\%$ & $30.7\%$ \\
+    RepViT-m23 (x)~\cite{repvit} & $416\times 416$ & $74.2\%$ & $63.9\%$ & $69.8\%$ & $30.8\%$ \\
+
+    \Xhline{1.2pt}
+    \end{tabular}
+    }
+
+    \parbox{1\columnwidth}{
+    \footnotesize
+    (1) \(\uparrow\) (\(\downarrow\)) indicates that larger (smaller) values lead to better (worse) results. The best in \textcolor{orange!65}{orange}, the second best are in \textcolor{iou_blue!70}{blue}.
+    }
+    
+    \label{tab:crackseg-endtoend}
+\end{table}
+
+\textbf{Zero-shot on Crack-Seg}
+% 在对Crack-seg数据集进行zero-shot testing的时候，我们仍然根据数据集的default setting ，将输入图像尺寸设置为416x416。表7展示了end-to-end models的结果.在CSwin-Transformer-Large和 EfficentViT-M5分别在box AP0.5和0.5：0.95下位列第一，而令人意外的是，在mask AP的两个指标下，Tiny尺寸的CSwin-Transformer却有着最好的表现。
+For the Crack-Seg dataset, we follow its default setting and resize all input images to $416\times416$ during zero-shot testing. Table~\ref{tab:crackseg-endtoend} summarizes the results of the end-to-end models. \textbf{\texttt{CSwin-Transformer-Large}} \cite{cvpr-cswintrans} and \textbf{\texttt{EfficientViT-M5}} \cite{CVPR_efficientvit} achieve the highest Box\_AP$_{0.5}$ and Box\_AP$_{0.5:0.95}$, respectively. Interestingly, despite being the smallest variant, \textbf{\texttt{CSwin-Transformer-Tiny}} obtains the best performance on two mask-based metrics, demonstrating that compact transformer architectures can generalize effectively under certain cross-domain conditions.
+
+% 表8展示了single-stage real-time模型的结果。在IoU=0.5的条件下，Mamba-YOLO-L和YOLOv10-x分别在BOx AP和Mask AP表现最好。而在更严苛的IoU=0.5：0.95条件下，Box和Mask AP都是在proposed CUBIT-InSeg以及Highway-Crack都比较沉寂YOLOv13-x是第一。尤其是Mask AP0.5:0.95领先第二名0.22%之多。
+Table~\ref{tab:crackseg-yolo} shows the results for single-stage real-time models. Under IoU=0.5, \textbf{\texttt{Mamba-YOLO-L}} \cite{mambayolo} and \textbf{\texttt{YOLOv10-x}} \cite{wang2024yolov10} deliver the highest Box\_AP and Mask\_AP, respectively. Under the more demanding IoU (from 0.5 to 0.95), \textbf{\texttt{YOLOv13-x}} \cite{lei2025yolov13}, despite its relatively modest in-domain performance, outperforms all competitors, achieving the best Box\_AP and Mask\_AP, with the latter being 0.22\% higher than the second-best model \textbf{\texttt{YOLOv9-s}} \cite{wang2024yolov9}.
+
+% 综合表7和表8的结果，可以看出在Crack-seg这种ground vehicle采集的混合infrastructure数据中，训练好的模型的zero-shot能力并不完全遵循：模型越大能力越强的定律。小尺寸模型（n、s）也会有非常好的zero-shot表现，除了上述提到的Swin- Transformer-Tiny，YOLOv9-s、YOLOv10s以及Hyper-YOLO-s在多个指标也位列前二。
+Taken together, Tables~\ref{tab:crackseg-endtoend} and \ref{tab:crackseg-yolo} indicate that, unlike Highway-Crack, the Crack-Seg dataset does not strictly follow the trend where larger models generalize better. Several lightweight models (\textbf{\texttt{n}}, \textbf{\texttt{s}}), such as \textbf{\texttt{CSwin-Transformer-Tiny}}, \textbf{\texttt{YOLOv9-s}}, \textbf{\texttt{YOLOv10-s}}, and \textbf{\texttt{Hyper-YOLO-s}}, achieve top-two performance on multiple metrics, revealing a different behavior for this cross-domain ground vehicle-captured data.
+
+\begin{table}[!t]
+    \centering
+    \caption{Zero-shot Evaluation of the Selected Single-stage Real-time Models on the Test Set of \textbf{\textit{Crack-Seg}}~\cite{crack-seg}}
+    \renewcommand{\arraystretch}{1.25}
+    \resizebox{1\columnwidth}{!}{
+    \begin{tabular}{c | c | c c | c c }
+    \Xhline{1.2pt}
+    
+    \textbf{Models} & \textbf{Input Size} & \textbf{Box\_AP}$_{0.5}^{test}$$\uparrow$ & \textbf{Box\_AP}$_{0.5:0.95}^{test}$$\uparrow$ & \textbf{Mask\_AP}$_{0.5}^{test}$$\uparrow$ & \textbf{Mask\_AP}$_{0.5:0.95}^{test}$$\uparrow$ \\
+    
+    \hline
+    \hline
+    \rowcolor{gray!15} 
+    \textit{\textbf{YOLO Series Models}} &  &  &  &  & \\   
+
+    \hline
+    YOLOv8(8.1)-n~\cite{yolov8} & $416\times 416$ & $75.6\%$ & $64.2\%$ & $69.9\%$ & $31.7\%$ \\
+    YOLOv8(8.1)-s~\cite{yolov8} & $416\times 416$ & $74.4\%$ & $63.8\%$ & $69.2\%$ & $29.7\%$ \\
+    YOLOv8(8.1)-m~\cite{yolov8} & $416\times 416$ & $74.2\%$ & $64.3\%$ & $70.0\%$ & $32.0\%$ \\
+    YOLOv8(8.1)-l~\cite{yolov8} & $416\times 416$ & $74.3\%$ & $62.3\%$ & $68.0\%$ & $33.5\%$ \\
+    YOLOv8(8.1)-x~\cite{yolov8} & $416\times 416$ & $75.3\%$ & $62.6\%$ & $67.8\%$ & $31.2\%$ \\
+
+    \hline
+    YOLOv9-t ~\cite{wang2024yolov9} & $416\times 416$ & $76.6\%$ & $64.1\%$ & $69.7\%$ & $31.5\%$ \\
+    YOLOv9-s~\cite{wang2024yolov9} & $416\times 416$ & $76.3\%$ & $65.2\%$ & $71.0\%$ & \cellcolor{iou_blue!70}{$33.9\%_2$} \\
+    YOLOv9-m~\cite{wang2024yolov9} & $416\times 416$ & $73.9\%$ & $62.4\%$ & $67.6\%$ & $30.5\%$ \\
+    YOLOv9-c~\cite{wang2024yolov9} & $416\times 416$ & $73.8\%$ & $60.8\%$ & $61.6\%$ & $30.3\%$ \\
+    YOLOv9-e~\cite{wang2024yolov9} & $416\times 416$ & $75.5\%$ & $62.1\%$ & $69.3\%$ & $31.0\%$ \\
+
+    \hline
+    YOLOv10-n ~\cite{wang2024yolov10} & $416\times 416$ & $75.3\%$ & $62.9\%$ & $68.1\%$ & $30.4\%$ \\
+    YOLOv10-s ~\cite{wang2024yolov10} & $416\times 416$ & $75.6\%$ & \cellcolor{iou_blue!70}{$66.5\%_2$} & \cellcolor{iou_blue!70}{$71.9\%_2$} & $33.2\%$ \\
+    YOLOv10-m ~\cite{wang2024yolov10} & $416\times 416$ & $73.0\%$ & $61.4\%$ & $69.9\%$ & $32.3\%$ \\
+    YOLOv10-b ~\cite{wang2024yolov10} & $416\times 416$ & $75.5\%$ & $64.4\%$ & $67.0\%$ & $31.5\%$ \\
+    YOLOv10-l ~\cite{wang2024yolov10} & $416\times 416$ & $77.5\%$ & $64.4\%$ & $70.1\%$ & $32.1\%$ \\
+    YOLOv10-x ~\cite{wang2024yolov10} & $416\times 416$ & $77.0\%$ & $64.7\%$ & \cellcolor{orange!65}{$73.5\%_1$} & $33.0\%$ \\
+
+    
+    \hline
+    YOLOv11(8.3)-n~\cite{yolo11} & $416\times 416$ & $73.0\%$ & $63.0\%$ & $63.8\%$ & $29.1\%$ \\
+    YOLOv11(8.3)-s~\cite{yolo11} & $416\times 416$ & $71.9\%$ & $63.1\%$ & $67.2\%$ & $32.1\%$ \\
+    YOLOv11(8.3)-m~\cite{yolo11} & $416\times 416$ & $73.6\%$ & $63.5\%$ & $64.2\%$ & $30.6\%$ \\
+    YOLOv11(8.3)-l~\cite{yolov12} & $416\times 416$ & $76.6\%$ & $65.0\%$ & $68.6\%$ & $32.1\%$ \\
+    YOLOv11(8.3)-x~\cite{yolov12} & $416\times 416$ & $75.6\%$ & $64.1\%$ & $68.8\%$ & $31.2\%$ \\
+    
+    \hline
+    YOLOv12-n~\cite{yolov12} & $416\times 416$ & $72.5\%$ & $62.4\%$ & $65.4\%$ & $29.2\%$ \\
+    YOLOv12-s~\cite{yolov12} & $416\times 416$ & $72.1\%$ & $63.1\%$ & $67.8\%$ & $31.7\%$ \\
+    YOLOv12-m~\cite{yolov12} & $416\times 416$ & $73.9\%$ & $63.0\%$ & $64.2\%$ & $31.4\%$ \\
+    YOLOv12-l~\cite{yolov12} & $416\times 416$ & $76.3\%$ & $65.6\%$ & $67.6\%$ & $31.4\%$ \\
+    YOLOv12-x~\cite{yolov12} & $416\times 416$ & $76.0\%$ & $64.6\%$ & $67.8\%$ & $31.4\%$ \\
+
+    \hline
+    YOLOv13-n~\cite{lei2025yolov13} & $416\times 416$ & $75.2\%$ & $63.2\%$ & $64.2\%$ & $30.0\%$ \\
+    YOLOv13-s~\cite{lei2025yolov13} & $416\times 416$ & $75.6\%$ & $62.8\%$ & $67.1\%$ & $31.5\%$ \\
+    YOLOv13-l~\cite{lei2025yolov13} & $416\times 416$ & $76.1\%$ & $66.1\%$ & $70.6\%$ & $33.3\%$ \\
+    YOLOv13-x~\cite{lei2025yolov13} & $416\times 416$ & \cellcolor{iou_blue!70}{$78.7\%_2$} & \cellcolor{orange!65}{$66.7\%_1$} & $70.7\%$ & \cellcolor{orange!65}{$36.1\%_1$} \\
+
+    \hline
+    MambaYOLO-T~\cite{mambayolo} & $416\times 416$ & $73.0\%$ & $63.3\%$ & $65.1\%$ & $29.2\%$ \\
+    MambaYOLO-B~\cite{mambayolo} & $416\times 416$ & $73.0\%$ & $62.7\%$ & $63.4\%$ & $28.8\%$ \\
+    MambaYOLO-L~\cite{mambayolo} & $416\times 416$ & \cellcolor{orange!65}{$79.1\%_1$} & $65.7\%$ & $71.4\%$ & $33.8\%$ \\
+
+    \hline
+    Hyper-YOLO-n~\cite{hyperyolo} & $416\times 416$ & $75.6\%$ & $64.4\%$ & $68.0\%$ & $31.1\%$ \\
+    Hyper-YOLO-s~\cite{hyperyolo} & $416\times 416$ & $75.1\%$ & $65.7\%$ & \cellcolor{iou_blue!70}{$71.9\%_2$} & $32.6\%$ \\
+    Hyper-YOLO-m~\cite{hyperyolo} & $416\times 416$ & $72.1\%$ & $61.4\%$ & $63.1\%$ & $30.3\%$ \\
+    Hyper-YOLO-l~\cite{hyperyolo} & $416\times 416$ & $75.0\%$ & $65.2\%$ & $69.1\%$ & $31.9\%$ \\
+    Hyper-YOLO-x~\cite{hyperyolo} & $416\times 416$ & $72.5\%$ & $61.8\%$ & $66.5\%$ & $31.7\%$ \\
+        
+    \Xhline{1.2pt}
+    \end{tabular}
+    }
+
+    \parbox{1\columnwidth}{
+    \footnotesize
+    (1) \(\uparrow\) (\(\downarrow\)) indicates that larger (smaller) values lead to better (worse) results. The best in \textcolor{orange!65}{orange}, the second best are in \textcolor{iou_blue!70}{blue}.
+    }
+    
+    \label{tab:crackseg-yolo}
+\end{table}
+% *******************  crack-seg dataset table Endddddd ******************* 
+
+
+\textbf{Results Comparison between the Two Cross-domain Datasets} 
+% 尽管figure4展示的crack-seg在t-sne可视化的数据分布上和我们的cubit-inseg更接近，但是模型们在其上的实例分割的效果略微的逊色于在highway-crack的效果。在iou=50下，模型们在Highway-Crack上的Box AP和Mask AP的zero-shot基本都高于80%和75%，而在Crack-seg对应的指标只是勉强到达80%和75（Fig7(a)(c)可以明显地看出）。iou=0.95下，模型们在Highway-Crack的Box AP和Mask AP的上下阈分布较大，where strong models achieve notably high AP while weaker ones drop more significantly—indicating higher sensitivity to model capability.而crack-seg的Box AP和Mask AP结果比较集中跨度较小，suggesting that its segmentation difficulty is more uniformly distributed across models. 
+Although Fig.~\ref{fig:tsne} suggests that Crack-Seg is closer to our CUBIT-InSeg dataset in terms of t-SNE distribution similarity, the zero-shot instance segmentation performance on Crack-Seg is slightly inferior to that on Highway-Crack. At IoU=0.5, most models achieve over 80\% Box\_AP and 75\% Mask\_AP on Highway-Crack, whereas the corresponding metrics on Crack-Seg marginally reach these levels (see Fig.~\ref{fig:highway-crack-compare}(a) and (c)). At a more stringent IoU=0.5:0.95, models exhibit a wide performance spread on Highway-Crack, where strong models achieve markedly higher AP scores while weaker ones drop substantially, indicating that this dataset is more sensitive to model capability. In contrast, the Box\_AP and Mask\_AP results on Crack-Seg are more concentrated with a narrower performance range, suggesting that its segmentation difficulty is more uniformly distributed across different architectures.
+
+% 原因是（1）Crack-seg的输入图像尺寸为416x416，比Highway-crack测试的尺寸更小，意味着相较于我们CUBIT-InSeg训练的640x640差距更大；其（2）Crack-seg的数据有不少位于图像的边缘或角落，如图4的放大图所示，分割难度较大，尤其是在较小的输入尺寸下；（3）Crack-seg中包含了不完全是无人机视角的数据，并且包含了不少路面数据，这对基于我们CUBIT-InSeg训练的模型是由比较大的跨度的。
+Several factors contribute to this disxicrepancy:  
+\textbf{(1)} Crack-Seg uses a smaller default input resolution of $416\times416$, increasing the scale gap relative to the $640\times640$ training resolution used for CUBIT-InSeg than Highway-Crack's input resolution;  
+\textbf{(2)} Crack-Seg's defect targets are tiny and lie near image borders, making segmentation particularly difficult under reduced input resolution;  
+\textbf{(3)} Crack-Seg contains a mixture of viewpoints, including substantial non-UAV perspectives, close-range roadway and building imagery, introducing a domain shift that is larger in semantics than what the t-SNE histogram descriptors can fully capture. In summary, these observations collectively explain why Crack-Seg exhibits a smaller distribution distance in histogram-based t-SNE space, yet yields comparatively poorer zero-shot segmentation performance.
+
+% 此外，对比不同模型也发现尽管transformer-based的模型在需要train from scratch的我们的cubit-inseg上效果可能不如conv-based的模型，但是在这两个cross-domain的test sets上都有着不俗的表现。并且这也体现了transformer-based models在面对不同尺寸的输入、不同分布的数据时候，有着强大的鲁棒性和泛化性能。
+In addition, when comparing different model families, we observe that although transformer-based architectures may underperform conv-based models when trained from scratch on our CUBIT-InSeg dataset, they demonstrate notably strong zero-shot generalization on both Highway-Crack and Crack-Seg datasets. This further highlights the robustness and cross-domain adaptability of transformer-based models, particularly when facing variations in image resolution, viewpoint, and underlying data distributions.
+
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\columnwidth]{images/highway_crackseg_param_AP.png}
+    \caption{Zero-shot instance segmentation results based on models trained on the proposed CUBIT-InSeg dataset, evaluated on the Highway-Crack and Crack-Seg test sets. Solid lines with inverted triangles $\triangledown$ denote Highway-Crack, while dashed lines with upright triangles $\triangle$ denote Crack-Seg. (a) Box\_AP$_{0.5}$, (b) Box\_AP$_{0.5:0.95}$, (c) Mask\_AP$_{0.5}$, and (d) Mask\_AP$_{0.5:0.95}$.
+    }
+    \label{fig:highway-crack-compare}
+\vspace{-2em}
+\end{figure}
+
+
+
+
+%%%%%%%%%%%%%%%%%% CONCLUSION %%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+\label{sec: conclusion}
+
+
+
+
+% Numbered list
+% Use the style of numbering in square brackets.
+% If nothing is used, the default style will be taken.
+%\begin{enumerate}[a)]
+%\item 
+%\item 
+%\item 
+%\end{enumerate}  
+
+% Unnumbered list
+%\begin{itemize}
+%\item 
+%\item 
+%\item 
+%\end{itemize}  
+
+% Description list
+%\begin{description}
+%\item[]
+%\item[] 
+%\item[] 
+%\end{description}  
+
+% Uncomment and use as the case may be
+%\begin{theorem} 
+%\end{theorem}
+
+% Uncomment and use as the case may be
+%\begin{lemma} 
+%\end{lemma}
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+%% \appendix
+
+% To print the credit authorship contribution details
+\printcredits
+
+\section*{Declaration of Competing Interest}
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in the paper.
+
+\section*{Acknowledgments}
+This work is supported by the InnoHK of the Government of the Hong Kong Special Administrative Region via the Hong Kong Centre for Logistics Robotics (HKCLR).
+
+
+%% Loading bibliography style file
+%\bibliographystyle{model1-num-names}
+%\bibliographystyle{cas-model2-names.bst}
+\bibliographystyle{unsrt}
+% Loading bibliography database
+\bibliography{cas-refs}
+% Biography
+%\bio{}
+% Here goes the biography details.
+%\endbio
+
+%\bio{pic1}
+% Here goes the biography details.
+%\endbio
+
+\end{document}
+
