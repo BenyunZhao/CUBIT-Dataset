@@ -12,13 +12,14 @@ export default function Home() {
   const [pageViews, setPageViews] = useState(0);
   const [activeTask, setActiveTask] = useState('det');
 
-  // 动态加载 RevolverMaps 脚本
+  // 动态加载 MapMyVisitors 脚本
   useEffect(() => {
-    const container = document.getElementById('revolver-map-container');
+    const container = document.getElementById('map-container');
     if (container && container.childNodes.length === 0) {
       const script = document.createElement('script');
       script.type = 'text/javascript';
-      script.src = "//rf.revolvermaps.com/0/0/6.js?i=5vy0v6v6v6v&m=7&c=e63100&cr1=ffffff&f=arial&l=0&bv=90&lx=-420&ly=420&hi=20&he=7&hc=a8ddff&rs=80";
+      script.id = 'mmvst_globe';
+      script.src = "//mapmyvisitors.com/globe.js?d=asZtmcurVELXgcwr9CzlQw9tO6D7FsBXAndjUU7lGIA";
       script.async = true;
       container.appendChild(script);
     }
@@ -468,14 +469,11 @@ pavement_001 0.742 1200 4500 1350 4800
                 </div>
 
                 <div className="relative w-full max-w-2xl aspect-2/1 bg-slate-900 rounded-[2.5rem] overflow-hidden group-hover:shadow-3xl transition-all duration-1000 border border-slate-800 shadow-2xl">
-                  {/* 嵌入真实的 3D 旋转地球挂件 (RevolverMaps) */}
+                  {/* 嵌入真实的 3D 旋转地球挂件 (MapMyVisitors) */}
                   <div className="absolute inset-0 flex items-center justify-center p-4">
-                    <div 
-                      className="w-full h-full flex items-center justify-center"
-                      dangerouslySetInnerHTML={{ __html: `
-                        <script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5vy0v6v6v6v&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
-                      ` }}
-                    />
+                    <div id="map-container" className="w-full h-full flex items-center justify-center">
+                      {/* 脚本会在此处动态插入 */}
+                    </div>
                   </div>
                   
                   {/* 装饰性元素 */}
