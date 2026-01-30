@@ -252,7 +252,7 @@ export default function Home() {
                       </tr>
                     </thead>
                     <tbody className="text-sm font-medium">
-                      {(activeTask === 'det' ? baselines.det : baselines.inseg).map((item, i) => (
+                      {(activeTask === 'det' ? baselines.det : baselines.inseg).map((item: any, i) => (
                         <tr key={i} className="border-b border-slate-100 hover:bg-slate-50 transition-colors group">
                           <td className="px-8 py-6 font-black text-slate-300 group-hover:text-blue-600 transition-colors">#0{i+1}</td>
                           <td className="px-8 py-6 text-slate-950 font-bold">{item.model}</td>
