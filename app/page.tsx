@@ -9,33 +9,15 @@ export default function Home() {
   const [user, setUser] = useState<any>(null);
   const [formData, setFormData] = useState({ email: '', password: '', name: '' });
   const [error, setError] = useState('');
-  const [pageViews, setPageViews] = useState(0);
   const [activeTask, setActiveTask] = useState('det');
 
-  // 动态加载 MapMyVisitors 脚本
-  useEffect(() => {
-    const container = document.getElementById('map-container');
-    if (container && container.childNodes.length === 0) {
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.id = 'mmvst_globe';
-      script.src = "//mapmyvisitors.com/globe.js?d=asZtmcurVELXgcwr9CzlQw9tO6D7FsBXAndjUU7lGIA";
-      script.async = true;
-      container.appendChild(script);
-    }
-  }, []);
-
-  // 页面加载时检查登录状态和获取访问量
+  // 页面加载时检查登录状态
   useEffect(() => {
     fetch('/api/auth/me')
       .then(res => res.json())
       .then(data => {
         if (data.user) setUser(data.user);
       });
-
-    fetch('/api/stats')
-      .then(res => res.json())
-      .then(data => setPageViews(data.views));
   }, []);
 
   const handleAuth = async (e: React.FormEvent) => {
@@ -144,7 +126,7 @@ export default function Home() {
             <span className="text-xl font-black tracking-tighter">CUBIT <span className="text-blue-600">CHALLENGE</span></span>
           </div>
           <div className="hidden lg:flex items-center space-x-10">
-            {["Home", "Tasks", "Challenge", "Download", "Leaderboard", "Citation"].map((item) => (
+            {["Home", "Tasks", "Challenge", "Results"].map((item) => (
               <a key={item} href={`#${item.toLowerCase()}`} className="text-slate-500 hover:text-blue-600 text-[10px] font-black uppercase tracking-widest transition-colors">{item}</a>
             ))}
           </div>
@@ -450,70 +432,6 @@ pavement_001 0.742 1200 4500 1350 4800
               </div>
             ))}
           </div>
-        </section>
-
-        {/* Global Impact Dashboard */}
-        <section className="py-32 bg-slate-50 border-y border-slate-100">
-          <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 text-center">
-            <h2 className="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em] mb-16">Global Impact</h2>
-            
-            <div className="inline-block p-12 bg-white rounded-[3rem] border border-slate-200 shadow-xl relative overflow-hidden group">
-              <div className="absolute top-0 inset-x-0 h-1.5 bg-blue-600"></div>
-              
-              <div className="flex flex-col items-center gap-10">
-                <div className="flex flex-col items-center">
-                  <span className="text-6xl font-black text-slate-900 tracking-tighter mb-2">
-                    {pageViews.toLocaleString()}
-                  </span>
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Total Researchers Reached</span>
-                </div>
-
-                <div className="relative w-full max-w-2xl aspect-2/1 bg-slate-900 rounded-[2.5rem] overflow-hidden group-hover:shadow-3xl transition-all duration-1000 border border-slate-800 shadow-2xl">
-                  {/* 嵌入真实的 3D 旋转地球挂件 (MapMyVisitors) */}
-                  <div className="absolute inset-0 flex items-center justify-center p-4">
-                    <div id="map-container" className="w-full h-full flex items-center justify-center">
-                      {/* 脚本会在此处动态插入 */}
-                    </div>
-                  </div>
-                  
-                  {/* 装饰性元素 */}
-                  <div className="absolute inset-0 bg-linear-to-t from-slate-950/40 to-transparent pointer-events-none"></div>
-                  <div className="absolute top-6 left-6 flex items-center gap-2">
-                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                    <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">Live Global Feed</span>
-                  </div>
-                  <div className="absolute bottom-6 right-6 px-4 py-1.5 bg-blue-600 rounded-lg text-[10px] font-black text-white tracking-[0.3em] uppercase shadow-lg">Network Activity</div>
-                </div>
-
-                <p className="max-w-lg text-sm text-slate-400 font-medium leading-relaxed">
-                  CUBIT Benchmark is being adopted by over {Math.max(12, Math.ceil(pageViews/12))} leading research groups in Unmanned Systems and Civil Engineering.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Citation Section */}
-        <section id="citation" className="py-40 bg-slate-950 rounded-t-[5rem] mx-4 sm:mx-8">
-          <div className="max-w-5xl mx-auto px-8 sm:px-12 text-center">
-            <h2 className="text-[10px] font-black text-blue-400 uppercase tracking-[0.5em] mb-20">Academic Attribution</h2>
-            <div className="space-y-12">
-              <div className="bg-white/5 border border-white/10 rounded-[3rem] p-12 relative text-left group hover:bg-white/10 transition-all">
-                <pre className="text-slate-400 text-sm font-mono overflow-x-auto whitespace-pre-wrap leading-relaxed">
-{`@article{zhao2024cubit,
-  title={High-resolution infrastructure defect detection 
-         dataset sourced by unmanned systems and 
-         validated with deep learning},
-  author={Zhao, Benyun and Zhou, Xunkuai and others},
-  journal={Automation in Construction},
-  volume={163},
-  pages={105405},
-  year={2024}
-}`}
-                </pre>
-              </div>
-            </div>
-        </div>
         </section>
       </main>
 
