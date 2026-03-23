@@ -3,53 +3,97 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+type MockUser = {
+  email: string;
+  name: string;
+};
+
+type MockStoredUser = MockUser & {
+  password: string;
+};
+
+const MOCK_USERS_KEY = "cubit-mock-users";
+const MOCK_SESSION_KEY = "cubit-mock-session";
+
 export default function Home() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<MockUser | null>(null);
   const [formData, setFormData] = useState({ email: '', password: '', name: '' });
   const [error, setError] = useState('');
   const [activeTask, setActiveTask] = useState('det');
 
-  // 页面加载时检查登录状态
+  // 页面加载时检查本地 mock 登录状态
   useEffect(() => {
-    fetch('/api/auth/me')
-      .then(res => res.json())
-      .then(data => {
-        if (data.user) setUser(data.user);
-      });
+    try {
+      const storedSession = window.localStorage.getItem(MOCK_SESSION_KEY);
+      if (storedSession) {
+        setUser(JSON.parse(storedSession) as MockUser);
+      }
+    } catch (err) {
+      console.error('Failed to read local auth state:', err);
+    }
   }, []);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    const endpoint = isRegister ? '/api/auth/register' : '/api/auth/login';
     
     try {
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-      
-      const data = await res.json();
-      
-      if (res.ok) {
-        setUser(data.user);
-        setIsLoginOpen(false);
-        setFormData({ email: '', password: '', name: '' });
-      } else {
-        setError(data.error || '认证失败');
-        console.error('Auth Error Details:', data.details);
+      const email = formData.email.trim().toLowerCase();
+      const password = formData.password.trim();
+      const name = formData.name.trim();
+
+      if (!email || !password) {
+        setError('Please enter both email and password');
+        return;
       }
+
+      const storedUsers = window.localStorage.getItem(MOCK_USERS_KEY);
+      const users = storedUsers ? (JSON.parse(storedUsers) as MockStoredUser[]) : [];
+
+      if (isRegister) {
+        if (!name) {
+          setError('Please enter your name');
+          return;
+        }
+
+        if (users.some((item) => item.email === email)) {
+          setError('This email is already registered');
+          return;
+        }
+
+        const newUser: MockStoredUser = { email, name, password };
+        const sessionUser: MockUser = { email, name };
+        window.localStorage.setItem(MOCK_USERS_KEY, JSON.stringify([...users, newUser]));
+        window.localStorage.setItem(MOCK_SESSION_KEY, JSON.stringify(sessionUser));
+        setUser(sessionUser);
+      } else {
+        const matchedUser = users.find((item) => item.email === email && item.password === password);
+        if (!matchedUser) {
+          setError('Email or password is incorrect');
+          return;
+        }
+
+        const sessionUser: MockUser = { email: matchedUser.email, name: matchedUser.name };
+        window.localStorage.setItem(MOCK_SESSION_KEY, JSON.stringify(sessionUser));
+        setUser(sessionUser);
+      }
+
+      setIsLoginOpen(false);
+      setFormData({ email: '', password: '', name: '' });
     } catch (err) {
-      setError('网络或服务器异常，请检查控制台');
-      console.error('Fetch Error:', err);
+      setError('Local storage is unavailable in this browser');
+      console.error('Mock auth error:', err);
     }
   };
 
   const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
+    try {
+      window.localStorage.removeItem(MOCK_SESSION_KEY);
+    } catch (err) {
+      console.error('Failed to clear local auth state:', err);
+    }
     setUser(null);
   };
 
@@ -304,15 +348,20 @@ export default function Home() {
                       </p>
                     </div>
                     {user ? (
-                      <button className="px-10 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl">
-                        Submit Result (.zip)
-                      </button>
+                      <a
+                        href="https://drive.google.com/drive/folders/1smAGS7WpTrNQPt0enS1FqQt9n4DC9bKu?usp=sharing"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-10 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl inline-flex items-center justify-center"
+                      >
+                        Open Submission Resources
+                      </a>
                     ) : (
                       <button 
                         onClick={() => setIsLoginOpen(true)}
                         className="px-10 py-5 bg-white text-slate-950 hover:bg-blue-600 hover:text-white rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl"
                       >
-                        Sign In to Submit
+                        Sign In for Demo Access
                       </button>
                     )}
                   </div>
@@ -512,7 +561,7 @@ pavement_001 0.742 1200 4500 1350 4800
                 {isRegister ? 'Create Account' : 'Welcome Back'}
               </h4>
               <p className="text-slate-400 text-sm font-medium">
-                {isRegister ? 'Join the CUBIT Benchmark Community' : 'Sign in to CUBIT Challenge Server'}
+                {isRegister ? 'Join the CUBIT static demo' : 'Sign in to the local demo workspace'}
               </p>
             </div>
             
@@ -547,7 +596,7 @@ pavement_001 0.742 1200 4500 1350 4800
               {error && <p className="text-red-500 text-xs font-bold text-center">{error}</p>}
               
               <button className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl hover:bg-blue-700 transition-all">
-                {isRegister ? 'Register' : 'Sign In'}
+                {isRegister ? 'Register Demo Account' : 'Sign In'}
               </button>
             </form>
 
