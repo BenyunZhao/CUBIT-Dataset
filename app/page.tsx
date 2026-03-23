@@ -266,6 +266,38 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Resources Section */}
+        <section id="resources" className="py-32 bg-white border-b border-slate-200">
+          <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 mb-16">
+              <div className="max-w-3xl">
+                <h2 className="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em] mb-6">Download & References</h2>
+                <h3 className="text-5xl font-black text-slate-900 tracking-tighter mb-6">Shared Resources</h3>
+                <p className="text-slate-500 text-lg leading-relaxed font-medium">
+                  The linked drive folder contains the training materials, test logs, and verification notes used to support the benchmark release.
+                </p>
+              </div>
+              <a
+                href="https://drive.google.com/drive/folders/1smAGS7WpTrNQPt0enS1FqQt9n4DC9bKu?usp=sharing"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center px-8 py-4 rounded-2xl bg-slate-950 text-white text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-colors shadow-xl"
+              >
+                Open Google Drive
+              </a>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {driveResources.map((resource) => (
+                <div key={resource.title} className="p-8 rounded-4xl border border-slate-200 bg-slate-50">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-4">{resource.title}</div>
+                  <p className="text-sm text-slate-600 font-medium leading-relaxed">{resource.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Challenge & Leaderboard - Data Dense Section */}
         <section id="challenge" className="py-32 bg-white">
           <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
@@ -466,38 +498,6 @@ pavement_001 0.742 1200 4500 1350 4800
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Resources Section */}
-        <section id="resources" className="py-32 bg-white border-b border-slate-200">
-          <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 mb-16">
-              <div className="max-w-3xl">
-                <h2 className="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em] mb-6">Download & References</h2>
-                <h3 className="text-5xl font-black text-slate-900 tracking-tighter mb-6">Shared Resources</h3>
-                <p className="text-slate-500 text-lg leading-relaxed font-medium">
-                  The linked drive folder contains the training materials, test logs, and verification notes used to support the benchmark release.
-                </p>
-              </div>
-              <a
-                href="https://drive.google.com/drive/folders/1smAGS7WpTrNQPt0enS1FqQt9n4DC9bKu?usp=sharing"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center px-8 py-4 rounded-2xl bg-slate-950 text-white text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-colors shadow-xl"
-              >
-                Open Google Drive
-              </a>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              {driveResources.map((resource) => (
-                <div key={resource.title} className="p-8 rounded-4xl border border-slate-200 bg-slate-50">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-4">{resource.title}</div>
-                  <p className="text-sm text-slate-600 font-medium leading-relaxed">{resource.description}</p>
-                </div>
-              ))}
             </div>
           </div>
         </section>
