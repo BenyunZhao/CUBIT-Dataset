@@ -502,37 +502,7 @@ pavement_001 0.742 1200 4500 1350 4800
           </div>
         </section>
 
-        {/* Results Gallery - Visual Evidence */}
-        <section id="results" className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-40">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-10">
-            <div className="max-w-2xl">
-              <h2 className="text-5xl font-black text-slate-900 tracking-tighter leading-none mb-8">Scientific<br/><span className="text-blue-600 italic font-light text-4xl">Visual Evidence</span></h2>
-              <p className="text-slate-500 text-xl font-medium leading-relaxed">Direct evidence and quantitative insights from the CUBIT benchmark evaluations.</p>
-            </div>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
-            {figures.map((fig, i) => (
-              <div key={i} className="group cursor-pointer">
-                <div className="aspect-4/3 relative rounded-[2.5rem] overflow-hidden bg-slate-50 mb-8 border border-slate-100 shadow-sm transition-all duration-700 group-hover:shadow-3xl group-hover:-translate-y-3">
-                  <Image 
-                    src={fig.src} 
-                    alt={fig.title} 
-                    fill 
-                    className="object-contain p-6 transition-transform duration-[1.5s] group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-slate-950/0 group-hover:bg-slate-950/20 transition-all flex items-center justify-center">
-                    <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 transition-all duration-500 shadow-2xl">
-                      <svg className="w-6 h-6 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                    </div>
-                  </div>
-                </div>
-                <h4 className="text-xl font-bold text-slate-900 mb-3 tracking-tight group-hover:text-blue-600 transition-colors">{fig.title}</h4>
-                <p className="text-slate-400 text-xs leading-relaxed font-medium line-clamp-2">{fig.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* Results Gallery - Visual Evidence hidden until image assets are ready. */}
       </main>
 
       <footer className="bg-slate-50 py-24 border-t border-slate-100">
